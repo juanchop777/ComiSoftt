@@ -2,26 +2,19 @@
 
 @section('content')
 <div class="container mt-4">
-    <h3 class="mb-4">Editar Comité</h3>
-
-    {{-- Mensaje de éxito --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="fas fa-edit"></i> Editar Comité #{{ $committee->committee_id }}
+        </h3>
+        <div class="d-flex gap-2">
+            <a href="{{ route('committee.show', $committee) }}" class="btn btn-info btn-lg">
+                <i class="fas fa-eye"></i> Ver
+            </a>
+            <a href="{{ route('committee.index') }}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
-    @endif
-
-    {{-- Errores de validación --}}
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    </div>
 
     <form action="{{ route('committee.update', $committee) }}" method="POST">
         @csrf
@@ -30,149 +23,194 @@
         {{-- Información de Sesión --}}
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Información de Sesión</h5>
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar"></i> Información de Sesión del Comité
+                </h5>
             </div>
             <div class="card-body">
-                                 <div class="row g-3 mb-4">
-                     <div class="col-md-4">
-                         <label for="session_date" class="form-label fw-semibold">Fecha Sesión</label>
-                         <input type="date" class="form-control" name="session_date" value="{{ $committee->session_date }}" required>
-                     </div>
- 
-                     <div class="col-md-4">
-                         <label for="session_time" class="form-label fw-semibold">Hora Sesión</label>
-                         <input type="time" class="form-control" name="session_time" value="{{ $committee->session_time }}" required>
-                     </div>
- 
-                     <div class="col-md-4">
-                         <label for="access_link" class="form-label fw-semibold">Enlace de Acceso</label>
-                         <input type="url" class="form-control" name="access_link" value="{{ $committee->access_link }}" placeholder="https://meet.google.com/...">
-                         <small class="form-text text-muted">Opcional - Solo para sesiones virtuales</small>
-                     </div>
-                 </div>
- 
-                 <div class="row g-3 mb-4">
-                     <div class="col-md-6">
-                         <label for="minutes_id" class="form-label fw-semibold">Acta</label>
-                         <select name="minutes_id" class="form-select" required>
-                             <option value="">Seleccione un acta...</option>
-                             @foreach($minutes as $minute)
-                                 <option value="{{ $minute->minutes_id }}" 
-                                         {{ $committee->minutes_id == $minute->minutes_id ? 'selected' : '' }}>
-                                     Acta #{{ $minute->act_number }} - {{ $minute->trainee_name }} ({{ \Carbon\Carbon::parse($minute->minutes_date)->format('d/m/Y') }})
-                                 </option>
-                             @endforeach
-                         </select>
-                     </div>
- 
-                     <div class="col-md-3">
-                         <label for="trainee_name" class="form-label fw-semibold">Nombre Aprendiz</label>
-                         <input type="text" name="trainee_name" class="form-control" value="{{ $committee->trainee_name }}" readonly>
-                     </div>
- 
-                     <div class="col-md-3">
-                         <label for="minutes_date" class="form-label fw-semibold">Fecha Acta</label>
-                         <input type="date" class="form-control" name="minutes_date" value="{{ $committee->minutes_date }}" required>
-                     </div>
-                 </div>
- 
-                 <div class="row g-3">
-                     <div class="col-md-6">
-                         <label for="attendance_mode" class="form-label fw-semibold">Modalidad Asistencia</label>
-                         <select name="attendance_mode" class="form-select" required>
-                             <option value="">Seleccione...</option>
-                             <option value="Presencial" {{ $committee->attendance_mode == 'Presencial' ? 'selected' : '' }}>Presencial</option>
-                             <option value="Virtual" {{ $committee->attendance_mode == 'Virtual' ? 'selected' : '' }}>Virtual</option>
-                             <option value="No asistió" {{ $committee->attendance_mode == 'No asistió' ? 'selected' : '' }}>No asistió</option>
-                         </select>
-                     </div>
-                 </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="session_date" class="form-label fw-semibold">Fecha Sesión</label>
+                        <input type="date" class="form-control form-control-lg" name="session_date" id="session_date" value="{{ $committee->session_date }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="session_time" class="form-label fw-semibold">Hora Sesión</label>
+                        <input type="time" class="form-control form-control-lg" name="session_time" id="session_time" value="{{ $committee->session_time }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="access_link" class="form-label fw-semibold">Enlace de Acceso</label>
+                        <input type="url" class="form-control form-control-lg" name="access_link" id="access_link" value="{{ $committee->access_link }}" placeholder="https://meet.google.com/...">
+                        <small class="form-text text-muted">Opcional - Solo para sesiones virtuales</small>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="minutes_id" class="form-label fw-semibold">Acta</label>
+                        <select name="minutes_id" class="form-select form-select-lg" id="minutes_id" required>
+                            <option value="">Seleccione un acta...</option>
+                            @foreach($minutes as $minute)
+                                <option value="{{ $minute->minutes_id }}" 
+                                        {{ $committee->minutes_id == $minute->minutes_id ? 'selected' : '' }}>
+                                    Acta #{{ $minute->act_number }} - {{ $minute->trainee_name }} ({{ \Carbon\Carbon::parse($minute->minutes_date)->format('d/m/Y') }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="trainee_name" class="form-label fw-semibold">Nombre Aprendiz</label>
+                        <input type="text" name="trainee_name" class="form-control form-control-lg" id="trainee_name" value="{{ $committee->trainee_name }}" readonly>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="minutes_date" class="form-label fw-semibold">Fecha Acta</label>
+                        <input type="date" class="form-control form-control-lg" name="minutes_date" id="minutes_date" value="{{ $committee->minutes_date }}" required>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="attendance_mode" class="form-label fw-semibold">Modalidad Asistencia</label>
+                        <select name="attendance_mode" class="form-select form-select-lg" id="attendance_mode" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Presencial" {{ $committee->attendance_mode == 'Presencial' ? 'selected' : '' }}>Presencial</option>
+                            <option value="Virtual" {{ $committee->attendance_mode == 'Virtual' ? 'selected' : '' }}>Virtual</option>
+                            <option value="No asistió" {{ $committee->attendance_mode == 'No asistió' ? 'selected' : '' }}>No asistió</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
         {{-- Información de la Falta --}}
         <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Información de la Falta</h5>
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Información de la Falta
+                </h5>
             </div>
             <div class="card-body">
-                                 <div class="row g-3 mb-4">
-                     <div class="col-md-4">
-                         <label for="fault_type" class="form-label fw-semibold">Tipo de Falta</label>
-                         <input type="text" class="form-control" name="fault_type" value="{{ $committee->fault_type }}" required placeholder="Ej: Inasistencia, indisciplina, etc.">
-                     </div>
- 
-                     <div class="col-md-4">
-                         <label for="offense_class" class="form-label fw-semibold">Clase de Falta</label>
-                         <select name="offense_class" class="form-select" required>
-                             <option value="">Seleccione...</option>
-                             <option value="Leve" {{ $committee->offense_class == 'Leve' ? 'selected' : '' }}>Leve</option>
-                             <option value="Grave" {{ $committee->offense_class == 'Grave' ? 'selected' : '' }}>Grave</option>
-                             <option value="Muy Grave" {{ $committee->offense_class == 'Muy Grave' ? 'selected' : '' }}>Muy Grave</option>
-                         </select>
-                     </div>
-                 </div>
- 
-                 <div class="mb-4">
-                     <label for="offense_classification" class="form-label fw-semibold">Descripción de la Falta</label>
-                     <textarea name="offense_classification" class="form-control" rows="3" placeholder="Describa la clasificación de la falta...">{{ $committee->offense_classification }}</textarea>
-                 </div>
- 
-                 <div class="mb-4">
-                     <label for="statement" class="form-label fw-semibold">Descargos</label>
-                     <textarea name="statement" class="form-control" rows="3" required placeholder="Descargos del aprendiz...">{{ $committee->statement }}</textarea>
-                 </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="fault_type" class="form-label fw-semibold">Tipo de Falta</label>
+                        <input type="text" class="form-control form-control-lg" name="fault_type" id="fault_type" value="{{ $committee->fault_type }}" required placeholder="Ej: Inasistencia, indisciplina, etc.">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="offense_class" class="form-label fw-semibold">Clase de Falta</label>
+                        <select name="offense_class" class="form-select form-select-lg" id="offense_class" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Leve" {{ $committee->offense_class == 'Leve' ? 'selected' : '' }}>Leve</option>
+                            <option value="Grave" {{ $committee->offense_class == 'Grave' ? 'selected' : '' }}>Grave</option>
+                            <option value="Muy Grave" {{ $committee->offense_class == 'Muy Grave' ? 'selected' : '' }}>Muy Grave</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="offense_classification" class="form-label fw-semibold">Descripción de la Falta</label>
+                    <textarea name="offense_classification" class="form-control form-control-lg" id="offense_classification" rows="3" placeholder="Describa la clasificación de la falta...">{{ $committee->offense_classification }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="statement" class="form-label fw-semibold">Descargos del Aprendiz</label>
+                    <textarea name="statement" class="form-control form-control-lg" id="statement" rows="3" required placeholder="Descargos del aprendiz...">{{ $committee->statement }}</textarea>
+                </div>
             </div>
         </div>
 
         {{-- Decisiones y Seguimiento --}}
         <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Decisiones y Seguimiento</h5>
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-check"></i> Decisiones y Seguimiento
+                </h5>
             </div>
             <div class="card-body">
-                                 <div class="row g-3 mb-4">
-                     <div class="col-md-6">
-                         <label for="decision" class="form-label fw-semibold">Decisión</label>
-                         <textarea name="decision" class="form-control" rows="3" required placeholder="Decisión del comité...">{{ $committee->decision }}</textarea>
-                     </div>
- 
-                     <div class="col-md-6">
-                         <label for="commitments" class="form-label fw-semibold">Compromisos</label>
-                         <textarea name="commitments" class="form-control" rows="3" placeholder="Compromisos acordados...">{{ $committee->commitments }}</textarea>
-                     </div>
-                 </div>
- 
-                 <div class="row g-3 mb-4">
-                     <div class="col-md-6">
-                         <label for="missing_rating" class="form-label fw-semibold">Calificación Faltante</label>
-                         <textarea name="missing_rating" class="form-control" rows="3" placeholder="Calificaciones o evaluaciones faltantes...">{{ $committee->missing_rating }}</textarea>
-                     </div>
- 
-                     <div class="col-md-6">
-                         <label for="recommendations" class="form-label fw-semibold">Recomendaciones</label>
-                         <textarea name="recommendations" class="form-control" rows="3" placeholder="Recomendaciones del comité...">{{ $committee->recommendations }}</textarea>
-                     </div>
-                 </div>
- 
-                 <div class="mb-4">
-                     <label for="observations" class="form-label fw-semibold">Observaciones</label>
-                     <textarea name="observations" class="form-control" rows="3" placeholder="Observaciones adicionales...">{{ $committee->observations }}</textarea>
-                 </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="decision" class="form-label fw-semibold">Decisión del Comité</label>
+                        <textarea name="decision" class="form-control form-control-lg" id="decision" rows="3" required placeholder="Decisión del comité...">{{ $committee->decision }}</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="commitments" class="form-label fw-semibold">Compromisos Acordados</label>
+                        <textarea name="commitments" class="form-control form-control-lg" id="commitments" rows="3" placeholder="Compromisos acordados...">{{ $committee->commitments }}</textarea>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="missing_rating" class="form-label fw-semibold">Calificación Faltante</label>
+                        <textarea name="missing_rating" class="form-control form-control-lg" id="missing_rating" rows="3" placeholder="Calificaciones o evaluaciones faltantes...">{{ $committee->missing_rating }}</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="recommendations" class="form-label fw-semibold">Recomendaciones del Comité</label>
+                        <textarea name="recommendations" class="form-control form-control-lg" id="recommendations" rows="3" placeholder="Recomendaciones del comité...">{{ $committee->recommendations }}</textarea>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="observations" class="form-label fw-semibold">Observaciones Adicionales</label>
+                    <textarea name="observations" class="form-control form-control-lg" id="observations" rows="3" placeholder="Observaciones adicionales...">{{ $committee->observations }}</textarea>
+                </div>
             </div>
         </div>
 
-                 <div class="d-flex gap-2 mb-4">
-             <button type="submit" class="btn btn-success" onclick="showUpdateAlert()">
-                 <i class="fas fa-save"></i> Actualizar Comité
-             </button>
-             <a href="{{ route('committee.index') }}" class="btn btn-secondary" onclick="showCancelAlert(event)">
-                 <i class="fas fa-arrow-left"></i> Cancelar
-             </a>
-         </div>
+        {{-- Información Adicional --}}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Información Adicional
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="incident_type" class="form-label fw-semibold">Tipo de Novedad</label>
+                        <select name="incident_type" class="form-select form-select-lg" id="incident_type">
+                            <option value="">Seleccione...</option>
+                            <option value="Académica" {{ $committee->incident_type == 'Académica' ? 'selected' : '' }}>Académica</option>
+                            <option value="Disciplinaria" {{ $committee->incident_type == 'Disciplinaria' ? 'selected' : '' }}>Disciplinaria</option>
+                            <option value="Deserción" {{ $committee->incident_type == 'Deserción' ? 'selected' : '' }}>Deserción</option>
+                            <option value="Asistencia" {{ $committee->incident_type == 'Asistencia' ? 'selected' : '' }}>Asistencia</option>
+                            <option value="Comportamiento" {{ $committee->incident_type == 'Comportamiento' ? 'selected' : '' }}>Comportamiento</option>
+                            <option value="Rendimiento" {{ $committee->incident_type == 'Rendimiento' ? 'selected' : '' }}>Rendimiento</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="reception_date" class="form-label fw-semibold">Fecha de Recepción</label>
+                        <input type="date" class="form-control form-control-lg" name="reception_date" id="reception_date" value="{{ $committee->reception_date }}">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label for="incident_description" class="form-label fw-semibold">Descripción del Incidente</label>
+                    <textarea name="incident_description" class="form-control form-control-lg" id="incident_description" rows="3" placeholder="Descripción detallada del incidente...">{{ $committee->incident_description }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-4">
+            <button type="submit" class="btn btn-success btn-lg" onclick="showUpdateAlert()">
+                <i class="fas fa-save"></i> Actualizar Comité
+            </button>
+            <a href="{{ route('committee.show', $committee) }}" class="btn btn-info btn-lg">
+                <i class="fas fa-eye"></i> Ver Comité
+            </a>
+            <a href="{{ route('committee.index') }}" class="btn btn-secondary btn-lg" onclick="showCancelAlert(event)">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+        </div>
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const minutesSelect = document.querySelector('select[name="minutes_id"]');
@@ -199,7 +237,11 @@ function showUpdateAlert() {
         icon: 'info',
         timer: 2000,
         timerProgressBar: true,
-        showConfirmButton: false
+        showConfirmButton: false,
+        background: '#ffffff',
+        customClass: {
+            popup: 'shadow-lg'
+        }
     });
 }
 
@@ -214,7 +256,11 @@ function showCancelAlert(event) {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'Continuar editando'
+        cancelButtonText: 'Continuar editando',
+        background: '#ffffff',
+        customClass: {
+            popup: 'shadow-lg'
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             // Si confirma, navegar a la página de índice
@@ -229,7 +275,12 @@ function showCancelAlert(event) {
         title: '¡Éxito!',
         text: '{{ session('success') }}',
         icon: 'success',
-        confirmButtonText: 'Aceptar'
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#28a745',
+        background: '#ffffff',
+        customClass: {
+            popup: 'shadow-lg'
+        }
     });
 @endif
 
@@ -245,7 +296,12 @@ function showCancelAlert(event) {
             </ul>
         `,
         icon: 'error',
-        confirmButtonText: 'Entendido'
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#d33',
+        background: '#ffffff',
+        customClass: {
+            popup: 'shadow-lg'
+        }
     });
 @endif
 </script>
@@ -274,6 +330,12 @@ function showCancelAlert(event) {
     padding: 0.5rem 1rem;
 }
 
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
 .card {
     border: none;
     border-radius: 10px;
@@ -293,6 +355,12 @@ textarea.form-control {
 .form-text {
     font-size: 0.875rem;
     color: #6c757d;
+}
+
+.form-control-lg, .form-select-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
 }
 </style>
 @endsection

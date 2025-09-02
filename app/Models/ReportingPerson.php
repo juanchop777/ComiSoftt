@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportingPerson extends Model
 {
-    protected $table = 'ReportingPerson';
+    protected $table = 'reporting_persons';
     protected $primaryKey = 'reporting_person_id';
     public $timestamps = false;
 
@@ -18,6 +18,6 @@ class ReportingPerson extends Model
 
     public function minutes()
     {
-        return $this->hasMany(Minutes::class, 'reporting_person_id', 'reporting_person_id');
+        return $this->hasMany(Minute::class, 'reporting_person_id', 'reporting_person_id');
     }
 }

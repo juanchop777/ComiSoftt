@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Minutes extends Model
+class Minute extends Model
 {
-    protected $table = 'Minutes';
+    protected $table = 'minutes';
     protected $primaryKey = 'minutes_id';
     public $timestamps = false;
 

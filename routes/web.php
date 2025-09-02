@@ -11,19 +11,20 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Dashboard route is now handled by DashboardController
 });
 
-use App\Http\Controllers\MinutesController;
+use App\Http\Controllers\MinuteController;
+use App\Http\Controllers\DashboardController;
 
-Route::get('/minutes', [MinutesController::class, 'index'])->name('minutes.index');
-Route::get('/minutes/create', [MinutesController::class, 'create'])->name('minutes.create');
-Route::post('/minutes', [MinutesController::class, 'store'])->name('minutes.store');
-Route::get('/minutes/{actNumber}/edit', [MinutesController::class, 'edit'])->name('minutes.edit');
-Route::put('/minutes/{actNumber}', [MinutesController::class, 'update'])->name('minutes.update');
-Route::delete('/minutes/{actNumber}', [MinutesController::class, 'destroy'])->name('minutes.destroy');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/minutes', [MinuteController::class, 'index'])->name('minutes.index');
+Route::get('/minutes/create', [MinuteController::class, 'create'])->name('minutes.create');
+Route::post('/minutes', [MinuteController::class, 'store'])->name('minutes.store');
+Route::get('/minutes/{actNumber}/edit', [MinuteController::class, 'edit'])->name('minutes.edit');
+Route::put('/minutes/{actNumber}', [MinuteController::class, 'update'])->name('minutes.update');
+Route::delete('/minutes/{actNumber}', [MinuteController::class, 'destroy'])->name('minutes.destroy');
 
 
 //COMITE
@@ -51,4 +52,4 @@ Route::put('/committee/{committee}', [CommitteeController::class, 'update'])->na
 Route::delete('/committee/{committee}', [CommitteeController::class, 'destroy'])->name('committee.destroy');
 
 //ajax
-Route::get('/ajax/minutes/search', [MinutesController::class, 'ajaxSearch'])->name('minutes.ajaxSearch');
+Route::get('/ajax/minutes/search', [MinuteController::class, 'ajaxSearch'])->name('minutes.ajaxSearch');

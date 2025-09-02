@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReportingPerson;
-use App\Models\Minutes;
+use App\Models\Minute;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class MinutesController extends Controller
+class MinuteController extends Controller
 {
     /**
      * Muestra el listado de actas agrupadas por número de acta
@@ -19,7 +19,7 @@ class MinutesController extends Controller
         $incidentType = $request->get('incident_type'); // Academic, Disciplinary, Dropout
 
         // Traer actas con la persona que reporta
-        $query = Minutes::with('reportingPerson');
+        $query = Minute::with('reportingPerson');
 
         // Filtrar por tipo de novedad directamente en la tabla minutes
         if ($incidentType) {
@@ -115,7 +115,7 @@ class MinutesController extends Controller
     public function edit($actNumber)
     {
         try {
-            $minutes = Minutes::with('reportingPerson')
+            $minutes = Minute::with('reportingPerson')
                         ->where('act_number', $actNumber)
                         ->get();
 
@@ -151,7 +151,7 @@ class MinutesController extends Controller
         try {
             DB::beginTransaction();
             
-            $minutes = Minutes::where('act_number', $actNumber)->get();
+            $minutes = Minute::where('act_number', $actNumber)->get();
             if ($minutes->isEmpty()) {
                 throw new \Exception("No se encontró el acta número $actNumber");
             }
@@ -248,7 +248,7 @@ class MinutesController extends Controller
     private function createMinutes($data, $reportingPersonId)
     {
         foreach ($data['trainee_name'] as $index => $name) {
-            Minutes::create([
+            Minute::create([
                 'act_number' => $data['act_number'],
                 'minutes_date' => $data['minutes_date'],
                 'trainee_name' => $name,
@@ -300,11 +300,11 @@ class MinutesController extends Controller
 
             if (!empty($minuteId)) {
                 // Actualizar aprendiz existente
-                Minutes::where('minutes_id', $minuteId)->update($data);
+                Minute::where('minutes_id', $minuteId)->update($data);
             } else {
                 // Crear nuevo aprendiz
                 $data['reception_date'] = now()->format('Y-m-d');
-                Minutes::create($data);
+                Minute::create($data);
             }
         }
     }
@@ -328,7 +328,7 @@ class MinutesController extends Controller
     private function deleteMinuteOrActa($id)
     {
         // Primero intentar encontrar como aprendiz individual
-        $minute = Minutes::find($id);
+        $minute = Minute::find($id);
         
         if ($minute) {
             return $this->deleteApprentice($minute);
@@ -349,7 +349,7 @@ class MinutesController extends Controller
         $minute->delete();
         
         // Verificar si quedan más aprendices en el acta
-        $remainingMinutes = Minutes::where('act_number', $actNumber)->count();
+        $remainingMinutes = Minute::where('act_number', $actNumber)->count();
         
         if ($remainingMinutes === 0) {
             // No quedan más aprendices, eliminar también la persona que reporta
@@ -374,7 +374,7 @@ class MinutesController extends Controller
      */
     private function deleteActa($actNumber)
     {
-        $minutes = Minutes::where('act_number', $actNumber)->get();
+        $minutes = Minute::where('act_number', $actNumber)->get();
         
         if ($minutes->isEmpty()) {
             return [
@@ -386,10 +386,10 @@ class MinutesController extends Controller
         $reportingPersonId = $minutes->first()->reporting_person_id;
         
         // Eliminar todos los registros del acta
-        Minutes::where('act_number', $actNumber)->delete();
+        Minute::where('act_number', $actNumber)->delete();
         
         // Verificar si la persona que reporta tiene más actas
-        $remainingMinutes = Minutes::where('reporting_person_id', $reportingPersonId)->count();
+        $remainingMinutes = Minute::where('reporting_person_id', $reportingPersonId)->count();
         
         // Si no tiene más actas, eliminar también la persona que reporta
         if ($remainingMinutes === 0) {
@@ -407,7 +407,7 @@ class MinutesController extends Controller
 {
     $term = $request->get('term', '');
 
-    $minutes = Minutes::where('act_number', 'like', "%{$term}%")
+    $minutes = Minute::where('act_number', 'like', "%{$term}%")
                       ->orWhere('trainee_name', 'like', "%{$term}%")
                       ->orderBy('minutes_date', 'desc')
                       ->limit(50)

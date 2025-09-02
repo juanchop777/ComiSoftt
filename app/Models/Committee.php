@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Committee extends Model
 {
-    protected $table = 'Committee';
+    protected $table = 'committees';
     protected $primaryKey = 'committee_id';
     public $timestamps = false;
 
-    
     protected $fillable = [
         'session_date',
         'session_time',
@@ -31,15 +30,10 @@ class Committee extends Model
         'attendance_mode'
     ];
 
-    // Habilitar soft deletes si es necesario
-    // use SoftDeletes;
-
-   
-
     // 🔹 Relación: un Comité pertenece a un Acta
     public function minutes()
     {
-        return $this->belongsTo(Minutes::class, 'minutes_id', 'minutes_id');
+        return $this->belongsTo(Minute::class, 'minutes_id', 'minutes_id');
     }
 }
 

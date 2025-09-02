@@ -22,8 +22,8 @@ Si ves "Información no disponible" en la tabla de actas, es porque las migracio
 3. **Verifica que las tablas se crearon:**
    ```bash
    php artisan tinker
-   >>> Schema::hasTable('ReportingPerson')
-   >>> Schema::hasTable('Minutes')
+   >>> Schema::hasTable('reporting_persons')
+   >>> Schema::hasTable('minutes')
    ```
 
 ## Características
