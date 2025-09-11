@@ -31,15 +31,24 @@
             </div>
             <div class="card-body">
                 <div class="row g-3 mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="session_date" class="form-label fw-semibold">Fecha Sesión</label>
                         <input type="date" class="form-control" name="session_date" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="session_time" class="form-label fw-semibold">Hora Sesión</label>
                         <input type="time" class="form-control" name="session_time" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label for="committee_mode" class="form-label fw-semibold">Modo de Comité</label>
+                        <select name="committee_mode" class="form-select" id="committee_mode" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Individual">Individual</option>
+                            <option value="General">General</option>
+                        </select>
+                        <small class="form-text text-muted">Individual: Un formulario por aprendiz | General: Un formulario para todos</small>
+                    </div>
+                    <div class="col-md-3">
                         <label for="access_link" class="form-label fw-semibold">Enlace de Acceso</label>
                         <input type="url" class="form-control" name="access_link" placeholder="https://meet.google.com/...">
                         <small class="form-text text-muted">Opcional - Solo para sesiones virtuales</small>
@@ -49,7 +58,8 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label for="minutes_date" class="form-label fw-semibold">Fecha Acta</label>
-                        <input type="date" class="form-control" name="minutes_date" readonly>
+                        <input type="date" class="form-control" name="minutes_date" id="minutes_date_input">
+                        <small class="form-text text-muted">Se llena automáticamente al seleccionar un acta</small>
                     </div>
                     <div class="col-md-6">
                         <input type="hidden" name="minutes_id" id="minutes_select">
@@ -85,6 +95,17 @@
                             <div id="trainees_list">
                                 <h6 class="text-success"><i class="fas fa-graduation-cap"></i> Aprendices en esta Acta</h6>
                                 <div id="trainees_container"></div>
+                            </div>
+                            
+                            {{-- Contenedor para modo general --}}
+                            <div id="general_mode_container" class="d-none">
+                                <div class="alert alert-info">
+                                    <h6 class="text-primary"><i class="fas fa-users"></i> Modo General</h6>
+                                    <p class="mb-2">Se creará un solo formulario de comité para todos los aprendices de esta acta.</p>
+                                    <button type="button" class="btn btn-primary" id="create_general_committee_btn">
+                                        <i class="fas fa-plus"></i> Crear Comité General
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -150,6 +171,20 @@
             </div>
         </div>
 
+        {{-- Campo específico para descargos en modo general --}}
+        <div class="card mb-4 shadow-sm general-mode-field" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-users"></i> Descargos Generales</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="general_statements" class="form-label fw-semibold">Opiniones de Todos los Aprendices</label>
+                    <textarea name="general_statements" class="form-control" rows="4" placeholder="Escriba aquí las opiniones y descargos de todos los aprendices del comité general..."></textarea>
+                    <small class="form-text text-muted">Este campo es específico para el modo general y permite escribir las opiniones de todos los aprendices en un solo lugar</small>
+                </div>
+            </div>
+        </div>
+
         {{-- Decisiones y Seguimiento --}}
         <div class="card mb-4 shadow-sm committee-form-section" style="display: none;">
             <div class="card-header bg-primary text-white">
@@ -211,14 +246,74 @@ document.addEventListener('DOMContentLoaded', function() {
     // Restaurar datos de sesión si existen
     restoreSessionData();
     
+    // Verificar el estado inicial del modo de comité
+    const initialMode = document.getElementById('committee_mode').value;
+    if (initialMode) {
+        // Disparar el evento de cambio para aplicar el estado inicial
+        document.getElementById('committee_mode').dispatchEvent(new Event('change'));
+    }
+    
+    
     // Event listener para guardar automáticamente los datos del formulario
     const formFields = [
         'session_date', 'session_time', 'access_link',
         'attendance_mode', 'offense_class',
         'fault_type', 'offense_classification',
         'statement', 'decision', 'commitments', 
-        'missing_rating', 'recommendations', 'observations'
+        'missing_rating', 'recommendations', 'observations',
+        'committee_mode', 'general_statements'
     ];
+    
+    // Event listener para el cambio de modo de comité
+    const committeeModeSelect = document.getElementById('committee_mode');
+    if (committeeModeSelect) {
+        committeeModeSelect.addEventListener('change', function() {
+            const selectedMode = this.value;
+            const traineesContainer = document.getElementById('trainees_container');
+            const generalModeContainer = document.getElementById('general_mode_container');
+            const generalModeFields = document.querySelectorAll('.general-mode-field');
+            
+            if (selectedMode === 'General') {
+                // Ocultar contenedor de aprendices individuales
+                if (traineesContainer) {
+                    traineesContainer.style.display = 'none';
+                }
+                // Mostrar contenedor de modo general
+                if (generalModeContainer) {
+                    generalModeContainer.classList.remove('d-none');
+                }
+                // Mostrar campos específicos del modo general
+                generalModeFields.forEach(field => {
+                    field.style.display = 'block';
+                });
+            } else if (selectedMode === 'Individual') {
+                // Mostrar contenedor de aprendices individuales
+                if (traineesContainer) {
+                    traineesContainer.style.display = 'block';
+                }
+                // Ocultar contenedor de modo general
+                if (generalModeContainer) {
+                    generalModeContainer.classList.add('d-none');
+                }
+                // Ocultar campos específicos del modo general
+                generalModeFields.forEach(field => {
+                    field.style.display = 'none';
+                });
+            } else {
+                // Ocultar ambos contenedores si no hay modo seleccionado
+                if (traineesContainer) {
+                    traineesContainer.style.display = 'none';
+                }
+                if (generalModeContainer) {
+                    generalModeContainer.classList.add('d-none');
+                }
+                // Ocultar campos específicos del modo general
+                generalModeFields.forEach(field => {
+                    field.style.display = 'none';
+                });
+            }
+        });
+    }
     
     formFields.forEach(fieldName => {
         const field = document.querySelector(`[name="${fieldName}"]`);
@@ -240,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.sessionData = {};
         }
         
-        const sessionFields = ['session_date', 'session_time', 'access_link'];
+        const sessionFields = ['session_date', 'session_time', 'access_link', 'committee_mode'];
         sessionFields.forEach(fieldName => {
             const field = document.querySelector(`[name="${fieldName}"]`);
             if (field) {
@@ -358,9 +453,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const reportingPerson = firstMinute.reporting_person;
         
         // Actualizar automáticamente la fecha del acta
-        const minutesDateInput = document.querySelector('input[name="minutes_date"]');
+        const minutesDateInput = document.getElementById('minutes_date_input');
         if (minutesDateInput && firstMinute.minutes_date) {
             let dateValue = firstMinute.minutes_date;
+            
             if (typeof dateValue === 'string') {
                 if (dateValue.includes('T')) {
                     const date = new Date(dateValue);
@@ -394,6 +490,9 @@ document.addEventListener('DOMContentLoaded', function() {
         actMinutes.forEach((minute, index) => {
             const hasContract = minute.has_contract ? 'Sí' : 'No';
             const incidentType = minute.incident_type || 'No especificado';
+            
+            // Obtener el modo de comité seleccionado
+            const committeeMode = document.getElementById('committee_mode').value;
             
             traineesHtml += `
                 <div class="card mb-2">
@@ -435,6 +534,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('trainees_container').innerHTML = traineesHtml;
         detailedActInfo.classList.remove('d-none');
+        
+        // Configurar el botón de comité general
+        const generalCommitteeBtn = document.getElementById('create_general_committee_btn');
+        if (generalCommitteeBtn) {
+            generalCommitteeBtn.onclick = function() {
+                showGeneralCommitteeForm(actNumber, actMinutes);
+            };
+        }
     }
     
     document.addEventListener('click', function(e) {
@@ -1071,11 +1178,12 @@ function clearAllFormData() {
         if (result.isConfirmed) {
             // Limpiar todos los campos del formulario
             const allFields = [
-                'session_date', 'session_time', 'access_link',
+                'session_date', 'session_time', 'access_link', 'committee_mode',
                 'attendance_mode', 'offense_class',
                 'fault_type', 'offense_classification',
                 'statement', 'decision', 'commitments', 
-                'missing_rating', 'recommendations', 'observations'
+                'missing_rating', 'recommendations', 'observations',
+                'general_statements'
             ];
             
             allFields.forEach(fieldName => {
@@ -1129,13 +1237,78 @@ function editTraineeInfo(traineeIndex, traineeName, actNumber) {
 // Función para restaurar los datos de sesión globales
 function restoreSessionData() {
     if (window.sessionData) {
-        const sessionFields = ['session_date', 'session_time', 'access_link'];
+        const sessionFields = ['session_date', 'session_time', 'access_link', 'committee_mode'];
         sessionFields.forEach(fieldName => {
             const field = document.querySelector(`[name="${fieldName}"]`);
             if (field) {
                 field.value = window.sessionData[fieldName];
             }
         });
+    }
+}
+
+// Función para mostrar el formulario de comité general
+function showGeneralCommitteeForm(actNumber, actMinutes) {
+    // Mostrar todas las secciones del formulario
+    const formSections = document.querySelectorAll('.committee-form-section');
+    formSections.forEach(section => {
+        section.style.display = 'block';
+    });
+    
+    // Configurar información para modo general
+    window.selectedTraineeInfo = {
+        index: 'general',
+        name: 'Comité General',
+        actNumber: actNumber,
+        mode: 'General',
+        allTrainees: actMinutes
+    };
+    
+    // Limpiar campos individuales pero mantener datos de sesión
+    const individualFields = [
+        'attendance_mode', 'offense_class',
+        'fault_type', 'offense_classification',
+        'statement', 'decision', 'commitments', 
+        'missing_rating', 'recommendations', 'observations'
+    ];
+    
+    individualFields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    // Mostrar campos específicos del modo general
+    const generalModeFields = document.querySelectorAll('.general-mode-field');
+    generalModeFields.forEach(field => {
+        field.style.display = 'block';
+    });
+    
+    // Configurar el campo de minutes_id para el primer acta
+    const minutesSelect = document.getElementById('minutes_select');
+    if (minutesSelect && actMinutes.length > 0) {
+        minutesSelect.value = actMinutes[0].minutes_id;
+    }
+    
+    // Actualizar el indicador de aprendiz seleccionado
+    const selectedTraineeSpan = document.getElementById('selected_trainee_name');
+    if (selectedTraineeSpan) {
+        selectedTraineeSpan.textContent = `Comité General - ${actMinutes.length} aprendices`;
+    }
+    
+    // Mostrar alerta informativa
+    Swal.fire({
+        title: 'Comité General',
+        text: `Formulario habilitado para ${actMinutes.length} aprendices del acta #${actNumber}`,
+        icon: 'info',
+        confirmButtonText: 'Entendido'
+    });
+    
+    // Hacer scroll hacia el formulario
+    const firstFormSection = document.querySelector('.committee-form-section');
+    if (firstFormSection) {
+        firstFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 </script>

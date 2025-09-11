@@ -27,7 +27,9 @@ class Committee extends Model
         'missing_rating',
         'recommendations',
         'observations',
-        'attendance_mode'
+        'attendance_mode',
+        'committee_mode',
+        'general_statements'
     ];
 
     // 🔹 Relación: un Comité pertenece a un Acta

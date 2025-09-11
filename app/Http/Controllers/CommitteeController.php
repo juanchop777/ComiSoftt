@@ -57,11 +57,15 @@ class CommitteeController extends Controller
 
     public function store(Request $request)
 {
+    // Log para debuggear
+    Log::info('Datos recibidos en store:', $request->all());
+    
     // Validación básica para todos los tipos de comité
     $baseValidation = [
         'session_date' => 'required|date',
         'session_time' => 'required',
         'minutes_date' => 'required|date',
+        'committee_mode' => 'required|in:Individual,General',
         'offense_class' => 'required|in:Leve,Grave,Muy Grave',
         'fault_type' => 'required|string',
         'statement' => 'required|string',
@@ -72,15 +76,15 @@ class CommitteeController extends Controller
         'missing_rating' => 'nullable|string',
         'recommendations' => 'nullable|string',
         'observations' => 'nullable|string',
+        'general_statements' => 'nullable|string',
     ];
     
     // Verificar si es un comité general o individual
-    if ($request->has('committee_mode') && $request->committee_mode === 'general') {
-        // Para comité general, validamos la modalidad de asistencia general
+    if ($request->committee_mode === 'General') {
+        // Para comité general, validamos minutes_id (del primer acta) y modalidad de asistencia
         $validationRules = array_merge($baseValidation, [
-            'attendance_mode_general' => 'required|in:Presencial,Virtual,No asistió',
-            'act_numbers' => 'required|array', // Array de números de acta para comité general
-            'act_numbers.*' => 'required|string',
+            'minutes_id' => 'required|exists:minutes,minutes_id',
+            'attendance_mode' => 'required|in:Presencial,Virtual,No asistió',
         ]);
     } else {
         // Para comité individual, validamos minutes_id y modalidad de asistencia individual
@@ -90,50 +94,66 @@ class CommitteeController extends Controller
         ]);
     }
     
-    $request->validate($validationRules);
+    try {
+        $request->validate($validationRules);
+        Log::info('Validaciones pasaron correctamente');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Error de validación:', $e->errors());
+        throw $e;
+    }
     
     // Procesar según el tipo de comité
-    if ($request->has('committee_mode') && $request->committee_mode === 'general') {
-        // Comité general - crear un comité para cada acta seleccionada
-        $actNumbers = $request->act_numbers;
+    if ($request->committee_mode === 'General') {
+        // Comité general - crear un comité para todos los aprendices del mismo acta
+        $firstMinute = Minute::findOrFail($request->minutes_id);
+        $actNumber = $firstMinute->act_number;
+        
+        // Buscar todas las actas con el mismo número
+        $minutes = Minute::where('act_number', $actNumber)->get();
         $createdCount = 0;
         
-        foreach ($actNumbers as $actNumber) {
-            // Buscar todas las actas con ese número
-            $minutes = Minute::where('act_number', $actNumber)->get();
+        foreach ($minutes as $minute) {
+            $committeeData = [
+                'minutes_id' => $minute->minutes_id,
+                'act_number' => $minute->act_number,
+                'session_date' => $request->session_date,
+                'session_time' => $request->session_time,
+                'minutes_date' => $request->minutes_date,
+                'trainee_name' => $minute->trainee_name,
+                'attendance_mode' => $request->attendance_mode,
+                'committee_mode' => $request->committee_mode,
+                'offense_class' => $request->offense_class,
+                'fault_type' => $request->fault_type,
+                'statement' => $request->statement,
+                'decision' => $request->decision,
+                'commitments' => $request->commitments,
+                'access_link' => $request->access_link,
+                'offense_classification' => $request->offense_classification,
+                'missing_rating' => $request->missing_rating,
+                'recommendations' => $request->recommendations,
+                'observations' => $request->observations,
+                'general_statements' => $request->general_statements,
+            ];
             
-            foreach ($minutes as $minute) {
-                Committee::create([
-                    'minutes_id' => $minute->minutes_id,
-                    'act_number' => $minute->act_number,
-                    'session_date' => $request->session_date,
-                    'session_time' => $request->session_time,
-                    'minutes_date' => $request->minutes_date,
-                    'trainee_name' => $minute->trainee_name,
-                    'attendance_mode' => $request->attendance_mode_general, // Usar la modalidad general
-                    'offense_class' => $request->offense_class,
-                    'fault_type' => $request->fault_type,
-                    'statement' => $request->statement,
-                    'decision' => $request->decision,
-                    'commitments' => $request->commitments,
-                    'access_link' => $request->access_link,
-                    'offense_classification' => $request->offense_classification,
-                    'missing_rating' => $request->missing_rating,
-                    'recommendations' => $request->recommendations,
-                    'observations' => $request->observations,
-                ]);
-                
+            Log::info('Creando comité general con datos:', $committeeData);
+            
+            try {
+                Committee::create($committeeData);
                 $createdCount++;
+                Log::info('Comité creado exitosamente para aprendiz: ' . $minute->trainee_name);
+            } catch (\Exception $e) {
+                Log::error('Error al crear comité para aprendiz ' . $minute->trainee_name . ': ' . $e->getMessage());
+                throw $e;
             }
         }
         
         return redirect()->route('committee.index')
-                ->with('success', "Se han creado $createdCount comités correctamente.");
+                ->with('success', "Se ha creado un comité general para $createdCount aprendices correctamente.");
     } else {
         // Comité individual - crear un solo comité
         $minute = Minute::findOrFail($request->minutes_id);
         
-        Committee::create([
+        $committeeData = [
             'minutes_id' => $minute->minutes_id,
             'act_number' => $minute->act_number,
             'session_date' => $request->session_date,
@@ -141,6 +161,7 @@ class CommitteeController extends Controller
             'minutes_date' => $request->minutes_date,
             'trainee_name' => $minute->trainee_name,
             'attendance_mode' => $request->attendance_mode,
+            'committee_mode' => $request->committee_mode,
             'offense_class' => $request->offense_class,
             'fault_type' => $request->fault_type,
             'statement' => $request->statement,
@@ -151,10 +172,21 @@ class CommitteeController extends Controller
             'missing_rating' => $request->missing_rating,
             'recommendations' => $request->recommendations,
             'observations' => $request->observations,
-        ]);
+            'general_statements' => $request->general_statements,
+        ];
+        
+        Log::info('Creando comité individual con datos:', $committeeData);
+        
+        try {
+            Committee::create($committeeData);
+            Log::info('Comité individual creado exitosamente para aprendiz: ' . $minute->trainee_name);
+        } catch (\Exception $e) {
+            Log::error('Error al crear comité individual para aprendiz ' . $minute->trainee_name . ': ' . $e->getMessage());
+            throw $e;
+        }
         
         return redirect()->route('committee.index')
-                ->with('success', 'Comité creado correctamente.');
+                ->with('success', 'Comité individual creado correctamente.');
     }
 }
 
@@ -182,6 +214,7 @@ class CommitteeController extends Controller
             'session_time' => 'required',
             'minutes_date' => 'required|date',
             'attendance_mode' => 'required|in:Presencial,Virtual,No asistió',
+            'committee_mode' => 'required|in:Individual,General',
             'offense_class' => 'required|in:Leve,Grave,Muy Grave',
             'fault_type' => 'required|string',
             'statement' => 'required|string',
@@ -192,6 +225,7 @@ class CommitteeController extends Controller
             'missing_rating' => 'nullable|string',
             'recommendations' => 'nullable|string',
             'observations' => 'nullable|string',
+            'general_statements' => 'nullable|string',
         ]);
 
         $minute = Minute::findOrFail($request->minutes_id);
@@ -204,6 +238,7 @@ class CommitteeController extends Controller
             'minutes_date' => $request->minutes_date,
             'trainee_name' => $minute->trainee_name,
             'attendance_mode' => $request->attendance_mode,
+            'committee_mode' => $request->committee_mode,
             'offense_class' => $request->offense_class,
             'fault_type' => $request->fault_type,
             'statement' => $request->statement,
@@ -214,6 +249,7 @@ class CommitteeController extends Controller
             'missing_rating' => $request->missing_rating,
             'recommendations' => $request->recommendations,
             'observations' => $request->observations,
+            'general_statements' => $request->general_statements,
         ]);
 
         return redirect()->route('committee.index')->with('success', 'Comité actualizado correctamente.');
