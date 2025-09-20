@@ -29,7 +29,8 @@ class Committee extends Model
         'observations',
         'attendance_mode',
         'committee_mode',
-        'general_statements'
+        'general_statements',
+        'individual_statements'
     ];
 
     // 🔹 Relación: un Comité pertenece a un Acta

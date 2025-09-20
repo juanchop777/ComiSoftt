@@ -77,6 +77,7 @@ class CommitteeController extends Controller
         'recommendations' => 'nullable|string',
         'observations' => 'nullable|string',
         'general_statements' => 'nullable|string',
+        'individual_statements' => 'nullable|array',
     ];
     
     // Verificar si es un comité general o individual
@@ -113,6 +114,12 @@ class CommitteeController extends Controller
         $createdCount = 0;
         
         foreach ($minutes as $minute) {
+            // Obtener el descargo individual para este aprendiz si existe
+            $individualStatement = null;
+            if ($request->has('individual_statements') && is_array($request->individual_statements)) {
+                $individualStatement = $request->individual_statements[$minute->minutes_id] ?? null;
+            }
+            
             $committeeData = [
                 'minutes_id' => $minute->minutes_id,
                 'act_number' => $minute->act_number,
@@ -133,6 +140,7 @@ class CommitteeController extends Controller
                 'recommendations' => $request->recommendations,
                 'observations' => $request->observations,
                 'general_statements' => $request->general_statements,
+                'individual_statements' => $individualStatement,
             ];
             
             Log::info('Creando comité general con datos:', $committeeData);

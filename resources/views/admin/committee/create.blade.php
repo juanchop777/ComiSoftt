@@ -219,7 +219,7 @@
         </div>
 
         <div class="d-flex gap-2 mb-4 committee-form-section" style="display: none;">
-            <button type="submit" class="btn btn-success" onclick="showSaveAlert()">
+            <button type="submit" class="btn btn-success" onclick="prepareFormSubmission()">
                 <i class="fas fa-save"></i> Guardar Comité
             </button>
             <a href="{{ route('committee.index') }}" class="btn btn-secondary" onclick="showCancelAlert(event)">
@@ -499,12 +499,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h6 class="mb-0">Aprendiz #${index + 1}</h6>
                                 <div class="d-flex gap-1">
-                                                 <button type="button" class="btn btn-sm btn-light" onclick="showCommitteeForm(${index}, '${minute.trainee_name}', '${actNumber}')">
-                             <i class="fas fa-edit"></i> Crear Comité
-                         </button>
+                                    ${committeeMode === 'General' ? 
+                                        `<button type="button" class="btn btn-sm btn-warning" onclick="showIndividualStatementForm(${index}, '${minute.trainee_name}', '${actNumber}')">
+                                            <i class="fas fa-comment"></i> Descargo
+                                        </button>` : 
+                                        `<button type="button" class="btn btn-sm btn-light" onclick="showCommitteeForm(${index}, '${minute.trainee_name}', '${actNumber}')">
+                                            <i class="fas fa-edit"></i> Crear Comité
+                                        </button>`
+                                    }
                                     <button type="button" class="btn btn-sm btn-info" onclick="viewTraineeInfo(${index}, '${minute.trainee_name}', '${actNumber}')">
                                         <i class="fas fa-eye"></i>
-                         </button>
+                                    </button>
                                 </div>
                     </div>
                     <div class="card-body">
@@ -527,6 +532,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="mt-2">
                             <strong>Descripción:</strong> ${minute.incident_description || 'No especificado'}
                         </div>
+                        ${committeeMode === 'General' ? 
+                            `<div class="mt-3 individual-statement-container" id="individual-statement-${index}" style="display: none;">
+                                <div class="alert alert-warning">
+                                    <h6 class="text-warning mb-2"><i class="fas fa-comment"></i> Descargo de ${minute.trainee_name}</h6>
+                                    <textarea class="form-control individual-statement-textarea" 
+                                              name="individual_statements[${minute.minutes_id}]" 
+                                              rows="3" 
+                                              placeholder="Registre aquí el descargo de este aprendiz..."></textarea>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-success" onclick="saveIndividualStatement(${index}, '${minute.trainee_name}')">
+                                            <i class="fas fa-save"></i> Guardar Descargo
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="hideIndividualStatementForm(${index})">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>` : ''
+                        }
                     </div>
                 </div>
             `;
@@ -870,7 +894,9 @@ function showSaveAlert() {
         icon: 'info',
         timer: 2000,
         timerProgressBar: true,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
 }
 
@@ -1311,6 +1337,135 @@ function showGeneralCommitteeForm(actNumber, actMinutes) {
         firstFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
+
+// Funciones para manejar descargos individuales en modo general
+function showIndividualStatementForm(traineeIndex, traineeName, actNumber) {
+    // Ocultar cualquier otro formulario de descargo que esté abierto
+    const allContainers = document.querySelectorAll('.individual-statement-container');
+    allContainers.forEach(container => {
+        if (container.id !== `individual-statement-${traineeIndex}`) {
+            container.style.display = 'none';
+        }
+    });
+    
+    // Mostrar el formulario de descargo para este aprendiz
+    const container = document.getElementById(`individual-statement-${traineeIndex}`);
+    if (container) {
+        container.style.display = 'block';
+        
+        // Hacer scroll hacia el formulario
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Enfocar el textarea
+        const textarea = container.querySelector('.individual-statement-textarea');
+        if (textarea) {
+            textarea.focus();
+        }
+        
+        // Mostrar mensaje informativo
+        Swal.fire({
+            title: 'Registro de Descargo',
+            text: `Ahora puede registrar el descargo de: ${traineeName}`,
+            icon: 'info',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+        });
+    }
+}
+
+function hideIndividualStatementForm(traineeIndex) {
+    const container = document.getElementById(`individual-statement-${traineeIndex}`);
+    if (container) {
+        container.style.display = 'none';
+        
+        // Limpiar el textarea
+        const textarea = container.querySelector('.individual-statement-textarea');
+        if (textarea) {
+            textarea.value = '';
+        }
+    }
+}
+
+function saveIndividualStatement(traineeIndex, traineeName) {
+    const container = document.getElementById(`individual-statement-${traineeIndex}`);
+    if (!container) {
+        Swal.fire({
+            title: 'Error',
+            text: 'No se encontró el formulario de descargo',
+            icon: 'error',
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+    
+    const textarea = container.querySelector('.individual-statement-textarea');
+    const statement = textarea.value.trim();
+    
+    if (!statement) {
+        Swal.fire({
+            title: 'Descargo Vacío',
+            text: 'Por favor ingrese el descargo del aprendiz antes de guardar',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+    
+    // Guardar el descargo en el almacenamiento local
+    if (!window.individualStatements) {
+        window.individualStatements = {};
+    }
+    
+    const minutesId = textarea.name.match(/\[(\d+)\]/)[1];
+    window.individualStatements[minutesId] = statement;
+    
+    // Mostrar mensaje de éxito
+    Swal.fire({
+        title: 'Descargo Guardado',
+        text: `El descargo de ${traineeName} ha sido registrado correctamente`,
+        icon: 'success',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+    
+    // Ocultar el formulario después de guardar
+    setTimeout(() => {
+        hideIndividualStatementForm(traineeIndex);
+    }, 1000);
+}
+
+// Función para preparar el envío del formulario con descargos individuales
+function prepareFormSubmission(event) {
+    // Si estamos en modo general, agregar los descargos individuales al formulario
+    const committeeMode = document.getElementById('committee_mode').value;
+    
+    if (committeeMode === 'General' && window.individualStatements) {
+        // Crear campos hidden para cada descargo individual
+        Object.keys(window.individualStatements).forEach(minutesId => {
+            const statement = window.individualStatements[minutesId];
+            
+            // Verificar si ya existe un campo hidden para este minutes_id
+            let hiddenField = document.querySelector(`input[name="individual_statements[${minutesId}]"]`);
+            
+            if (!hiddenField) {
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = `individual_statements[${minutesId}]`;
+                document.querySelector('form').appendChild(hiddenField);
+            }
+            
+            hiddenField.value = statement;
+        });
+    }
+    
+    // Mostrar alerta de guardado
+    showSaveAlert();
+    
+    // Permitir que el formulario se envíe
+    return true;
+}
 </script>
 
 <style>
@@ -1409,6 +1564,25 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
 #trainees_container .d-flex.gap-1 {
     gap: 0.25rem !important;
+}
+
+/* Estilos para los contenedores de descargo individual */
+.individual-statement-container {
+    transition: all 0.3s ease-in-out;
+}
+
+.individual-statement-container .alert {
+    border-radius: 8px;
+    border: 1px solid #ffc107;
+}
+
+.individual-statement-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.individual-statement-container .btn {
+    margin-right: 5px;
 }
 </style>
 @endsection
