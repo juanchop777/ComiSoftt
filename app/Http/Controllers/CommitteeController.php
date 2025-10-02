@@ -68,7 +68,6 @@ class CommitteeController extends Controller
         'committee_mode' => 'required|in:Individual,General',
         'offense_class' => 'required|in:Leve,Grave,Muy Grave',
         'fault_type' => 'required|string',
-        'statement' => 'required|string',
         'decision' => 'required|string',
         'commitments' => 'nullable|string',
         'access_link' => 'nullable|url',
@@ -79,6 +78,14 @@ class CommitteeController extends Controller
         'general_statements' => 'nullable|string',
         'individual_statements' => 'nullable|array',
     ];
+    
+    // Para comité individual, statement es requerido
+    if ($request->committee_mode === 'Individual') {
+        $baseValidation['statement'] = 'required|string';
+    } else {
+        // Para comité general, statement es opcional
+        $baseValidation['statement'] = 'nullable|string';
+    }
     
     // Verificar si es un comité general o individual
     if ($request->committee_mode === 'General') {

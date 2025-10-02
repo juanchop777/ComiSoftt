@@ -48,11 +48,17 @@
                         </select>
                         <small class="form-text text-muted">Individual: Un formulario por aprendiz | General: Un formulario para todos</small>
                     </div>
-                    <div class="col-md-3">
-                        <label for="access_link" class="form-label fw-semibold">Enlace de Acceso</label>
-                        <input type="url" class="form-control" name="access_link" placeholder="https://meet.google.com/...">
-                        <small class="form-text text-muted">Opcional - Solo para sesiones virtuales</small>
-                    </div>
+                    <div class="form-group">
+    <label for="enlace">Enlace de Acceso</label>
+    <input 
+        type="text" 
+        name="enlace" 
+        id="enlace" 
+        class="form-control" 
+        value="{{ old('enlace', $comite->enlace ?? '') }}" 
+        placeholder="https://meet.google.com/ejemplo (Opcional - Solo para sesiones virtuales)">
+</div>
+
                 </div>
 
                 <div class="row g-3 mb-4">
