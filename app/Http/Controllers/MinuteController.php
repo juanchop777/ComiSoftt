@@ -18,16 +18,26 @@ class MinuteController extends Controller
     {
         $incidentType = $request->get('incident_type'); // Academic, Disciplinary, Dropout
 
-        // Traer actas con la persona que reporta
-        $query = Minute::with('reportingPerson');
+        // Obtener números de acta únicos con filtros
+        $query = Minute::select('act_number')
+            ->selectRaw('MIN(minutes_date) as min_date')
+            ->groupBy('act_number');
 
-        // Filtrar por tipo de novedad directamente en la tabla minutes
+        // Filtrar por tipo de novedad
         if ($incidentType) {
             $query->where('incident_type', $incidentType);
         }
 
-        // Ordenar de más reciente a más antiguo
-        $minutesRaw = $query->orderBy('minutes_date', 'desc')->get();
+        // Ordenar por fecha y paginar los números de acta únicos
+        $actNumbers = $query->orderBy('min_date', 'desc')->paginate(10);
+
+        // Obtener todos los minutes para los números de acta de la página actual
+        $actNumbersList = $actNumbers->pluck('act_number')->toArray();
+        
+        $minutesRaw = Minute::with('reportingPerson')
+            ->whereIn('act_number', $actNumbersList)
+            ->orderBy('minutes_date', 'desc')
+            ->get();
 
         // Agrupar por número de acta
         $minutes = [];
@@ -51,7 +61,7 @@ class MinuteController extends Controller
             $minutes[$actNumber]['raw_data'][] = $minute;
         }
 
-        return view('admin.minutes.index', compact('minutes'));
+        return view('admin.minutes.index', compact('minutes', 'minutesRaw', 'actNumbers'));
     }
 
     /**
@@ -425,5 +435,40 @@ class MinuteController extends Controller
 
     return response()->json($results);
 }
+
+    /**
+     * Genera un PDF del acta
+     */
+    public function pdf($actNumber)
+    {
+        try {
+            $minutes = Minute::with('reportingPerson')
+                        ->where('act_number', $actNumber)
+                        ->get();
+
+            if ($minutes->isEmpty()) {
+                abort(404, 'Acta no encontrada');
+            }
+
+            $firstMinute = $minutes->first();
+            $reportingPerson = $firstMinute->reportingPerson;
+            $minutesDate = $firstMinute->minutes_date;
+
+            $pdf = \PDF::loadView('admin.minutes.pdf', [
+                'actNumber' => $actNumber,
+                'minutes' => $minutes,
+                'reportingPerson' => $reportingPerson,
+                'minutesDate' => $minutesDate
+            ]);
+
+            $filename = "Acta_{$actNumber}_" . now()->format('Y-m-d_H-i-s') . '.pdf';
+            
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            Log::error('Error al generar PDF del acta: ' . $e->getMessage());
+            abort(500, 'Error al generar el PDF');
+        }
+    }
 
 }

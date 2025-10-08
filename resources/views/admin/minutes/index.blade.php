@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container p-4">
+<div class="container mx-auto px-4 py-6">
 
     {{-- Alertas --}}
     @if(session('success'))
@@ -13,7 +13,7 @@
                     title: '¡Éxito!',
                     text: '{{ session("success") }}',
                     confirmButtonText: 'Aceptar',
-                    confirmButtonColor: '#28a745',
+                    confirmButtonColor: '#10b981',
                     background: '#ffffff',
                     timer: 3000,
                     timerProgressBar: true,
@@ -33,7 +33,7 @@
                     title: 'Error',
                     text: '{{ session("error") }}',
                     confirmButtonText: 'Aceptar',
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: '#ef4444',
                     background: '#ffffff',
                     showClass: { popup: 'animate__animated animate__fadeInDown' },
                     hideClass: { popup: 'animate__animated animate__fadeOutUp' }
@@ -42,185 +42,223 @@
         </script>
     @endif
 
-    {{-- Botón para crear nueva acta --}}
-    <div class="text-center mb-4">
-        <a href="{{ route('minutes.create') }}" class="btn btn-primary btn-lg">
-            <i class="fas fa-plus"></i> Crear Nueva Acta
+    {{-- Header con botón de crear --}}
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <i class="fas fa-file-alt text-blue-600 mr-3"></i>
+                @if(request()->has('incident_type') && request()->has('reporting_person'))
+                    Actas de {{ 
+                        request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
+                        (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
+                        'Casos de Deserción') 
+                    }} reportadas por "{{ request('reporting_person') }}"
+                @elseif(request()->has('incident_type'))
+                    Actas de {{ 
+                        request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
+                        (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
+                        'Casos de Deserción') 
+                    }}
+                @elseif(request()->has('reporting_person'))
+                    Actas reportadas por "{{ request('reporting_person') }}"
+                @else
+                    Todas las Actas Registradas
+                @endif
+            </h2>
+        </div>
+        <a href="{{ route('minutes.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus mr-2"></i> Crear Nueva Acta
         </a>
     </div>
 
-    {{-- Título dinámico y filtros --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>
-            <i class="fas fa-file-alt me-2"></i>
-            @if(request()->has('incident_type') && request()->has('reporting_person'))
-                Actas de {{ 
-                    request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
-                    (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
-                    'Casos de Deserción') 
-                }} reportadas por "{{ request('reporting_person') }}"
-            @elseif(request()->has('incident_type'))
-                Actas de {{ 
-                    request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
-                    (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
-                    'Casos de Deserción') 
-                }}
-            @elseif(request()->has('reporting_person'))
-                Actas reportadas por "{{ request('reporting_person') }}"
-            @else
-                Todas las Actas Registradas
-            @endif
-        </h3>
-        
-        <div class="d-flex gap-2 mb-3" style="max-width: 600px;">
+    {{-- Filtros --}}
+    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6">
+        <div class="flex flex-col lg:flex-row gap-4">
             {{-- Filtro por tipo --}}
-            <form method="GET" action="{{ route('minutes.index') }}" class="d-flex flex-grow-1">
-                <select name="incident_type" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="">Filtrar por tipo</option>
-                    <option value="Academic" {{ request('incident_type') == 'Academic' ? 'selected' : '' }}>Académica</option>
-                    <option value="Disciplinary" {{ request('incident_type') == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
-                    <option value="Dropout" {{ request('incident_type') == 'Dropout' ? 'selected' : '' }}>Deserción</option>
-                </select>
-                @if(request()->has('incident_type'))
-                <a href="{{ route('minutes.index', request()->only('reporting_person')) }}" class="btn btn-outline-secondary btn-sm ms-1" title="Limpiar filtro">
-                    <i class="fas fa-times"></i>
-                </a>
-                @endif
-            </form>
+            <div class="flex-1">
+                <form method="GET" action="{{ route('minutes.index') }}" class="flex gap-2">
+                    <select name="incident_type" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                        <option value="">Filtrar por tipo</option>
+                        <option value="Academic" {{ request('incident_type') == 'Academic' ? 'selected' : '' }}>Académica</option>
+                        <option value="Disciplinary" {{ request('incident_type') == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
+                        <option value="Dropout" {{ request('incident_type') == 'Dropout' ? 'selected' : '' }}>Deserción</option>
+                    </select>
+                    @if(request()->has('incident_type'))
+                    <a href="{{ route('minutes.index', request()->only('reporting_person')) }}" class="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors" title="Limpiar filtro">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    @endif
+                </form>
+            </div>
 
             {{-- Filtro por nombre --}}
-            <form method="GET" action="{{ route('minutes.index') }}" class="d-flex flex-grow-1">
-                @if(request()->has('incident_type'))
-                <input type="hidden" name="incident_type" value="{{ request('incident_type') }}">
-                @endif
-                <input type="text" name="reporting_person" class="form-control form-control-sm" placeholder="Buscar por nombre" value="{{ request('reporting_person') }}">
-                <button class="btn btn-outline-primary btn-sm ms-1" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-                @if(request()->has('reporting_person'))
-                <a href="{{ route('minutes.index', request()->only('incident_type')) }}" class="btn btn-outline-secondary btn-sm ms-1" title="Limpiar búsqueda">
-                    <i class="fas fa-times"></i>
-                </a>
-                @endif
-            </form>
+            <div class="flex-1">
+                <form method="GET" action="{{ route('minutes.index') }}" class="flex gap-2">
+                    @if(request()->has('incident_type'))
+                    <input type="hidden" name="incident_type" value="{{ request('incident_type') }}">
+                    @endif
+                    <input type="text" name="reporting_person" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Buscar por nombre" value="{{ request('reporting_person') }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    @if(request()->has('reporting_person'))
+                    <a href="{{ route('minutes.index', request()->only('incident_type')) }}" class="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    @endif
+                </form>
+            </div>
         </div>
     </div>
 
     {{-- Tabla de Actas --}}
-    <div class="card">
-        <div class="card-body">
-            @if(!empty($minutes) && count($minutes) > 0)
-            <div class="table-responsive">
-                <table class="table table-striped table-hover text-center">
-                    <thead class="table-dark">
-                        <tr>
-                            <th class="text-center">Número de Acta</th>
-                            <th class="text-center">Fecha de Acta</th>
-                            <th class="text-center">Persona que Reporta</th>
-                            <th class="text-center">Tipos de Novedad</th>
-                            <th class="text-center">Cantidad de Aprendices</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($minutes as $actNumber => $actaGroup)
-                            @php
-                                $reportingPerson = $actaGroup['reportingPerson'] ?? null;
-                                $incidentTypes = $actaGroup['incident_types'] ?? [];
-                            @endphp
-                            @if(!request()->has('reporting_person') || 
-                                (request()->has('reporting_person') && 
-                                $reportingPerson && 
-                                stripos($reportingPerson->full_name, request('reporting_person')) !== false))
-                            <tr>
-                                <td class="text-center"><strong>{{ $actNumber }}</strong></td>
-                                <td class="text-center">{{ $actaGroup['minutes_date'] ? \Carbon\Carbon::parse($actaGroup['minutes_date'])->format('d/m/Y') : 'No especificada' }}</td>
-                                <td class="text-center">{{ $reportingPerson ? $reportingPerson->full_name : 'Información no disponible' }}</td>
-                                <td class="text-center">
+    <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        @if(!empty($minutes) && count($minutes) > 0)
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número de Acta</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Acta</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Persona que Reporta</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipos de Novedad</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad de Aprendices</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($minutes as $actNumber => $actaGroup)
+                        @php
+                            $reportingPerson = $actaGroup['reportingPerson'] ?? null;
+                            $incidentTypes = $actaGroup['incident_types'] ?? [];
+                        @endphp
+                        @if(!request()->has('reporting_person') || 
+                            (request()->has('reporting_person') && 
+                            $reportingPerson && 
+                            stripos($reportingPerson->full_name, request('reporting_person')) !== false))
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-semibold text-gray-900">#{{ $actNumber }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $actaGroup['minutes_date'] ? \Carbon\Carbon::parse($actaGroup['minutes_date'])->format('d/m/Y') : 'No especificada' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $reportingPerson ? $reportingPerson->full_name : 'Información no disponible' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-wrap gap-1">
                                     @foreach($incidentTypes as $type)
                                         @php
                                             $badgeClass = [
-                                                'Academic' => 'bg-primary',
-                                                'Disciplinary' => 'bg-warning',
-                                                'Dropout' => 'bg-danger'
-                                            ][$type] ?? 'bg-secondary';
+                                                'Academic' => 'badge badge-primary',
+                                                'Disciplinary' => 'badge badge-warning',
+                                                'Dropout' => 'badge badge-danger'
+                                            ][$type] ?? 'badge badge-muted';
                                         @endphp
-                                        <span class="badge {{ $badgeClass }} me-1">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeClass }}">
                                             {{ $type === 'Academic' ? 'Académica' : 
                                                ($type === 'Disciplinary' ? 'Disciplinaria' : 
                                                ($type === 'Dropout' ? 'Deserción' : $type)) }}
                                         </span>
                                     @endforeach
-                                </td>
-                                <td class="text-center">{{ $actaGroup['count'] }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-sm btn-info" 
-                                                onclick="showDetails('{{ $actNumber }}', {{ json_encode($actaGroup['raw_data']) }})"
-                                                title="Ver Detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <a href="{{ route('minutes.edit', $actNumber) }}" 
-                                           class="btn btn-sm btn-warning" 
-                                           title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" 
-                                                onclick="deleteActa('{{ $actNumber }}', '{{ $reportingPerson ? $reportingPerson->full_name : 'Sin nombre' }}')"
-                                                title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 font-medium">{{ $actaGroup['count'] }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex gap-2">
+                                    <button type="button" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" 
+                                            onclick="showDetails('{{ $actNumber }}', {{ json_encode($actaGroup['raw_data']) }})"
+                                            title="Ver Detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <a href="{{ route('minutes.edit', $actNumber) }}" 
+                                       class="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors" 
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors" 
+                                            onclick="deleteActa('{{ $actNumber }}', '{{ $reportingPerson ? $reportingPerson->full_name : 'Sin nombre' }}')"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="text-center py-12">
+            <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-file-alt text-4xl text-gray-400"></i>
             </div>
-            @else
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle"></i> 
-                    @if(request()->has('incident_type') && request()->has('reporting_person'))
-                        No hay actas registradas de tipo "{{ 
-                            request('incident_type') == 'Academic' ? 'Académica' : 
-                            (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
-                            'Deserción') 
-                        }}" reportadas por "{{ request('reporting_person') }}".
-                    @elseif(request()->has('incident_type'))
-                        No hay actas registradas de tipo "{{ 
-                            request('incident_type') == 'Academic' ? 'Académica' : 
-                            (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
-                            'Deserción') 
-                        }}".
-                    @elseif(request()->has('reporting_person'))
-                        No hay actas registradas reportadas por "{{ request('reporting_person') }}".
-                    @else
-                        No hay actas registradas aún.
-                    @endif
-                    <br>Utiliza el botón "Crear Nueva Acta" para crear la primera acta.
-                </div>
-            @endif
+            <h3 class="text-lg font-medium text-gray-900 mb-2">
+                @if(request()->has('incident_type') && request()->has('reporting_person'))
+                    No hay actas registradas de tipo "{{ 
+                        request('incident_type') == 'Academic' ? 'Académica' : 
+                        (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
+                        'Deserción') 
+                    }}" reportadas por "{{ request('reporting_person') }}"
+                @elseif(request()->has('incident_type'))
+                    No hay actas registradas de tipo "{{ 
+                        request('incident_type') == 'Academic' ? 'Académica' : 
+                        (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
+                        'Deserción') 
+                    }}"
+                @elseif(request()->has('reporting_person'))
+                    No hay actas registradas reportadas por "{{ request('reporting_person') }}"
+                @else
+                    No hay actas registradas aún
+                @endif
+            </h3>
+            <p class="text-gray-500 mb-6">Utiliza el botón "Crear Nueva Acta" para crear la primera acta.</p>
+            <a href="{{ route('minutes.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i> Crear Nueva Acta
+            </a>
+        </div>
+        @endif
+    </div>
+
+    {{-- Paginación --}}
+    @if(!empty($minutes) && count($minutes) > 0)
+    <div class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+            Mostrando {{ $actNumbers->firstItem() ?? 0 }} a {{ $actNumbers->lastItem() ?? 0 }} de {{ $actNumbers->total() }} actas
+        </div>
+        <div class="flex items-center space-x-2">
+            {{ $actNumbers->appends(request()->query())->links('pagination::tailwind') }}
         </div>
     </div>
+    @endif
 </div>
 
 {{-- Modal para mostrar detalles --}}
-<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="detailsModalLabel">Detalles del Acta</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- El contenido se cargará dinámicamente -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times"></i> Cerrar
-                </button>
-            </div>
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden" id="detailsModal">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i class="fas fa-file-alt text-blue-600 mr-2"></i>
+                Detalles del Acta
+            </h3>
+            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeModal()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="mt-4" id="modalBody">
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+        <div class="flex justify-between pt-4 border-t border-gray-200">
+            <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" onclick="generateActaPDF()">
+                <i class="fas fa-file-pdf mr-2"></i> Exportar PDF
+            </button>
+            <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors" onclick="closeModal()">
+                <i class="fas fa-times mr-2"></i> Cerrar
+            </button>
         </div>
     </div>
 </div>
@@ -231,7 +269,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
+
 <script>
+    // Variable global para almacenar el número de acta actual
+    let currentActaNumber = null;
+
     function getIncidentTypeInSpanish(incidentType) {
         if (!incidentType) return null;
         
@@ -256,6 +298,9 @@
     }
 
     function showDetails(actNumber, actaGroup) {
+        // Almacenar el número de acta actual
+        currentActaNumber = actNumber;
+        
         let modalBody = document.getElementById('modalBody');
 
         // ✅ Fecha EXACTA igual a la de la tabla (d/m/Y), sin ajustar timezone
@@ -275,21 +320,23 @@
         // Mostrar información de la persona que reporta
         if (reportingPerson) {
             html += `
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-user"></i> Persona que Reporta</h5>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-user text-blue-600 mr-2"></i>
+                        <h5 class="text-lg font-semibold text-blue-800">Persona que Reporta</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p><strong>Nombre:</strong> ${reportingPerson.full_name || 'No especificado'}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><strong>Email:</strong> ${reportingPerson.email || 'No especificado'}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><strong>Teléfono:</strong> ${reportingPerson.phone || 'No especificado'}</p>
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600"><strong>Nombre:</strong></p>
+                            <p class="text-gray-900">${reportingPerson.full_name || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600"><strong>Email:</strong></p>
+                            <p class="text-gray-900">${reportingPerson.email || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600"><strong>Teléfono:</strong></p>
+                            <p class="text-gray-900">${reportingPerson.phone || 'No especificado'}</p>
                         </div>
                     </div>
                 </div>
@@ -299,61 +346,99 @@
         // Mostrar información de cada aprendiz
         actaGroup.forEach((trainee, index) => {
             html += `
-                <div class="card mb-3">
-                    <div class="card-header bg-success text-white">
-                        <h6 class="mb-0"><i class="fas fa-user-graduate"></i> Aprendiz #${index + 1}</h6>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-user-graduate text-green-600 mr-2"></i>
+                        <h6 class="text-lg font-semibold text-green-800">Aprendiz #${index + 1}</h6>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Nombre:</strong> ${trainee.trainee_name || 'No especificado'}</p>
-                                <p><strong>Documento:</strong> ${trainee.id_document || 'No especificado'}</p>
-                                <p><strong>Programa:</strong> ${trainee.program_name || 'No especificado'}</p>
-                                <p><strong>Ficha:</strong> ${trainee.batch_number || 'No especificado'}</p>
-                                ${trainee.email ? `<p><strong>Email:</strong> ${trainee.email}</p>` : ''}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Nombre:</strong></p>
+                                <p class="text-gray-900">${trainee.trainee_name || 'No especificado'}</p>
                             </div>
-                            <div class="col-md-6">
-                                <p><strong>Tipo de Novedad:</strong> 
-                                    <span class="badge bg-warning">${getIncidentTypeInSpanish(trainee.incident_type) || 'No especificado'}</span>
-                                </p>
-                                <p><strong>Descripción:</strong></p>
-                                <p class="text-muted">${trainee.incident_description || 'No especificado'}</p>
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Documento:</strong></p>
+                                <p class="text-gray-900">${trainee.id_document || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Programa:</strong></p>
+                                <p class="text-gray-900">${trainee.program_name || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Ficha:</strong></p>
+                                <p class="text-gray-900">${trainee.batch_number || 'No especificado'}</p>
+                            </div>
+                            ${trainee.email ? `
+                                <div>
+                                    <p class="text-sm text-gray-600"><strong>Email:</strong></p>
+                                    <p class="text-gray-900">${trainee.email}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="space-y-2">
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Tipo de Novedad:</strong></p>
+                                <span class="badge badge-warning">
+                                    ${getIncidentTypeInSpanish(trainee.incident_type) || 'No especificado'}
+                                </span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Descripción:</strong></p>
+                                <p class="text-gray-700 text-sm">${trainee.incident_description || 'No especificado'}</p>
                             </div>
                         </div>
-                        
-                        ${trainee.has_contract == 1 ? `
-                            <div class="mt-3">
-                                <h6><strong>Información de la Empresa:</strong></h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        ${trainee.company_name ? `<p><strong>Empresa:</strong> ${trainee.company_name}</p>` : ''}
-                                        ${trainee.company_address ? `<p><strong>Dirección:</strong> ${trainee.company_address}</p>` : ''}
-                                    </div>
-                                    <div class="col-md-6">
-                                        ${trainee.hr_manager_name ? `<p><strong>Responsable RH:</strong> ${trainee.hr_manager_name}</p>` : ''}
-                                        ${trainee.company_contact ? `<p><strong>Contacto:</strong> ${trainee.company_contact}</p>` : ''}
-                                    </div>
+                    </div>
+                    
+                    ${trainee.has_contract == 1 ? `
+                        <div class="mt-4 pt-4 border-t border-green-200">
+                            <h6 class="text-sm font-semibold text-gray-800 mb-3">Información de la Empresa</h6>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    ${trainee.company_name ? `
+                                        <div>
+                                            <p class="text-sm text-gray-600"><strong>Empresa:</strong></p>
+                                            <p class="text-gray-900">${trainee.company_name}</p>
+                                        </div>
+                                    ` : ''}
+                                    ${trainee.company_address ? `
+                                        <div>
+                                            <p class="text-sm text-gray-600"><strong>Dirección:</strong></p>
+                                            <p class="text-gray-900">${trainee.company_address}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div class="space-y-2">
+                                    ${trainee.hr_manager_name ? `
+                                        <div>
+                                            <p class="text-sm text-gray-600"><strong>Responsable RH:</strong></p>
+                                            <p class="text-gray-900">${trainee.hr_manager_name}</p>
+                                        </div>
+                                    ` : ''}
+                                    ${trainee.company_contact ? `
+                                        <div>
+                                            <p class="text-sm text-gray-600"><strong>Contacto:</strong></p>
+                                            <p class="text-gray-900">${trainee.company_contact}</p>
+                                        </div>
+                                    ` : ''}
                                 </div>
                             </div>
-                        ` : ''}
-                    </div>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         });
 
         modalBody.innerHTML = html;
         
-        // Inicializar el modal de Bootstrap 5 correctamente
-        var modalElement = document.getElementById('detailsModal');
-        var modal = new bootstrap.Modal(modalElement);
-        modal.show();
-        
-        // Mantengo tu manejo manual de cierre (no cambia nada del botón)
-        document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-            button.addEventListener('click', function() {
-                modal.hide();
-            });
-        });
+        // Mostrar el modal personalizado
+        const modal = document.getElementById('detailsModal');
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('detailsModal');
+        modal.classList.add('hidden');
     }
 
     function deleteActa(actNumber, reportingPersonName) {
@@ -425,5 +510,37 @@
             }
         });
     }
+
+    function generateActaPDF() {
+        if (!currentActaNumber) {
+            Swal.fire({
+                title: 'Error',
+                text: 'No se ha seleccionado un acta',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        // Mostrar loading
+        Swal.fire({
+            title: 'Generando PDF...',
+            text: 'Por favor espere',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Generar PDF
+        window.location.href = `/minutes/${currentActaNumber}/pdf`;
+        
+        // Cerrar loading después de un breve momento
+        setTimeout(() => {
+            Swal.close();
+        }, 1000);
+    }
+
 </script>
 @endsection

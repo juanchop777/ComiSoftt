@@ -1,6 +1,5 @@
-{{-- resources/views/layouts/admin.blade.php --}}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,729 +10,261 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-
-    <style>
-        :root {
-            --primary-blue: #1e40af;
-            --secondary-blue: #3b82f6;
-            --accent-blue: #60a5fa;
-            --light-blue: #dbeafe;
-            --dark-blue: #1e3a8a;
-            --text-primary: #1e3a8a;
-            --text-secondary: #475569;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --border-color: #e2e8f0;
-        }
-
-        /* Fuente personalizada */
-        body {
-            font-family: 'Inter', sans-serif !important;
-        }
-
-        /* Navbar minimalista */
-        .main-header.navbar {
-            background: white !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05) !important;
-            position: relative;
-            z-index: 3;
-        }
-
-        .main-header .navbar-nav .nav-link {
-            color: var(--text-primary) !important;
-            transition: all 0.2s ease;
-            border-radius: 6px;
-            padding: 0.5rem 0.75rem !important;
-        }
-
-        .main-header .navbar-nav .nav-link:hover {
-            color: var(--primary-blue) !important;
-            background: rgba(30, 64, 175, 0.05) !important;
-        }
-
-        .main-header .navbar-nav .nav-link i {
-            color: var(--text-primary) !important;
-        }
-
-        .main-header .navbar-nav .nav-link:hover i {
-            color: var(--primary-blue) !important;
-        }
-
-        /* Sidebar minimalista */
-        .main-sidebar {
-            background: white !important;
-            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05) !important;
-            border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
-            position: relative;
-            z-index: 2;
-        }
-
-        .sidebar {
-            background: transparent !important;
-        }
-
-        /* Logo del sidebar */
-        .brand-link {
-            background: transparent !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-            padding: 1.5rem 1rem !important;
-            margin-bottom: 0;
-        }
-
-        .brand-text {
-            color: var(--primary-blue) !important;
-            font-weight: 700 !important;
-            font-size: 1.4rem !important;
-        }
-
-        /* Navegación del sidebar */
-        .nav-sidebar .nav-item .nav-link {
-            color: var(--text-secondary) !important;
-            border-radius: 8px !important;
-            margin: 0.25rem 0.75rem !important;
-            padding: 0.75rem 1rem !important;
-            transition: all 0.2s ease !important;
-            font-weight: 500 !important;
-        }
-
-        .nav-sidebar .nav-item .nav-link:hover {
-            background: rgba(30, 64, 175, 0.05) !important;
-            color: var(--primary-blue) !important;
-        }
-
-        .nav-sidebar .nav-item .nav-link.active {
-            background: var(--primary-blue) !important;
-            color: white !important;
-        }
-
-        /* Iconos del sidebar */
-        .nav-sidebar .nav-item .nav-link i {
-            margin-right: 0.8rem !important;
-            width: 20px !important;
-            text-align: center !important;
-        }
-
-        /* Submenu del sidebar */
-        .nav-treeview .nav-item .nav-link {
-            color: var(--text-secondary) !important;
-            padding-left: 2.5rem !important;
-            font-size: 0.9rem !important;
-            margin: 0.1rem 0.75rem !important;
-            border-radius: 6px !important;
-        }
-
-        .nav-treeview .nav-item .nav-link:hover {
-            background: rgba(30, 64, 175, 0.05) !important;
-            color: var(--primary-blue) !important;
-        }
-
-        .nav-treeview .nav-item .nav-link.active {
-            background: var(--primary-blue) !important;
-            color: white !important;
-        }
-
-        /* Indicador de submenu */
-        .nav-item.has-treeview > .nav-link .right {
-            color: var(--text-secondary) !important;
-        }
-
-        /* Separadores del sidebar */
-        .nav-header {
-            color: var(--text-secondary) !important;
-            font-weight: 600 !important;
-            margin-top: 1rem !important;
-            padding: 0.5rem 1rem !important;
-            font-size: 0.8rem !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        /* Content wrapper */
-        .content-wrapper {
-            background: var(--bg-secondary) !important;
-            min-height: calc(100vh - 57px) !important;
-            position: relative;
-        }
-
-        /* Bolitas decorativas del fondo */
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .shape {
-            position: absolute;
-            background: rgba(30, 64, 175, 0.05);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .shape:nth-child(1) {
-            width: 100px;
-            height: 100px;
-            top: 15%;
-            left: 8%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 55%;
-            right: 8%;
-            animation-delay: 3s;
-        }
-
-        .shape:nth-child(3) {
-            width: 80px;
-            height: 80px;
-            bottom: 15%;
-            left: 15%;
-            animation-delay: 6s;
-        }
-
-        .shape:nth-child(4) {
-            width: 120px;
-            height: 120px;
-            top: 25%;
-            right: 20%;
-            animation-delay: 2s;
-        }
-
-        .shape:nth-child(5) {
-            width: 90px;
-            height: 90px;
-            bottom: 30%;
-            right: 10%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.05; }
-            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.08; }
-        }
-
-        /* Cards minimalistas */
-        .card {
-            border: none !important;
-            border-radius: 12px !important;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
-            transition: all 0.3s ease !important;
-            background: white !important;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-        }
-
-        .card-header {
-            background: transparent !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-            padding: 1.5rem 1.5rem 0 1.5rem !important;
-        }
-
-        .card-title {
-            font-weight: 600 !important;
-            margin-bottom: 0 !important;
-            color: var(--text-primary) !important;
-        }
-
-        .card-body {
-            padding: 1.5rem !important;
-        }
-
-        /* Botones minimalistas */
-        .btn-primary {
-            background: var(--primary-blue) !important;
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1.25rem !important;
-            font-weight: 500 !important;
-            transition: all 0.2s ease !important;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary-blue) !important;
-            transform: translateY(-1px) !important;
-        }
-
-        .btn-outline-primary {
-            border: 1px solid var(--primary-blue) !important;
-            color: var(--primary-blue) !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1.25rem !important;
-            font-weight: 500 !important;
-            transition: all 0.2s ease !important;
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-blue) !important;
-            color: white !important;
-        }
-
-        .btn-success {
-            background: var(--success-color) !important;
-            border: none !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-        }
-
-        .btn-warning {
-            background: var(--warning-color) !important;
-            border: none !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
-        }
-
-        .btn-danger {
-            background: var(--danger-color) !important;
-            border: none !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
-        }
-
-        .btn-info {
-            background: var(--info-color) !important;
-            border: none !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
-        }
-
-        /* Tabla mejorada */
-        .table {
-            border-radius: 12px !important;
-            overflow: hidden !important;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)) !important;
-            color: white !important;
-            border: none !important;
-            font-weight: 600 !important;
-            padding: 1rem !important;
-        }
-
-        .table tbody tr {
-            transition: all 0.3s ease !important;
-        }
-
-        .table tbody tr:hover {
-            background: var(--light-blue) !important;
-            transform: scale(1.01) !important;
-        }
-
-        .table tbody td {
-            padding: 1rem !important;
-            border-color: var(--border-color) !important;
-            vertical-align: middle !important;
-        }
-
-        /* Badges mejorados */
-        .badge {
-            border-radius: 8px !important;
-            padding: 0.5rem 0.8rem !important;
-            font-weight: 500 !important;
-        }
-
-        .bg-success {
-            background: var(--success-color) !important;
-        }
-
-        .bg-warning {
-            background: var(--warning-color) !important;
-        }
-
-        .bg-danger {
-            background: var(--danger-color) !important;
-        }
-
-        .bg-info {
-            background: var(--info-color) !important;
-        }
-
-        /* Alertas mejoradas */
-        .alert {
-            border: none !important;
-            border-radius: 12px !important;
-            padding: 1rem 1.5rem !important;
-        }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1) !important;
-            color: var(--success-color) !important;
-            border-left: 4px solid var(--success-color) !important;
-        }
-
-        .alert-danger {
-            background: rgba(239, 68, 68, 0.1) !important;
-            color: var(--danger-color) !important;
-            border-left: 4px solid var(--danger-color) !important;
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1) !important;
-            color: var(--warning-color) !important;
-            border-left: 4px solid var(--warning-color) !important;
-        }
-
-        .alert-info {
-            background: rgba(6, 182, 212, 0.1) !important;
-            color: var(--info-color) !important;
-            border-left: 4px solid var(--info-color) !important;
-        }
-
-        /* Formularios mejorados */
-        .form-control {
-            border: 2px solid var(--border-color) !important;
-            border-radius: 10px !important;
-            padding: 0.8rem 1rem !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-blue) !important;
-            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15) !important;
-        }
-
-        .form-label {
-            font-weight: 600 !important;
-            color: var(--text-primary) !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        /* Dropdown del usuario */
-        .dropdown-menu {
-            border: none !important;
-            border-radius: 12px !important;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
-            padding: 0.5rem !important;
-        }
-
-        .dropdown-item {
-            border-radius: 8px !important;
-            padding: 0.6rem 1rem !important;
-            transition: all 0.3s ease !important;
-            font-weight: 500 !important;
-        }
-
-        .dropdown-item:hover {
-            background: var(--light-blue) !important;
-            color: var(--primary-blue) !important;
-        }
-
-        /* Para que el botón de cerrar sesión parezca enlace */
-        #logout-form button {
-            background: none !important;
-            border: none !important;
-            padding: 0.6rem 1rem !important;
-            margin: 0 !important;
-            color: inherit !important;
-            text-align: left !important;
-            width: 100% !important;
-            border-radius: 8px !important;
-            transition: all 0.3s ease !important;
-            font-weight: 500 !important;
-        }
-
-        #logout-form button:hover {
-            background: rgba(239, 68, 68, 0.1) !important;
-            color: var(--danger-color) !important;
-        }
-
-        /* Animaciones */
-        .nav-sidebar .nav-item {
-            animation: slideInLeft 0.3s ease-out;
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-sidebar {
-                box-shadow: none !important;
-            }
-            
-            .card {
-                margin: 0.5rem !important;
-            }
-        }
-
-        /* Scrollbar personalizado */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-blue);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary-blue);
-        }
-
-        /* Mejoras adicionales */
-        .content-header {
-            padding: 1.5rem 1rem !important;
-        }
-
-        .content-header h1 {
-            color: var(--text-primary) !important;
-            font-weight: 700 !important;
-        }
-
-        /* Breadcrumb mejorado */
-        .breadcrumb {
-            background: transparent !important;
-            padding: 0 !important;
-        }
-
-        .breadcrumb-item a {
-            color: var(--primary-blue) !important;
-            text-decoration: none !important;
-        }
-
-        .breadcrumb-item.active {
-            color: var(--text-secondary) !important;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Vite) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Tailwind CSS Fallback (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
-    <!-- Bolitas decorativas del fondo -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button" style="color: var(--text-primary) !important;">
-                    <i class="fas fa-bars"></i>
-                </a>
-            </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <span class="nav-link" style="color: var(--text-primary) !important; font-weight: 600;">
-                    <i class="fas fa-gavel me-2 text-primary"></i>Panel de Administración ComiSoft
-                </span>
-            </li>
-        </ul>
-
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" style="color: var(--text-primary) !important;">
-                    <i class="fas fa-user-circle me-2 text-primary"></i>
-                    <span class="d-none d-md-inline">Usuario</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-user me-2 text-primary"></i> Mi Perfil
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-cog me-2 text-secondary"></i> Configuración
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        {{-- Botón de Cerrar Sesión --}}
-                        <form action="{{ route('logout') }}" method="POST" id="logout-form">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2 text-danger"></i> Cerrar Sesión
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
+<body class="bg-gray-50 font-inter">
     <!-- Sidebar -->
-    <aside class="main-sidebar elevation-4">
-        <!-- Brand Logo -->
-        <a href="{{ route('dashboard') }}" class="brand-link">
-            <i class="fas fa-gavel brand-image" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
-            <span class="brand-text">ComiSoft</span>
-        </a>
+    <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out" id="sidebar">
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-16 px-4 bg-blue-600">
+            <div class="flex items-center">
+                <i class="fas fa-gavel text-white text-2xl mr-3"></i>
+                <span class="text-white text-xl font-bold">ComiSoft</span>
+            </div>
+        </div>
 
-        <div class="sidebar">
-            <!-- Sidebar Menu -->
-            <nav class="mt-3">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    
+        <!-- Navigation -->
+        <nav class="mt-8 px-4">
+            <ul class="space-y-2">
                     <!-- Dashboard -->
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <p>Dashboard</p>
+                <li>
+                    <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600' : '' }}">
+                        <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                        <span class="font-medium">Dashboard</span>
                         </a>
                     </li>
 
                     <!-- Separador -->
-                    <li class="nav-header">GESTIÓN</li>
+                <li class="pt-4">
+                    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4">GESTIÓN</div>
+                </li>
 
-                    <!-- Acta -->
-                    <li class="nav-item has-treeview {{ request()->routeIs('minutes.*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->routeIs('minutes.*') ? 'active' : '' }}">
-                            <i class="fas fa-file-alt"></i>
-                            <p>
-                                Gestión de Actas
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('minutes.create') }}" class="nav-link {{ request()->routeIs('minutes.create') ? 'active' : '' }}">
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>Nueva Acta</p>
+                <!-- Gestión de Actas -->
+                <li>
+                    <div class="flex items-center justify-between px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer" onclick="toggleSubmenu('actas')">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-alt w-5 h-5 mr-3"></i>
+                            <span class="font-medium">Gestión de Actas</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="actas-arrow"></i>
+                    </div>
+                    <ul class="ml-4 mt-2 space-y-1 hidden" id="actas-submenu">
+                        <li>
+                            <a href="{{ route('minutes.create') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('minutes.create') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                <i class="fas fa-plus-circle w-4 h-4 mr-3"></i>
+                                <span>Nueva Acta</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('minutes.index') }}" class="nav-link {{ request()->routeIs('minutes.index') ? 'active' : '' }}">
-                                    <i class="fas fa-list"></i>
-                                    <p>Actas Registradas</p>
+                        <li>
+                            <a href="{{ route('minutes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('minutes.index') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                <i class="fas fa-list w-4 h-4 mr-3"></i>
+                                <span>Actas Registradas</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
 
-                    <!-- Comité -->
-                    <li class="nav-item has-treeview {{ request()->routeIs('committee.*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->routeIs('committee.*') ? 'active' : '' }}">
-                            <i class="fas fa-users"></i>
-                            <p>
-                                Gestión de Comités
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('committee.create') }}" class="nav-link {{ request()->routeIs('committee.create') ? 'active' : '' }}">
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>Nuevo Comité</p>
+                <!-- Gestión de Comités -->
+                <li>
+                    <div class="flex items-center justify-between px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer" onclick="toggleSubmenu('comites')">
+                        <div class="flex items-center">
+                            <i class="fas fa-users w-5 h-5 mr-3"></i>
+                            <span class="font-medium">Gestión de Comités</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="comites-arrow"></i>
+                    </div>
+                    <ul class="ml-4 mt-2 space-y-1 hidden" id="comites-submenu">
+                        <!-- Comités Individuales -->
+                        <li>
+                            <div class="flex items-center justify-between px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer" onclick="toggleSubmenu('individuales')">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user w-4 h-4 mr-3"></i>
+                                    <span>Comités Individuales</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="individuales-arrow"></i>
+                            </div>
+                            <ul class="ml-4 mt-1 space-y-1 hidden" id="individuales-submenu">
+                                <li>
+                                    <a href="{{ route('committee.individual.create') }}" class="flex items-center px-4 py-2 text-xs text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('committee.individual.create') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                        <i class="fas fa-plus-circle w-3 h-3 mr-3"></i>
+                                        <span>Nuevo Comité Individual</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('committee.individual.index') }}" class="flex items-center px-4 py-2 text-xs text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('committee.individual.index') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                        <i class="fas fa-list w-3 h-3 mr-3"></i>
+                                        <span>Lista Comités Individuales</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Comités Generales -->
+                        <li>
+                            <div class="flex items-center justify-between px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer" onclick="toggleSubmenu('generales')">
+                                <div class="flex items-center">
+                                    <i class="fas fa-users w-4 h-4 mr-3"></i>
+                                    <span>Comités Generales</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="generales-arrow"></i>
+                            </div>
+                            <ul class="ml-4 mt-1 space-y-1 hidden" id="generales-submenu">
+                                <li>
+                                    <a href="{{ route('committee.general.create') }}" class="flex items-center px-4 py-2 text-xs text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('committee.general.create') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                        <i class="fas fa-plus-circle w-3 h-3 mr-3"></i>
+                                        <span>Nuevo Comité General</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('committee.index') }}" class="nav-link {{ request()->routeIs('committee.index') ? 'active' : '' }}">
-                                    <i class="fas fa-list"></i>
-                                    <p>Comités Realizados</p>
-                                </a>
+                                <li>
+                                    <a href="{{ route('committee.general.index') }}" class="flex items-center px-4 py-2 text-xs text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('committee.general.index') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                        <i class="fas fa-list w-3 h-3 mr-3"></i>
+                                        <span>Lista Comités Generales</span>
+                                    </a>
+                                </li>
+                            </ul>
                             </li>
                         </ul>
                     </li>
 
                     <!-- Separador -->
-                    <li class="nav-header">REPORTES</li>
+                <li class="pt-4">
+                    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4">REPORTES</div>
+                </li>
 
                     <!-- Estadísticas -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            <p>Estadísticas</p>
+                <li>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                        <span class="font-medium">Estadísticas</span>
                         </a>
                     </li>
 
                     <!-- Reportes -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-file-pdf"></i>
-                            <p>Generar Reportes</p>
+                <li>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-file-pdf w-5 h-5 mr-3"></i>
+                        <span class="font-medium">Generar Reportes</span>
                         </a>
                     </li>
-
                 </ul>
             </nav>
         </div>
-    </aside>
 
     <!-- Main Content -->
-    <div class="content-wrapper">
+    <div class="ml-64 min-h-screen">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between h-16 px-6">
+                <!-- Mobile menu button -->
+                <button class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="toggleSidebar()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+
+                <!-- Page title -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Panel de Administración ComiSoft</h1>
+                </div>
+
+                <!-- User menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-bell text-xl"></i>
+                    </button>
+
+                    <!-- User dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-3 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <span class="hidden md:block font-medium">Usuario</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user w-4 h-4 mr-3"></i>
+                                Mi Perfil
+                            </a>
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog w-4 h-4 mr-3"></i>
+                                Configuración
+                            </a>
+                            <hr class="my-1">
+                            <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                                @csrf
+                                <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt w-4 h-4 mr-3"></i>
+                                    Cerrar Sesión
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-6">
         @yield('content')
+        </main>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
     <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
-    <!-- Bootstrap 4 (AdminLTE usa esta versión) -->
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- overlayScrollbars -->
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ asset('AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
 
-    <!-- Script personalizado para mejorar la experiencia -->
-    <script>
-        $(document).ready(function() {
-            // Animación suave para los elementos del sidebar
-            $('.nav-sidebar .nav-item').each(function(index) {
-                $(this).css('animation-delay', (index * 0.1) + 's');
-            });
+        // Toggle submenu
+        function toggleSubmenu(menuId) {
+            const submenu = document.getElementById(menuId + '-submenu');
+            const arrow = document.getElementById(menuId + '-arrow');
+            
+            submenu.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
 
-            // Efecto hover mejorado para las tarjetas
-            $('.card').hover(
-                function() {
-                    $(this).addClass('shadow-lg');
-                },
-                function() {
-                    $(this).removeClass('shadow-lg');
-                }
-            );
+        // Auto-open submenus based on current route
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're in committee routes
+            if (window.location.pathname.includes('/committee/individual')) {
+                toggleSubmenu('comites');
+                toggleSubmenu('individuales');
+            } else if (window.location.pathname.includes('/committee/general')) {
+                toggleSubmenu('comites');
+                toggleSubmenu('generales');
+            } else if (window.location.pathname.includes('/committee')) {
+                toggleSubmenu('comites');
+            } else if (window.location.pathname.includes('/minutes')) {
+                toggleSubmenu('actas');
+            }
+        });
 
-            // Confirmación para el botón de cerrar sesión
-            $('#logout-form').on('submit', function(e) {
+        // Confirm logout
+        document.getElementById('logout-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 Swal.fire({
                     title: '¿Cerrar Sesión?',
                     text: '¿Estás seguro de que deseas cerrar tu sesión?',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#1e40af',
+                confirmButtonColor: '#2563eb',
                     cancelButtonColor: '#ef4444',
                     confirmButtonText: 'Sí, cerrar sesión',
                     cancelButtonText: 'Cancelar'
@@ -743,6 +274,27 @@
                     }
                 });
             });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuButton = document.querySelector('[onclick="toggleSidebar()"]');
+            
+            if (window.innerWidth < 1024 && 
+                !sidebar.contains(e.target) && 
+                !menuButton.contains(e.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
         });
     </script>
 </body>

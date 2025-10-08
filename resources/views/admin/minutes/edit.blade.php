@@ -1,22 +1,35 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container p-4">
+<div class="container mx-auto px-4 py-6">
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                {{ session('success') }}
+            </div>
+            <button type="button" class="text-green-600 hover:text-green-800" onclick="this.parentElement.parentElement.style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     @endif
 
-    @if($errors->any()))
-        <div class="alert alert-danger alert-dismissible fade show">
-            <ul>
+    @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>Errores encontrados:</strong>
+                </div>
+                <button type="button" class="text-red-600 hover:text-red-800" onclick="this.parentElement.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="mt-2 list-disc list-inside">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
@@ -24,32 +37,35 @@
         @csrf
         @method('PUT')
 
-        <div class="text-center mb-4">
-            <h1>SERVICIO NACIONAL DE APRENDIZAJE</h1>
-            <h2>CENTRO DE FORMACIÓN AGROINDUSTRIAL</h2>
-            <h3 class="mt-3">EDITAR NOVEDADES - ACTA #{{ $actNumber }}</h3>
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">SERVICIO NACIONAL DE APRENDIZAJE</h1>
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">CENTRO DE FORMACIÓN AGROINDUSTRIAL</h2>
+            <h3 class="text-lg text-gray-600">EDITAR NOVEDADES - ACTA #{{ $actNumber }}</h3>
         </div>
 
         <!-- Persona que reporta -->
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <strong>Persona que Reporta</strong>
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+            <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold flex items-center">
+                    <i class="fas fa-user mr-2"></i>
+                    Persona que Reporta
+                </h3>
             </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label">Nombre Completo *</label>
-                    <input type="text" name="full_name" class="form-control" 
+            <div class="p-6">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo *</label>
+                    <input type="text" name="full_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                            value="{{ old('full_name', $reportingPerson->full_name) }}" required>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Correo Electrónico *</label>
-                        <input type="email" name="email" class="form-control" 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico *</label>
+                        <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                value="{{ old('email', $reportingPerson->email) }}" required>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Teléfono</label>
-                        <input type="text" name="phone" class="form-control" 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                        <input type="text" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                value="{{ old('phone', $reportingPerson->phone) }}">
                     </div>
                 </div>
@@ -57,23 +73,26 @@
         </div>
 
         <!-- Detalles del Acta -->
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <strong>Detalles del Acta</strong>
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+            <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold flex items-center">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    Detalles del Acta
+                </h3>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Número de Acta *</label>
-                        <input type="text" name="act_number" class="form-control" 
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Número de Acta *</label>
+                        <input type="text" name="act_number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                value="{{ old('act_number', $actNumber) }}" required>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Fecha del Acta *</label>
-                        <input type="date" name="minutes_date" class="form-control" 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha del Acta *</label>
+                        <input type="date" name="minutes_date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                value="{{ old('minutes_date', $minutesDate) }}" 
                                max="{{ date('Y-m-d') }}" required>
-                        <small class="text-muted">No puede ser posterior a la fecha actual</small>
+                        <p class="text-sm text-gray-500 mt-1">No puede ser posterior a la fecha actual</p>
                     </div>
                 </div>
             </div>
@@ -81,109 +100,114 @@
 
         <!-- Bloques de aprendices -->
         @foreach($minutes as $index => $minute)
-        <div class="dynamic-block mb-4" data-id="{{ $minute->minutes_id }}">
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center position-relative" style="padding-right: 40px;">
-                    <strong>Aprendiz #{{ $index + 1 }}</strong>
+        <div class="dynamic-block mb-6" data-id="{{ $minute->minutes_id }}">
+            <div class="bg-white rounded-lg shadow-md border border-gray-200">
+                <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center relative">
+                    <h3 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-user-graduate mr-2"></i>
+                        Aprendiz #{{ $index + 1 }}
+                    </h3>
                     @if($index > 0)
-                    <button type="button" class="btn btn-link text-white p-0 remove-apprentice position-absolute" title="Eliminar aprendiz" style="right: 10px;">
+                    <button type="button" class="p-2 text-white hover:text-red-200 transition-colors remove-apprentice" title="Eliminar aprendiz">
                         <i class="fas fa-trash"></i>
                     </button>
                     @endif
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <input type="hidden" name="minutes_ids[]" value="{{ $minute->minutes_id }}">
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nombre del Aprendiz *</label>
-                            <input type="text" name="trainee_name[]" class="form-control" 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Aprendiz *</label>
+                            <input type="text" name="trainee_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("trainee_name.$index", $minute->trainee_name) }}" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Documento de Identidad *</label>
-                            <input type="text" name="id_document[]" class="form-control" 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Documento de Identidad *</label>
+                            <input type="text" name="id_document[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("id_document.$index", $minute->id_document) }}" required>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Programa de Formación *</label>
-                            <input type="text" name="program_name[]" class="form-control" 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Programa de Formación *</label>
+                            <input type="text" name="program_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("program_name.$index", $minute->program_name) }}" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Número de Ficha *</label>
-                            <input type="text" name="batch_number[]" class="form-control" 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Ficha *</label>
+                            <input type="text" name="batch_number[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("batch_number.$index", $minute->batch_number) }}" required>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Correo del Aprendiz</label>
-                        <input type="email" name="trainee_email[]" class="form-control" 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Correo del Aprendiz</label>
+                        <input type="email" name="trainee_email[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                value="{{ old("trainee_email.$index", $minute->email) }}">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">¿Tiene Contrato?</label>
-                        <select name="has_contract[]" class="form-select has-contract">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">¿Tiene Contrato?</label>
+                        <select name="has_contract[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 has-contract">
                             <option value="0" {{ old("has_contract.$index", $minute->has_contract) == 0 ? 'selected' : '' }}>No</option>
                             <option value="1" {{ old("has_contract.$index", $minute->has_contract) == 1 ? 'selected' : '' }}>Sí</option>
                         </select>
                     </div>
 
-                    <div class="company-fields" style="{{ old("has_contract.$index", $minute->has_contract) ? 'display:block' : 'display:none' }}">
-                        <div class="card mt-3">
-                            <div class="card-header bg-secondary text-white">
-                                <strong>Información de la Empresa</strong>
+                    <div class="company-fields {{ old("has_contract.$index", $minute->has_contract) ? 'block' : 'hidden' }}">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+                            <div class="bg-gray-600 text-white px-4 py-3 rounded-lg mb-4">
+                                <h4 class="text-md font-semibold flex items-center">
+                                    <i class="fas fa-building mr-2"></i>
+                                    Información de la Empresa
+                                </h4>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Nombre de la Empresa</label>
-                                        <input type="text" name="company_name[]" class="form-control" 
-                                               value="{{ old("company_name.$index", $minute->company_name) }}">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Dirección</label>
-                                        <input type="text" name="company_address[]" class="form-control" 
-                                               value="{{ old("company_address.$index", $minute->company_address) }}">
-                                    </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la Empresa</label>
+                                    <input type="text" name="company_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                           value="{{ old("company_name.$index", $minute->company_name) }}">
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Responsable TH</label>
-                                        <input type="text" name="hr_manager_name[]" class="form-control" 
-                                               value="{{ old("hr_manager_name.$index", $minute->hr_manager_name) }}">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Contacto</label>
-                                        <input type="text" name="company_contact[]" class="form-control" 
-                                               value="{{ old("company_contact.$index", $minute->company_contact) }}">
-                                    </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                                    <input type="text" name="company_address[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                           value="{{ old("company_address.$index", $minute->company_address) }}">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Responsable RH</label>
+                                    <input type="text" name="hr_manager_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                           value="{{ old("hr_manager_name.$index", $minute->hr_manager_name) }}">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contacto</label>
+                                    <input type="text" name="company_contact[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                           value="{{ old("company_contact.$index", $minute->company_contact) }}">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card mt-3">
-                        <div class="card-header bg-secondary text-white">
-                            <strong>Novedad</strong>
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+                        <div class="bg-gray-600 text-white px-4 py-3 rounded-lg mb-4">
+                            <h4 class="text-md font-semibold flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Novedad
+                            </h4>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label">Tipo de Novedad</label>
-                                <select name="incident_type[]" class="form-select incident-type">
-                                    <option value="">Seleccione...</option>
-                                    <option value="Academic" {{ old("incident_type.$index", $minute->incident_type) == 'Academic' ? 'selected' : '' }}>Académica</option>
-                                    <option value="Disciplinary" {{ old("incident_type.$index", $minute->incident_type) == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
-                                    <option value="Dropout" {{ old("incident_type.$index", $minute->incident_type) == 'Dropout' ? 'selected' : '' }}>Deserción</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Descripción *</label>
-                                <textarea name="incident_description[]" rows="3" class="form-control incident-description" required>{{ old("incident_description.$index", $minute->incident_description) }}</textarea>
-                            </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
+                            <select name="incident_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-type">
+                                <option value="">Seleccione...</option>
+                                <option value="Academic" {{ old("incident_type.$index", $minute->incident_type) == 'Academic' ? 'selected' : '' }}>Académica</option>
+                                <option value="Disciplinary" {{ old("incident_type.$index", $minute->incident_type) == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
+                                <option value="Dropout" {{ old("incident_type.$index", $minute->incident_type) == 'Dropout' ? 'selected' : '' }}>Deserción</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción *</label>
+                            <textarea name="incident_description[]" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-description" required>{{ old("incident_description.$index", $minute->incident_description) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -191,16 +215,16 @@
         </div>
         @endforeach
 
-        <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('minutes.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver
+        <div class="flex justify-between mt-6">
+            <a href="{{ route('minutes.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Volver
             </a>
-            <div>
-                <button type="button" id="add-apprentice" class="btn btn-primary me-2">
-                    <i class="fas fa-plus"></i> Agregar Aprendiz
+            <div class="flex gap-3">
+                <button type="button" id="add-apprentice" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i> Agregar Aprendiz
                 </button>
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Guardar Cambios
+                <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-save mr-2"></i> Guardar Cambios
                 </button>
             </div>
         </div>
@@ -213,7 +237,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para actualizar números de aprendices
     function updateApprenticeNumbers() {
         document.querySelectorAll('.dynamic-block').forEach((block, index) => {
-            block.querySelector('.card-header strong').textContent = `Aprendiz #${index + 1}`;
+            const header = block.querySelector('h3');
+            if (header) {
+                header.textContent = `Aprendiz #${index + 1}`;
+            }
         });
     }
 
@@ -221,7 +248,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function initContractToggle(select) {
         select.addEventListener('change', function() {
             const companyFields = this.closest('.dynamic-block').querySelector('.company-fields');
-            companyFields.style.display = this.value === '1' ? 'block' : 'none';
+            if (this.value === '1') {
+                companyFields.classList.remove('hidden');
+                companyFields.classList.add('block');
+            } else {
+                companyFields.classList.add('hidden');
+                companyFields.classList.remove('block');
+            }
         });
         // Disparar el evento change para inicializar el estado
         select.dispatchEvent(new Event('change'));
@@ -351,18 +384,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Renombrar título
         const newIndex = blocks.length + 1;
-        newBlock.querySelector('.card-header strong').textContent = `Aprendiz #${newIndex}`;
+        const header = newBlock.querySelector('h3');
+        if (header) {
+            header.textContent = `Aprendiz #${newIndex}`;
+        }
 
         // Asegurar que el botón de eliminar esté presente
-        const header = newBlock.querySelector('.card-header');
-        if (!header.querySelector('.remove-apprentice')) {
+        const headerDiv = newBlock.querySelector('.bg-blue-600');
+        if (!headerDiv.querySelector('.remove-apprentice')) {
             const btn = document.createElement('button');
             btn.type = "button";
-            btn.className = "btn btn-link text-white p-0 remove-apprentice position-absolute";
-            btn.style.right = "10px";
+            btn.className = "p-2 text-white hover:text-red-200 transition-colors remove-apprentice";
             btn.title = "Eliminar aprendiz";
             btn.innerHTML = '<i class="fas fa-trash"></i>';
-            header.appendChild(btn);
+            headerDiv.appendChild(btn);
         }
 
         // Insertar el nuevo bloque después del último

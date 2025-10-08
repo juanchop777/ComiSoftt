@@ -25,31 +25,42 @@ Route::post('/minutes', [MinuteController::class, 'store'])->name('minutes.store
 Route::get('/minutes/{actNumber}/edit', [MinuteController::class, 'edit'])->name('minutes.edit');
 Route::put('/minutes/{actNumber}', [MinuteController::class, 'update'])->name('minutes.update');
 Route::delete('/minutes/{actNumber}', [MinuteController::class, 'destroy'])->name('minutes.destroy');
+Route::get('/minutes/{actNumber}/pdf', [MinuteController::class, 'pdf'])->name('minutes.pdf');
 
 
-//COMITE
-use App\Http\Controllers\CommitteeController;
+//COMITE - Rutas separadas por modo
+use App\Http\Controllers\GeneralCommitteeController;
+use App\Http\Controllers\IndividualCommitteeController;
 
-// Listar comités
-Route::get('/committee', [CommitteeController::class, 'index'])->name('committee.index');
+// Redirección temporal desde rutas antiguas hacia las nuevas
+Route::get('/committee', function() { return redirect()->route('committee.individual.index'); });
+Route::get('/committee/create', function() { return redirect()->route('committee.individual.create'); });
 
-// Formulario de creación de comité
-Route::get('/committee/create', [CommitteeController::class, 'create'])->name('committee.create');
+// Nuevas rutas separadas por modo (crear e indexar)
+Route::prefix('committee')->group(function () {
+    // Individual
+    Route::get('/individual', [IndividualCommitteeController::class, 'index'])->name('committee.individual.index');
+    Route::get('/individual/create', [IndividualCommitteeController::class, 'create'])->name('committee.individual.create');
+    Route::post('/individual', [IndividualCommitteeController::class, 'store'])->name('committee.individual.store');
+    Route::get('/individual/{individualCommittee}', [IndividualCommitteeController::class, 'show'])->name('committee.individual.show');
+    Route::get('/individual/{individualCommittee}/edit', [IndividualCommitteeController::class, 'edit'])->name('committee.individual.edit');
+    Route::put('/individual/{individualCommittee}', [IndividualCommitteeController::class, 'update'])->name('committee.individual.update');
+    Route::delete('/individual/{individualCommittee}', [IndividualCommitteeController::class, 'destroy'])->name('committee.individual.destroy');
+    Route::get('/individual/{individualCommittee}/pdf', [IndividualCommitteeController::class, 'pdf'])->name('committee.individual.pdf');
 
-// Guardar comité
-Route::post('/committee', [CommitteeController::class, 'store'])->name('committee.store');
+    // General
+    Route::get('/general', [GeneralCommitteeController::class, 'index'])->name('committee.general.index');
+    Route::get('/general/create', [GeneralCommitteeController::class, 'create'])->name('committee.general.create');
+    Route::post('/general', [GeneralCommitteeController::class, 'store'])->name('committee.general.store');
+    Route::get('/general/{generalCommittee}', [GeneralCommitteeController::class, 'show'])->name('committee.general.show');
+    Route::get('/general/{generalCommittee}/edit', [GeneralCommitteeController::class, 'edit'])->name('committee.general.edit');
+    Route::put('/general/{generalCommittee}', [GeneralCommitteeController::class, 'update'])->name('committee.general.update');
+    Route::delete('/general/{generalCommittee}', [GeneralCommitteeController::class, 'destroy'])->name('committee.general.destroy');
+    Route::get('/general/{generalCommittee}/pdf', [GeneralCommitteeController::class, 'pdf'])->name('committee.general.pdf');
+});
 
-// Ver comité
-Route::get('/committee/{committee}', [CommitteeController::class, 'show'])->name('committee.show');
-
-// Editar comité
-Route::get('/committee/{committee}/edit', [CommitteeController::class, 'edit'])->name('committee.edit');
-
-// Actualizar comité
-Route::put('/committee/{committee}', [CommitteeController::class, 'update'])->name('committee.update');
-
-// Eliminar comité
-Route::delete('/committee/{committee}', [CommitteeController::class, 'destroy'])->name('committee.destroy');
+// Eliminar comité (temporal - redirigir a individual)
+Route::delete('/committee/{committee}', function() { return redirect()->route('committee.individual.index'); })->name('committee.destroy');
 
 //ajax
 Route::get('/ajax/minutes/search', [MinuteController::class, 'ajaxSearch'])->name('minutes.ajaxSearch');
