@@ -16,6 +16,7 @@ Route::middleware([
 
 use App\Http\Controllers\MinuteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinalMinuteController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -27,6 +28,8 @@ Route::put('/minutes/{actNumber}', [MinuteController::class, 'update'])->name('m
 Route::delete('/minutes/{actNumber}', [MinuteController::class, 'destroy'])->name('minutes.destroy');
 Route::get('/minutes/{actNumber}/pdf', [MinuteController::class, 'pdf'])->name('minutes.pdf');
 
+// FINAL MINUTES - Acta Reporte
+Route::resource('final-minutes', FinalMinuteController::class);
 
 //COMITE - Rutas separadas por modo
 use App\Http\Controllers\GeneralCommitteeController;

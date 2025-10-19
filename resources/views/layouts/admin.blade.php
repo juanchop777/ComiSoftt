@@ -136,6 +136,31 @@
                         </ul>
                     </li>
 
+                <!-- Acta Reporte -->
+                <li>
+                    <div class="flex items-center justify-between px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer" onclick="toggleSubmenu('acta-reporte')">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-contract w-5 h-5 mr-3"></i>
+                            <span class="font-medium">Acta Reporte</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="acta-reporte-arrow"></i>
+                    </div>
+                    <ul class="ml-4 mt-2 space-y-1 hidden" id="acta-reporte-submenu">
+                        <li>
+                            <a href="{{ route('final-minutes.create') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('final-minutes.create') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                <i class="fas fa-plus-circle w-4 h-4 mr-3"></i>
+                                <span>Nueva Acta Reporte</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('final-minutes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('final-minutes.index') ? 'bg-blue-50 text-blue-600' : '' }}">
+                                <i class="fas fa-list w-4 h-4 mr-3"></i>
+                                <span>Visualizar Registros</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <!-- Separador -->
                 <li class="pt-4">
                     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4">REPORTES</div>
@@ -253,6 +278,8 @@
                 toggleSubmenu('comites');
             } else if (window.location.pathname.includes('/minutes')) {
                 toggleSubmenu('actas');
+            } else if (window.location.pathname.includes('/final-minutes')) {
+                toggleSubmenu('acta-reporte');
             }
         });
 

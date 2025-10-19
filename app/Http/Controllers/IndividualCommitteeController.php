@@ -183,6 +183,26 @@ class IndividualCommitteeController extends Controller
                 if (empty($data['hr_responsible'])) {
                     $data['hr_responsible'] = $minute->hr_manager_name;
                 }
+                
+                // Llenar nuevos campos del minute si no están en el formulario
+                if (empty($data['document_type'])) {
+                    $data['document_type'] = $minute->document_type;
+                }
+                if (empty($data['trainee_phone'])) {
+                    $data['trainee_phone'] = $minute->trainee_phone;
+                }
+                if (empty($data['program_type'])) {
+                    $data['program_type'] = $minute->program_type;
+                }
+                if (empty($data['trainee_status'])) {
+                    $data['trainee_status'] = $minute->trainee_status;
+                }
+                if (empty($data['training_center'])) {
+                    $data['training_center'] = $minute->training_center;
+                }
+                if (empty($data['incident_subtype'])) {
+                    $data['incident_subtype'] = $minute->incident_subtype;
+                }
             }
 
             $individualCommittee->update($data);
@@ -258,14 +278,20 @@ class IndividualCommitteeController extends Controller
                 $data['trainee_name'] = $minute->trainee_name;
                 $data['minutes_date'] = $minute->minutes_date;
                 $data['id_document'] = $minute->id_document;
+                $data['document_type'] = $minute->document_type;
                 $data['program_name'] = $minute->program_name;
+                $data['program_type'] = $minute->program_type;
+                $data['trainee_status'] = $minute->trainee_status;
+                $data['training_center'] = $minute->training_center;
                 $data['batch_number'] = $minute->batch_number;
                 $data['email'] = $minute->email;
+                $data['trainee_phone'] = $minute->trainee_phone;
                 $data['company_name'] = $minute->company_name;
                 $data['company_address'] = $minute->company_address;
                 $data['hr_contact'] = $minute->hr_contact;
                 $data['company_contact'] = $minute->company_contact;
                 $data['incident_type'] = $minute->incident_type;
+                $data['incident_subtype'] = $minute->incident_subtype;
                 $data['incident_description'] = $minute->incident_description;
                 $data['hr_responsible'] = $minute->hr_manager_name;
             }

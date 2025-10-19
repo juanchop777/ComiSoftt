@@ -222,21 +222,13 @@
               </div>
             </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Asistencia</label>
               <select name="attendance_mode" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option value="Presencial">Presencial</option>
                 <option value="Virtual">Virtual</option>
                 <option value="No asistió">No asistió</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Falta</label>
-              <select name="offense_class" id="offense_class_select" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                <option value="Leve">Leve</option>
-                <option value="Grave">Grave</option>
-                <option value="Gravísimo">Gravísimo</option>
               </select>
             </div>
           </div>
@@ -254,21 +246,50 @@
           <h3 class="ml-3 text-xl font-semibold text-gray-900">Información de la Novedad</h3>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
-            <input type="text" name="incident_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+            <input type="text" name="incident_type" id="incident_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm">
           </div>
         </div>
 
-        <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Falta</label>
-          <textarea name="offense_classification" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"></textarea>
+        <div class="grid grid-cols-1 gap-6 mt-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Subtipo de Novedad</label>
+            <input type="text" name="incident_subtype" id="incident_subtype" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm">
+          </div>
         </div>
 
         <div class="mt-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Novedad</label>
           <textarea name="incident_description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"></textarea>
+        </div>
+        
+        <!-- Información de la Falta -->
+        <div class="mt-8">
+          <div class="border-t border-gray-200 pt-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+              Información de la Falta
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Falta</label>
+                <select name="offense_class" id="offense_class_select" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors">
+                  <option value="">Seleccione...</option>
+                  <option value="Leve">Leve</option>
+                  <option value="Grave">Grave</option>
+                  <option value="Gravísimo">Gravísimo</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Falta</label>
+                <textarea name="offense_classification" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none" placeholder="Describa la falta cometida..."></textarea>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -319,27 +340,6 @@
         </div>
       </div>
 
-      <!-- Decisión y Compromisos -->
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-        <div class="flex items-center mb-6">
-          <div class="flex-shrink-0">
-            <i class="fas fa-gavel text-orange-600 text-xl"></i>
-          </div>
-          <h3 class="ml-3 text-xl font-semibold text-gray-900">Decisión y Compromisos</h3>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Decisión</label>
-            <textarea name="decision" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí la decisión del comité..."></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Compromisos</label>
-            <textarea name="commitments" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí los compromisos acordados..."></textarea>
-          </div>
-        </div>
-      </div>
-
       <!-- Información Adicional -->
       <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex items-center mb-6">
@@ -364,16 +364,35 @@
           </div>
         </div>
       </div>
+
+      <!-- Decisión y Compromisos -->
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+        <div class="flex items-center mb-6">
+          <div class="flex-shrink-0">
+            <i class="fas fa-gavel text-orange-600 text-xl"></i>
+          </div>
+          <h3 class="ml-3 text-xl font-semibold text-gray-900">Decisión y Compromisos</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Compromisos</label>
+            <textarea name="commitments" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí los compromisos acordados..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Decisión</label>
+            <textarea name="decision" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí la decisión del comité..."></textarea>
+          </div>
+        </div>
+      </div>
+
       </div> <!-- Cierre del div rest_of_form -->
 
-      <!-- Botones de Acción del Aprendiz -->
-      <div id="next_apprentice_section" class="bg-white rounded-xl shadow-lg border border-gray-200 p-8" style="display: none;">
+      <!-- Botones de Acción -->
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex justify-center gap-4">
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save mr-2"></i>Guardar Comité
-          </button>
-          <button type="button" onclick="nextApprentice()" id="next_apprentice_btn" class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-lg">
-            <i class="fas fa-arrow-right mr-2"></i>Siguiente Aprendiz
           </button>
           <a href="{{ route('committee.individual.index') }}" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
             <i class="fas fa-times mr-2"></i>Cancelar
@@ -406,12 +425,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper: traducir tipo de novedad al español
     function translateIncidentType(type) {
         if (!type) return 'No especificado';
-        switch (type) {
-            case 'Academic': return 'Académica';
-            case 'Disciplinary': return 'Disciplinaria';
-            case 'Other': return 'Otra';
-            default: return type; // por si ya viene en español u otro valor
-        }
+        const types = {
+            'CANCELACION_MATRICULA_ACADEMICO': 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+            'CANCELACION_MATRICULA_DISCIPLINARIO': 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+            'CONDICIONAMIENTO_MATRICULA': 'CONDICIONAMIENTO DE MATRÍCULA',
+            'DESERCION_PROCESO_FORMACION': 'DESERCIÓN PROCESO DE FORMACIÓN',
+            'NO_GENERACION_CERTIFICADO': 'NO GENERACIÓN-CERTIFICADO',
+            'RETIRO_POR_FRAUDE': 'RETIRO POR FRAUDE',
+            'RETIRO_PROCESO_FORMACION': 'RETIRO PROCESO DE FORMACIÓN',
+            'TRASLADO_CENTRO': 'TRASLADO DE CENTRO',
+            'TRASLADO_JORNADA': 'TRASLADO DE JORNADA',
+            'TRASLADO_PROGRAMA': 'TRASLADO DE PROGRAMA',
+            // Mantener compatibilidad con tipos antiguos
+            'Academic': 'Académica',
+            'Disciplinary': 'Disciplinaria',
+            'Dropout': 'Deserción'
+        };
+        return types[type] || type;
     }
 
     // Variable global para mantener la acta seleccionada
@@ -607,8 +637,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p class="text-gray-900">${minute.trainee_name || 'No especificado'}</p>
                         </div>
                         <div>
-                            <span class="text-gray-600 font-medium">Documento:</span>
+                            <span class="text-gray-600 font-medium">Tipo de Documento:</span>
+                            <p class="text-gray-900">${minute.document_type || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-medium">Número de Documento:</span>
                             <p class="text-gray-900">${minute.id_document || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-medium">Teléfono del Aprendiz:</span>
+                            <p class="text-gray-900">${minute.trainee_phone || 'No especificado'}</p>
                         </div>
                         <div>
                             <span class="text-gray-600 font-medium">Programa:</span>
@@ -619,6 +657,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p class="text-gray-900">${minute.batch_number || 'No especificado'}</p>
                         </div>
                         <div>
+                            <span class="text-gray-600 font-medium">Tipo de Programa:</span>
+                            <p class="text-gray-900">${minute.program_type || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-medium">Estado del Aprendiz:</span>
+                            <p class="text-gray-900">${minute.trainee_status || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-medium">Centro de Formación:</span>
+                            <p class="text-gray-900">${minute.training_center || 'No especificado'}</p>
+                        </div>
+                        <div>
                             <span class="text-gray-600 font-medium">Contrato:</span>
                             <p class="text-gray-900">${minute.has_contract ? 'Sí' : 'No'}</p>
                         </div>
@@ -627,6 +677,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="inline-block bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
                                 ${translateIncidentType(minute.incident_type || 'Academic')}
                             </span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600 font-medium">Subtipo de Novedad:</span>
+                            <p class="text-gray-900">${(minute.incident_subtype || 'No especificado').replace(/_/g, ' ')}</p>
                         </div>
                     </div>
                     <div class="mt-4 space-y-2">
@@ -877,6 +931,11 @@ document.addEventListener('DOMContentLoaded', function() {
             incidentTypeField.value = translateIncidentType(minute.incident_type);
         }
         
+        const incidentSubtypeField = document.querySelector('input[name="incident_subtype"]');
+        if (incidentSubtypeField && minute.incident_subtype) {
+            incidentSubtypeField.value = minute.incident_subtype.replace(/_/g, ' ');
+        }
+        
         const incidentDescriptionField = document.querySelector('textarea[name="incident_description"]');
         if (incidentDescriptionField && minute.incident_description) {
             incidentDescriptionField.value = minute.incident_description;
@@ -922,11 +981,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 restOfForm.style.display = 'block';
             }
             
-            // Mostrar botón "Siguiente Aprendiz"
-            const nextApprenticeSection = document.getElementById('next_apprentice_section');
-            if (nextApprenticeSection) {
-                nextApprenticeSection.style.display = 'block';
-            }
             
             // Actualizar nombre del aprendiz seleccionado
             const selectedApprenticeName = document.getElementById('selected_apprentice_name');
@@ -936,9 +990,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // NO cargar datos guardados automáticamente - empezar limpio
             console.log('Formulario limpio para nuevo aprendiz');
-            
-            // Verificar si es el último aprendiz para mostrar/ocultar botón
-            checkIfLastApprentice();
             
             // Mostrar u ocultar la sección de información de la empresa según si tiene contrato
             const companyInfoSection = document.getElementById('company_info_section');
@@ -1000,8 +1051,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <p class="text-gray-900 font-medium">${selectedMinute.trainee_name || 'No especificado'}</p>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Documento de Identidad</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Documento</label>
+                                        <p class="text-gray-900">${selectedMinute.document_type || 'No especificado'}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Número de Documento</label>
                                         <p class="text-gray-900">${selectedMinute.id_document || 'No especificado'}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono del Aprendiz</label>
+                                        <p class="text-gray-900">${selectedMinute.trainee_phone || 'No especificado'}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -1018,6 +1077,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 <div class="space-y-4">
                                     <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Programa</label>
+                                        <p class="text-gray-900">${selectedMinute.program_type || 'No especificado'}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Estado del Aprendiz</label>
+                                        <p class="text-gray-900">${selectedMinute.trainee_status || 'No especificado'}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Centro de Formación</label>
+                                        <p class="text-gray-900">${selectedMinute.training_center || 'No especificado'}</p>
+                                    </div>
+                                    <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Estado del Contrato</label>
                                         <span class="inline-block px-3 py-1 rounded-full text-sm font-medium ${selectedMinute.has_contract ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                                             ${selectedMinute.has_contract ? 'Con Contrato' : 'Sin Contrato'}
@@ -1025,9 +1096,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Novedad</label>
-                    <span class="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
-                        ${translateIncidentType(selectedMinute.incident_type || 'Academic')}
+                                        <span class="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
+                                            ${translateIncidentType(selectedMinute.incident_type || 'Academic')}
                                         </span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Subtipo de Novedad</label>
+                                        <p class="text-gray-900">${(selectedMinute.incident_subtype || 'No especificado').replace(/_/g, ' ')}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Acta</label>
@@ -1126,88 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert(`Se encontraron ${committees.length} comité(s) guardados. Revisa la consola para más detalles.`);
     };
     
-    // Función para ir al siguiente aprendiz
-    window.nextApprentice = function() {
-        console.log('Volviendo a selección de aprendices');
-        
-        // Limpiar datos del formulario actual
-        clearAllFormData();
-        console.log('Formulario limpiado para nuevo aprendiz');
-        
-        // Ocultar formulario del comité
-        if (committeeForm) {
-            committeeForm.classList.add('hidden');
-        }
-        
-        // Ocultar el resto del formulario
-        const restOfForm = document.getElementById('rest_of_form');
-        if (restOfForm) {
-            restOfForm.style.display = 'none';
-        }
-        
-        // Ocultar sección de información de la empresa
-        const companyInfoSection = document.getElementById('company_info_section');
-        if (companyInfoSection) {
-            companyInfoSection.style.display = 'none';
-        }
-        
-        // Ocultar botón "Siguiente Aprendiz"
-        const nextApprenticeSection = document.getElementById('next_apprentice_section');
-        if (nextApprenticeSection) {
-            nextApprenticeSection.style.display = 'none';
-        }
-        
-        // Mostrar información detallada del acta
-        if (detailedActInfo) {
-            detailedActInfo.classList.remove('hidden');
-        }
-        
-        // Limpiar campo minutes_id
-        const minutesIdInput = document.getElementById('minutes_id_input');
-        if (minutesIdInput) {
-            minutesIdInput.value = '';
-        }
-        
-        // Actualizar las tarjetas de aprendices para mostrar el estado guardado
-        // Solo mostrar los aprendices de la acta seleccionada
-        if (currentActNumber) {
-            const minutes = @json($allMinutes);
-            const selectedMinutes = minutes.filter(m => m.act_number == currentActNumber);
-            console.log('Mostrando aprendices de la acta:', currentActNumber);
-            showApprenticesInfo(selectedMinutes);
-        }
-        
-        // Scroll a la información detallada
-        detailedActInfo.scrollIntoView({ behavior: 'smooth' });
-        
-        // Mostrar mensaje de confirmación
-        alert('Formulario limpiado. Selecciona otro aprendiz para continuar.');
-    };
     
-    // Función para verificar si es el último aprendiz
-    function checkIfLastApprentice() {
-        if (currentActNumber) {
-            const minutes = @json($allMinutes);
-            const selectedMinutes = minutes.filter(m => m.act_number == currentActNumber);
-            const currentMinutesId = document.getElementById('minutes_id_input')?.value;
-            
-            if (currentMinutesId) {
-                const currentIndex = selectedMinutes.findIndex(m => m.minutes_id == currentMinutesId);
-                const isLast = currentIndex === selectedMinutes.length - 1;
-                
-                const nextBtn = document.getElementById('next_apprentice_btn');
-                if (nextBtn) {
-                    if (isLast) {
-                        nextBtn.style.display = 'none';
-                        console.log('Es el último aprendiz, ocultando botón Siguiente Aprendiz');
-                    } else {
-                        nextBtn.style.display = 'inline-block';
-                        console.log('No es el último aprendiz, mostrando botón Siguiente Aprendiz');
-                    }
-                }
-            }
-        }
-    }
     
     // Función para probar el flujo
     window.testFlow = function() {

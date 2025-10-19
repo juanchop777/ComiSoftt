@@ -24,9 +24,10 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background-color: #3b82f6;
-            color: white;
-            border-radius: 8px;
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
         }
         
         .header h1 {
@@ -49,28 +50,35 @@
             break-inside: avoid;
         }
         
+        
         .section-title {
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #f3f4f6;
+            color: #374151;
             padding: 12px 15px;
             font-weight: bold;
             font-size: 14px;
             margin: 0;
+            border-bottom: 1px solid #d1d5db;
         }
         
         .section-title.blue {
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #f3f4f6;
+            color: #374151;
         }
         
         .section-title.green {
-            background-color: #dcfce7;
-            color: #166534;
+            background-color: #f3f4f6;
+            color: #374151;
         }
         
         .section-title.yellow {
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .section-title.red {
+            background-color: #f3f4f6;
+            color: #374151;
         }
         
         .section-content {
@@ -115,26 +123,27 @@
             border-radius: 4px;
             font-size: 10px;
             font-weight: bold;
+            border: 1px solid #d1d5db;
         }
         
         .badge-purple {
-            background-color: #e9d5ff;
-            color: #7c3aed;
+            background-color: #f9fafb;
+            color: #374151;
         }
         
         .badge-green {
-            background-color: #dcfce7;
-            color: #166534;
+            background-color: #f9fafb;
+            color: #374151;
         }
         
         .badge-red {
-            background-color: #fee2e2;
-            color: #dc2626;
+            background-color: #f9fafb;
+            color: #374151;
         }
         
         .badge-orange {
-            background-color: #fed7aa;
-            color: #ea580c;
+            background-color: #f9fafb;
+            color: #374151;
         }
         
         .text-content {
@@ -158,14 +167,20 @@
             overflow: hidden;
             page-break-inside: avoid;
             break-inside: avoid;
+            page-break-before: always;
+        }
+        
+        .apprentice-card:first-child {
+            page-break-before: auto;
         }
         
         .apprentice-header {
-            background-color: #10b981;
-            color: white;
+            background-color: #f3f4f6;
+            color: #374151;
             padding: 12px 15px;
             font-weight: bold;
             font-size: 12px;
+            border-bottom: 1px solid #d1d5db;
         }
         
         .apprentice-content {
@@ -203,26 +218,38 @@
         }
         
         .company-section {
-            background-color: #f0fdf4;
-            border: 2px solid #10b981;
-            border-radius: 8px;
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
             padding: 15px;
             margin: 15px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            page-break-before: avoid;
+            page-break-after: avoid;
+        }
+        
+        .incident-card {
+            border: 1px solid #e5e7eb;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
             page-break-inside: avoid;
             break-inside: avoid;
         }
         
         .company-section h4 {
-            color: #166534;
+            color: #374151;
             margin: 0 0 15px 0;
             font-size: 14px;
             font-weight: bold;
         }
         
+        
         .decision-section {
-            background-color: #fefce8;
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
             padding: 15px;
             margin: 15px 0;
             page-break-inside: avoid;
@@ -230,7 +257,7 @@
         }
         
         .decision-section h4 {
-            color: #92400e;
+            color: #374151;
             margin: 0 0 15px 0;
             font-size: 14px;
             font-weight: bold;
@@ -257,31 +284,29 @@
             <h2>Acta #{{ $generalCommittee->act_number }}</h2>
         </div>
 
-        <!-- Información Básica -->
+        <!-- Información de la Sesión -->
         <div class="section">
-            <div class="section-title blue">INFORMACIÓN BÁSICA</div>
+            <div class="section-title blue">INFORMACIÓN DE LA SESIÓN</div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
                         <td>Fecha de Sesión</td>
-                        <td>{{ $generalCommittee->session_date }} {{ $generalCommittee->session_time }}</td>
+                        <td>{{ $generalCommittee->session_date }}</td>
                     </tr>
                     <tr>
-                        <td>Número de Acta</td>
-                        <td>#{{ $generalCommittee->act_number }}</td>
-                    </tr>
-                    <tr>
-                        <td>Fecha del Acta</td>
-                        <td>{{ $generalCommittee->minutes_date }}</td>
+                        <td>Hora de Sesión</td>
+                        <td>{{ $generalCommittee->session_time }}</td>
                     </tr>
                     <tr>
                         <td>Modalidad de Asistencia</td>
                         <td><span class="badge badge-purple">{{ $generalCommittee->attendance_mode }}</span></td>
                     </tr>
+                    @if($generalCommittee->attendance_mode == 'Virtual' && $generalCommittee->access_link)
                     <tr>
-                        <td>Tipo de Falta</td>
-                        <td>{{ $generalCommittee->offense_class }}</td>
+                        <td>Enlace de Acceso</td>
+                        <td>{{ $generalCommittee->access_link }}</td>
                     </tr>
+                    @endif
                 </table>
             </div>
         </div>
@@ -295,27 +320,47 @@
                 @endphp
                 @if($minutes->count() > 0)
                     @foreach($minutes as $index => $minute)
-                        <div class="apprentice-card" @if($minute->has_contract) style="page-break-before: always;" @endif>
+                        <div class="apprentice-card">
                             <div class="apprentice-header">
                                 Aprendiz #{{ $index + 1 }} - {{ $minute->trainee_name }}
                             </div>
                             <div class="apprentice-content">
                                 <table class="apprentice-table">
                                     <tr>
-                                        <td>Documento</td>
+                                        <td>Tipo de Documento</td>
+                                        <td>{{ $minute->document_type ?: 'No especificado' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Número de Documento</td>
                                         <td>{{ $minute->id_document ?: 'No especificado' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Teléfono del Aprendiz</td>
+                                        <td>{{ $minute->trainee_phone ?: 'No especificado' }}</td>
                                     </tr>
                                     <tr>
                                         <td>Email</td>
                                         <td>{{ $minute->email ?: 'No especificado' }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Programa</td>
+                                        <td>Programa de Formación</td>
                                         <td>{{ $minute->program_name ?: 'No especificado' }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Ficha</td>
+                                        <td>Número de Ficha</td>
                                         <td>{{ $minute->batch_number ?: 'No especificado' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tipo de Programa</td>
+                                        <td>{{ $minute->program_type ?: 'No especificado' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estado del Aprendiz</td>
+                                        <td>{{ $minute->trainee_status ?: 'No especificado' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Centro de Formación</td>
+                                        <td>{{ $minute->training_center ?: 'No especificado' }}</td>
                                     </tr>
                                     <tr>
                                         <td>Contrato</td>
@@ -325,30 +370,8 @@
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Tipo Novedad</td>
-                                        <td>
-                                            <span class="badge badge-orange">
-                                                @php
-                                                    $incidentTypeMap = [
-                                                        'Academic' => 'Académica',
-                                                        'Disciplinary' => 'Disciplinaria', 
-                                                        'Other' => 'Otra'
-                                                    ];
-                                                    $translatedType = $incidentTypeMap[$minute->incident_type] ?? $minute->incident_type;
-                                                @endphp
-                                                {{ $translatedType ?: 'No especificado' }}
-                                            </span>
-                                        </td>
-                                    </tr>
                                 </table>
                                 
-                                @if($minute->incident_description)
-                                <div style="margin: 10px 0;">
-                                    <strong>Descripción:</strong>
-                                    <div class="text-content">{{ $minute->incident_description }}</div>
-                                </div>
-                                @endif
 
                                 <!-- Información de Empresa (solo si tiene contrato) -->
                                 @if($minute->has_contract)
@@ -365,11 +388,11 @@
                                         </tr>
                                         <tr>
                                             <td>Responsable RH</td>
-                                            <td>{{ $minute->hr_responsible ?: 'No especificado' }}</td>
+                                            <td>{{ $generalCommittee->hr_responsible ?: 'No especificado' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Contacto Empresa</td>
-                                            <td>{{ $minute->company_contact ?: 'No especificado' }}</td>
+                                            <td>{{ $generalCommittee->hr_contact ?: 'No especificado' }}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -387,20 +410,78 @@
         <div class="section">
             <div class="section-title yellow">INFORMACIÓN DE LA NOVEDAD</div>
             <div class="section-content">
+                <h4 style="color: #374151; margin: 0 0 15px 0; font-size: 14px; font-weight: bold;">Novedades por Aprendiz</h4>
+                @php
+                    $minutes = \App\Models\Minute::where('act_number', $generalCommittee->act_number)->get();
+                @endphp
+                @if($minutes->count() > 0)
+                    @foreach($minutes as $index => $minute)
+                        <div class="incident-card">
+                            <div class="apprentice-header" style="background-color: #dc2626; color: white;">
+                                {{ $minute->trainee_name ?: 'Aprendiz #' . ($index + 1) }}
+                            </div>
+                            <div class="apprentice-content">
+                                <table class="apprentice-table">
+                                    <tr>
+                                        <td>Tipo de Novedad</td>
+                                        <td>
+                                            <span class="badge badge-orange">
+                                                @php
+                                                    $incidentTypeMap = [
+                                                        'CANCELACION_MATRICULA_ACADEMICO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+                                                        'CANCELACION_MATRICULA_DISCIPLINARIO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+                                                        'CONDICIONAMIENTO_MATRICULA' => 'CONDICIONAMIENTO DE MATRÍCULA',
+                                                        'DESERCION_PROCESO_FORMACION' => 'DESERCIÓN PROCESO DE FORMACIÓN',
+                                                        'NO_GENERACION_CERTIFICADO' => 'NO GENERACIÓN-CERTIFICADO',
+                                                        'RETIRO_POR_FRAUDE' => 'RETIRO POR FRAUDE',
+                                                        'RETIRO_PROCESO_FORMACION' => 'RETIRO PROCESO DE FORMACIÓN',
+                                                        'TRASLADO_CENTRO' => 'TRASLADO DE CENTRO',
+                                                        'TRASLADO_JORNADA' => 'TRASLADO DE JORNADA',
+                                                        'TRASLADO_PROGRAMA' => 'TRASLADO DE PROGRAMA',
+                                                        'Academic' => 'Académica',
+                                                        'Disciplinary' => 'Disciplinaria',
+                                                        'Dropout' => 'Deserción'
+                                                    ];
+                                                    $translatedType = $incidentTypeMap[$minute->incident_type ?? ''] ?? $minute->incident_type ?? 'No especificado';
+                                                @endphp
+                                                {{ $translatedType }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subtipo de Novedad</td>
+                                        <td>
+                                            <span class="badge badge-orange">
+                                                {{ $minute->incident_subtype ? str_replace('_', ' ', $minute->incident_subtype) : 'No especificado' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Descripción de la Novedad</td>
+                                        <td>
+                                            <div class="text-content">{{ $minute->incident_description ?: 'No especificado' }}</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-content">No se encontraron novedades para esta acta.</div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Información de la Falta -->
+        <div class="section">
+            <div class="section-title red">INFORMACIÓN DE LA FALTA</div>
+            <div class="section-content">
                 <table class="info-table">
                     <tr>
-                        <td>Tipo de Novedad</td>
+                        <td>Tipo de Falta</td>
                         <td>
-                            <span class="badge badge-orange">
-                                @php
-                                    $incidentTypeMap = [
-                                        'Academic' => 'Académica',
-                                        'Disciplinary' => 'Disciplinaria', 
-                                        'Other' => 'Otra'
-                                    ];
-                                    $translatedType = $incidentTypeMap[$generalCommittee->incident_type] ?? $generalCommittee->incident_type;
-                                @endphp
-                                {{ $translatedType ?: 'No especificado' }}
+                            <span class="badge {{ $generalCommittee->offense_class == 'Leve' ? 'badge-green' : ($generalCommittee->offense_class == 'Grave' ? 'badge-orange' : 'badge-red') }}">
+                                {{ $generalCommittee->offense_class ?: 'No especificado' }}
                             </span>
                         </td>
                     </tr>
@@ -408,12 +489,6 @@
                         <td>Descripción de la Falta</td>
                         <td>
                             <div class="text-content">{{ $generalCommittee->offense_classification ?: 'No especificado' }}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Descripción de la Novedad</td>
-                        <td>
-                            <div class="text-content">{{ $generalCommittee->incident_description ?: 'No especificado' }}</div>
                         </td>
                     </tr>
                 </table>
@@ -470,30 +545,6 @@
             </div>
         </div>
 
-        <!-- Decisión y Compromisos -->
-        <div class="section">
-            <div class="section-title yellow">DECISIÓN Y COMPROMISOS</div>
-            <div class="section-content">
-                <div class="decision-section">
-                    <h4>Resolución del Comité</h4>
-                    <table class="info-table">
-                        <tr>
-                            <td>Decisión</td>
-                            <td>
-                                <div class="text-content">{{ $generalCommittee->decision ?: 'No especificado' }}</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Compromisos</td>
-                            <td>
-                                <div class="text-content">{{ $generalCommittee->commitments ?: 'No especificado' }}</div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <!-- Información Adicional -->
         <div class="section">
             <div class="section-title blue">INFORMACIÓN ADICIONAL</div>
@@ -518,6 +569,30 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+        </div>
+
+        <!-- Decisión y Compromisos -->
+        <div class="section">
+            <div class="section-title yellow">DECISIÓN Y COMPROMISOS</div>
+            <div class="section-content">
+                <div class="decision-section">
+                    <h4>Resolución del Comité</h4>
+                    <table class="info-table">
+                        <tr>
+                            <td>Compromisos</td>
+                            <td>
+                                <div class="text-content">{{ $generalCommittee->commitments ?: 'No especificado' }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Decisión</td>
+                            <td>
+                                <div class="text-content">{{ $generalCommittee->decision ?: 'No especificado' }}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 

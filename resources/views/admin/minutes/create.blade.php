@@ -6,7 +6,7 @@
         <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 flex items-center justify-between">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
-                {{ session('success') }}
+            {{ session('success') }}
             </div>
             <button type="button" class="text-green-600 hover:text-green-800" onclick="this.parentElement.parentElement.style.display='none'">
                 <i class="fas fa-times"></i>
@@ -46,10 +46,9 @@
                         <input type="text" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
-                <div class="flex justify-between mt-6">
-                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors prev-step hidden">
-                        <i class="fas fa-arrow-left mr-2"></i> Anterior
-                    </button>
+                
+                <!-- Botón del paso 1 -->
+                <div class="flex justify-end mt-6">
                     <button type="button" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors next-step">
                         Siguiente <i class="fas fa-arrow-right ml-2"></i>
                     </button>
@@ -66,7 +65,7 @@
                 </h3>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Número de Acta *</label>
                         <input type="text" name="act_number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
@@ -79,10 +78,16 @@
                                required>
                         <p class="text-sm text-gray-500 mt-1">No puede ser posterior a la fecha actual</p>
                     </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Centro de Formación *</label>
+                        <input type="text" name="training_center" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
                 </div>
+                
+                <!-- Botones del paso 2 -->
                 <div class="flex justify-between mt-6">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors prev-step">
-                        <i class="fas fa-arrow-left mr-2"></i> Anterior
+                        <i class="fas fa-arrow-left mr-2"></i> Volver
                     </button>
                     <button type="button" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors next-step">
                         Siguiente <i class="fas fa-arrow-right ml-2"></i>
@@ -95,24 +100,46 @@
         <div id="dynamic-sections" class="form-step hidden" data-step="3">
             <div class="dynamic-block mb-6">
                 <div class="bg-white rounded-lg shadow-md border border-gray-200">
-                    <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center relative">
+                    <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
                         <h3 class="text-lg font-semibold flex items-center">
                             <i class="fas fa-user-graduate mr-2"></i>
                             Información del Aprendiz
                         </h3>
-                        <!-- Botón eliminar (oculto en el primer bloque) -->
-                        <button type="button" class="p-2 text-white hover:text-red-200 transition-colors remove-section hidden" title="Eliminar aprendiz">
+                    </div>
+                    <div class="p-6">
+                        <!-- Botón eliminar aprendiz en la esquina derecha -->
+                        <div class="flex justify-end mb-4">
+                            <button type="button" class="p-2 text-red-600 hover:text-red-800 transition-colors remove-section hidden" title="Eliminar aprendiz">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Aprendiz *</label>
                                 <input type="text" name="trainee_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Documento de Identidad *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono del Aprendiz</label>
+                                <input type="text" name="trainee_phone[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: 3001234567">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento *</label>
+                                <select name="document_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="CC">Cédula de Ciudadanía</option>
+                                    <option value="CE">Cédula de Extranjería</option>
+                                    <option value="TI">Tarjeta de Identidad</option>
+                                    <option value="PEP">Permiso especial de permanencia</option>
+                                    <option value="DNI">DNI - Documento Nacional de Identificación</option>
+                                    <option value="NCS">Número Ciego SENA</option>
+                                    <option value="PA">Pasaporte</option>
+                                    <option value="PPT">Permiso por Protección Temporal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Número de Documento *</label>
                                 <input type="text" name="id_document[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                             </div>
                         </div>
@@ -124,6 +151,16 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Número de Ficha *</label>
                                 <input type="text" name="batch_number[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Programa *</label>
+                                <input type="text" name="program_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Estado del Aprendiz *</label>
+                                <input type="text" name="trainee_status[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                             </div>
                         </div>
                         <div class="mb-6">
@@ -152,17 +189,17 @@
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la Empresa</label>
                                         <input type="text" name="company_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
+                                        </div>
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
                                         <input type="text" name="company_address[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
-                                </div>
+                                        </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Responsable RH</label>
                                         <input type="text" name="hr_manager_name[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
+                                        </div>
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Contacto</label>
                                         <input type="text" name="company_contact[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -178,41 +215,59 @@
                                     Novedad
                                 </h4>
                             </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
-                                <select name="incident_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-type">
-                                    <option value="">Seleccione...</option>
-                                    <option value="Academic">Académica</option>
-                                    <option value="Disciplinary">Disciplinaria</option>
-                                    <option value="Dropout">Deserción</option>
-                                </select>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
+                                    <select name="incident_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-type">
+                                        <option value="">Seleccione...</option>
+                                        <option value="CANCELACION_MATRICULA_ACADEMICO">CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO</option>
+                                        <option value="CANCELACION_MATRICULA_DISCIPLINARIO">CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO</option>
+                                        <option value="CONDICIONAMIENTO_MATRICULA">CONDICIONAMIENTO DE MATRÍCULA</option>
+                                        <option value="DESERCION_PROCESO_FORMACION">DESERCIÓN PROCESO DE FORMACIÓN</option>
+                                        <option value="NO_GENERACION_CERTIFICADO">NO GENERACIÓN-CERTIFICADO</option>
+                                        <option value="RETIRO_POR_FRAUDE">RETIRO POR FRAUDE</option>
+                                        <option value="RETIRO_PROCESO_FORMACION">RETIRO PROCESO DE FORMACIÓN</option>
+                                        <option value="TRASLADO_CENTRO">TRASLADO DE CENTRO</option>
+                                        <option value="TRASLADO_JORNADA">TRASLADO DE JORNADA</option>
+                                        <option value="TRASLADO_PROGRAMA">TRASLADO DE PROGRAMA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtipo de Novedad</label>
+                                    <select name="incident_subtype[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-subtype" disabled>
+                                        <option value="">Seleccione...</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Descripción *</label>
                                 <textarea name="incident_description[]" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-description" required></textarea>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Botones finales - SOLO EN EL ÚLTIMO PASO -->
-            <div class="flex justify-between mt-6">
-                <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors prev-step">
-                    <i class="fas fa-arrow-left mr-2"></i> Volver
-                </button>
-                <div class="flex gap-3">
-                    <button type="button" id="add-section" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Agregar Aprendiz
+                <!-- Botones del paso 3 en la esquina derecha de la card - SOLO EN EL ÚLTIMO APRENDIZ -->
+                <div class="flex justify-between mt-6 action-buttons hidden">
+                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors prev-step">
+                        <i class="fas fa-arrow-left mr-2"></i> Volver
                     </button>
-                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                        <i class="fas fa-save mr-2"></i> Guardar Acta
+                    <div class="flex gap-3">
+                        <button type="button" id="add-section" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i> Agregar Aprendiz
+                        </button>
+                        <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i> Guardar Acta
                     </button>
+                    </div>
                 </div>
             </div>
         </div>
+        
     </form>
 </div>
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -294,10 +349,87 @@ document.addEventListener('DOMContentLoaded', function() {
                 companyFields.classList.remove('block');
             }
         }
+        
+        // Manejar subtipo de novedad
+        if (e.target.classList.contains('incident-type')) {
+            const subtypeSelect = e.target.closest('.dynamic-block').querySelector('.incident-subtype');
+            if (e.target.value) {
+                subtypeSelect.disabled = false;
+                
+                // Cargar subtipos específicos según el tipo seleccionado
+                if (e.target.value === 'CANCELACION_MATRICULA_ACADEMICO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_CONTRATO_APRENDIZAJE">INCUMPLIMIENTO CONTRATO DE APRENDIZAJE</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'CANCELACION_MATRICULA_DISCIPLINARIO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                        <option value="SANCION_IMPUESTA_MEDIANTE_DEBIDO_PROCESO">SANCIÓN IMPUESTA MEDIANTE DEBIDO PROCESO</option>
+                    `;
+                } else if (e.target.value === 'CONDICIONAMIENTO_MATRICULA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CONCERTACION_PLAN_DE_MEJORAMIENTO">CONCERTACIÓN PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'DESERCION_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_INASISTENCIA_3_DIAS">INCUMPLIMIENTO - INASISTENCIA 3 DIAS CONSECUTIVOS O MÁS SIN JUSTIFICACIÓN</option>
+                        <option value="NO_PRESENTA_EVIDENCIA_ETAPA_PRODUCTIVA">NO PRESENTA EVIDENCIA REALIZACIÓN ETAPA PRODUCTIVA</option>
+                        <option value="NO_SE_REINTEGRA_APLAZAMIENTO">NO SE REINTEGRA A PARTIR DE LA FECHA LÍMITE AUTORIZADO APLAZAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'NO_GENERACION_CERTIFICADO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="FORMACION_NO_REALIZADA">FORMACIÓN NO REALIZADA</option>
+                        <option value="PROGRAMA_DE_FORMACION_REALIZADO_NO_CORRESPONDE">PROGRAMA DE FORMACIÓN REALIZADO NO CORRESPONDE</option>
+                    `;
+                } else if (e.target.value === 'RETIRO_POR_FRAUDE') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="SUPLANTACION_DATOS_BASICOS_PARA_CERTIFICARSE">SUPLANTACIÓN DATOS BÁSICOS PARA CERTIFICARSE</option>
+                    `;
+                } else if (e.target.value === 'RETIRO_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_INICIO_PROCESO_FORMACION">NO INICIÓ PROCESO DE FORMACIÓN</option>
+                        <option value="POR_FALLECIMIENTO">POR FALLECIMIENTO</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_CENTRO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CAMBIO_DE_DOMICILIO">CAMBIO DE DOMICILIO</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_JORNADA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_PROGRAMA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else {
+                    // Para otros tipos de novedad, mostrar opción genérica
+                    subtypeSelect.innerHTML = '<option value="">Seleccione...</option>';
+                }
+            } else {
+                subtypeSelect.disabled = true;
+                subtypeSelect.innerHTML = '<option value="">Seleccione...</option>';
+            }
+        }
     });
 
     // Agregar nuevo bloque
-    document.getElementById('add-section').addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'add-section' || e.target.closest('#add-section')) {
         const blocks = container.querySelectorAll('.dynamic-block');
         const lastBlock = blocks[blocks.length - 1];
         const newBlock = lastBlock.cloneNode(true);
@@ -323,14 +455,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
                 if (el.name === 'has_contract[]') {
-                    el.value = ''; // deja vacío
-                    const companyFields = newBlock.querySelector('.company-fields');
-                    if (companyFields) {
-                        companyFields.classList.add('hidden');
-                        companyFields.classList.remove('block');
-                    }
+        el.value = ''; // deja vacío
+        const companyFields = newBlock.querySelector('.company-fields');
+                if (companyFields) {
+                    companyFields.classList.add('hidden');
+                    companyFields.classList.remove('block');
                 }
-
+    }
         });
         
         // Agregar evento de eliminación
@@ -352,8 +483,17 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        container.insertBefore(newBlock, document.querySelector('#dynamic-sections > .d-flex'));
+        container.appendChild(newBlock);
         updateRemoveButtons();
+        
+        // Desplazar los botones hacia abajo cuando se agrega un aprendiz
+        setTimeout(() => {
+            const buttonsContainer = document.querySelector('.action-buttons:not(.hidden)');
+            if (buttonsContainer) {
+                buttonsContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+        }, 100);
+        }
     });
 
     // Eliminar bloque
@@ -385,6 +525,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const blocks = container.querySelectorAll('.dynamic-block');
         blocks.forEach((block, index) => {
             const removeBtn = block.querySelector('.remove-section');
+            const actionButtons = block.querySelector('.action-buttons');
+            
             if (removeBtn) {
                 if (index > 0) {
                     removeBtn.classList.remove('hidden');
@@ -392,6 +534,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     removeBtn.classList.add('hidden');
                     removeBtn.classList.remove('block');
+                }
+            }
+            
+            // Solo mostrar botones de acción en el último bloque
+            if (actionButtons) {
+                if (index === blocks.length - 1) {
+                    actionButtons.classList.remove('hidden');
+                    actionButtons.classList.add('block');
+                } else {
+                    actionButtons.classList.add('hidden');
+                    actionButtons.classList.remove('block');
                 }
             }
         });

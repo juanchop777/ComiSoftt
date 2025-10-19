@@ -81,7 +81,7 @@
                 </h3>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Número de Acta *</label>
                         <input type="text" name="act_number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
@@ -93,6 +93,11 @@
                                value="{{ old('minutes_date', $minutesDate) }}" 
                                max="{{ date('Y-m-d') }}" required>
                         <p class="text-sm text-gray-500 mt-1">No puede ser posterior a la fecha actual</p>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Centro de Formación *</label>
+                        <input type="text" name="training_center" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               value="{{ old('training_center', $minutes->first()->training_center ?? '') }}" required>
                     </div>
                 </div>
             </div>
@@ -123,7 +128,28 @@
                                    value="{{ old("trainee_name.$index", $minute->trainee_name) }}" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Documento de Identidad *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono del Aprendiz</label>
+                            <input type="text" name="trainee_phone[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                   value="{{ old("trainee_phone.$index", $minute->trainee_phone) }}" placeholder="Ej: 3001234567">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento *</label>
+                            <select name="document_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Seleccione...</option>
+                                <option value="CC" {{ old("document_type.$index", $minute->document_type) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                                <option value="CE" {{ old("document_type.$index", $minute->document_type) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                                <option value="TI" {{ old("document_type.$index", $minute->document_type) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                                <option value="PEP" {{ old("document_type.$index", $minute->document_type) == 'PEP' ? 'selected' : '' }}>Permiso especial de permanencia</option>
+                                <option value="DNI" {{ old("document_type.$index", $minute->document_type) == 'DNI' ? 'selected' : '' }}>DNI - Documento Nacional de Identificación</option>
+                                <option value="NCS" {{ old("document_type.$index", $minute->document_type) == 'NCS' ? 'selected' : '' }}>Número Ciego SENA</option>
+                                <option value="PA" {{ old("document_type.$index", $minute->document_type) == 'PA' ? 'selected' : '' }}>Pasaporte</option>
+                                <option value="PPT" {{ old("document_type.$index", $minute->document_type) == 'PPT' ? 'selected' : '' }}>Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Documento *</label>
                             <input type="text" name="id_document[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("id_document.$index", $minute->id_document) }}" required>
                         </div>
@@ -138,6 +164,18 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Número de Ficha *</label>
                             <input type="text" name="batch_number[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                    value="{{ old("batch_number.$index", $minute->batch_number) }}" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Programa *</label>
+                            <input type="text" name="program_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                   value="{{ old("program_type.$index", $minute->program_type) }}" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Estado del Aprendiz *</label>
+                            <input type="text" name="trainee_status[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                   value="{{ old("trainee_status.$index", $minute->trainee_status) }}" required>
                         </div>
                     </div>
                     <div class="mb-6">
@@ -196,14 +234,33 @@
                                 Novedad
                             </h4>
                         </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
-                            <select name="incident_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-type">
-                                <option value="">Seleccione...</option>
-                                <option value="Academic" {{ old("incident_type.$index", $minute->incident_type) == 'Academic' ? 'selected' : '' }}>Académica</option>
-                                <option value="Disciplinary" {{ old("incident_type.$index", $minute->incident_type) == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
-                                <option value="Dropout" {{ old("incident_type.$index", $minute->incident_type) == 'Dropout' ? 'selected' : '' }}>Deserción</option>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
+                                <select name="incident_type[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-type">
+                                    <option value="">Seleccione...</option>
+                                    <option value="CANCELACION_MATRICULA_ACADEMICO" {{ old("incident_type.$index", $minute->incident_type) == 'CANCELACION_MATRICULA_ACADEMICO' ? 'selected' : '' }}>CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO</option>
+                                    <option value="CANCELACION_MATRICULA_DISCIPLINARIO" {{ old("incident_type.$index", $minute->incident_type) == 'CANCELACION_MATRICULA_DISCIPLINARIO' ? 'selected' : '' }}>CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO</option>
+                                    <option value="CONDICIONAMIENTO_MATRICULA" {{ old("incident_type.$index", $minute->incident_type) == 'CONDICIONAMIENTO_MATRICULA' ? 'selected' : '' }}>CONDICIONAMIENTO DE MATRÍCULA</option>
+                                    <option value="DESERCION_PROCESO_FORMACION" {{ old("incident_type.$index", $minute->incident_type) == 'DESERCION_PROCESO_FORMACION' ? 'selected' : '' }}>DESERCIÓN PROCESO DE FORMACIÓN</option>
+                                    <option value="NO_GENERACION_CERTIFICADO" {{ old("incident_type.$index", $minute->incident_type) == 'NO_GENERACION_CERTIFICADO' ? 'selected' : '' }}>NO GENERACIÓN-CERTIFICADO</option>
+                                    <option value="RETIRO_POR_FRAUDE" {{ old("incident_type.$index", $minute->incident_type) == 'RETIRO_POR_FRAUDE' ? 'selected' : '' }}>RETIRO POR FRAUDE</option>
+                                    <option value="RETIRO_PROCESO_FORMACION" {{ old("incident_type.$index", $minute->incident_type) == 'RETIRO_PROCESO_FORMACION' ? 'selected' : '' }}>RETIRO PROCESO DE FORMACIÓN</option>
+                                    <option value="TRASLADO_CENTRO" {{ old("incident_type.$index", $minute->incident_type) == 'TRASLADO_CENTRO' ? 'selected' : '' }}>TRASLADO DE CENTRO</option>
+                                    <option value="TRASLADO_JORNADA" {{ old("incident_type.$index", $minute->incident_type) == 'TRASLADO_JORNADA' ? 'selected' : '' }}>TRASLADO DE JORNADA</option>
+                                    <option value="TRASLADO_PROGRAMA" {{ old("incident_type.$index", $minute->incident_type) == 'TRASLADO_PROGRAMA' ? 'selected' : '' }}>TRASLADO DE PROGRAMA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subtipo de Novedad</label>
+                                <select name="incident_subtype[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 incident-subtype" 
+                                        disabled data-original-value="{{ $minute->incident_subtype }}">
+                                    <option value="">Seleccione...</option>
+                                    @if($minute->incident_subtype)
+                                        <option value="{{ $minute->incident_subtype }}" selected>{{ $minute->incident_subtype }}</option>
+                                    @endif
+                                </select>
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Descripción *</label>
@@ -262,6 +319,179 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar los selects de contrato existentes
     document.querySelectorAll('.has-contract').forEach(initContractToggle);
+
+    // Inicializar subtipos de novedad existentes
+    function initializeIncidentSubtypes() {
+        document.querySelectorAll('.incident-type').forEach(select => {
+            if (select.value) {
+                const subtypeSelect = select.closest('.dynamic-block').querySelector('.incident-subtype');
+                const originalValue = subtypeSelect.getAttribute('data-original-value');
+                subtypeSelect.disabled = false;
+                
+                // Cargar subtipos específicos según el tipo seleccionado
+                if (select.value === 'CANCELACION_MATRICULA_ACADEMICO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_CONTRATO_APRENDIZAJE">INCUMPLIMIENTO CONTRATO DE APRENDIZAJE</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (select.value === 'CANCELACION_MATRICULA_DISCIPLINARIO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                        <option value="SANCION_IMPUESTA_MEDIANTE_DEBIDO_PROCESO">SANCIÓN IMPUESTA MEDIANTE DEBIDO PROCESO</option>
+                    `;
+                } else if (select.value === 'CONDICIONAMIENTO_MATRICULA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CONCERTACION_PLAN_DE_MEJORAMIENTO">CONCERTACIÓN PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (select.value === 'DESERCION_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_INASISTENCIA_3_DIAS">INCUMPLIMIENTO - INASISTENCIA 3 DIAS CONSECUTIVOS O MÁS SIN JUSTIFICACIÓN</option>
+                        <option value="NO_PRESENTA_EVIDENCIA_ETAPA_PRODUCTIVA">NO PRESENTA EVIDENCIA REALIZACIÓN ETAPA PRODUCTIVA</option>
+                        <option value="NO_SE_REINTEGRA_APLAZAMIENTO">NO SE REINTEGRA A PARTIR DE LA FECHA LÍMITE AUTORIZADO APLAZAMIENTO</option>
+                    `;
+                } else if (select.value === 'NO_GENERACION_CERTIFICADO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="FORMACION_NO_REALIZADA">FORMACIÓN NO REALIZADA</option>
+                        <option value="PROGRAMA_DE_FORMACION_REALIZADO_NO_CORRESPONDE">PROGRAMA DE FORMACIÓN REALIZADO NO CORRESPONDE</option>
+                    `;
+                } else if (select.value === 'RETIRO_POR_FRAUDE') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="SUPLANTACION_DATOS_BASICOS_PARA_CERTIFICARSE">SUPLANTACIÓN DATOS BÁSICOS PARA CERTIFICARSE</option>
+                    `;
+                } else if (select.value === 'RETIRO_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_INICIO_PROCESO_FORMACION">NO INICIÓ PROCESO DE FORMACIÓN</option>
+                        <option value="POR_FALLECIMIENTO">POR FALLECIMIENTO</option>
+                    `;
+                } else if (select.value === 'TRASLADO_CENTRO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CAMBIO_DE_DOMICILIO">CAMBIO DE DOMICILIO</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (select.value === 'TRASLADO_JORNADA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (select.value === 'TRASLADO_PROGRAMA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else {
+                    subtypeSelect.innerHTML = '<option value="">Seleccione...</option>';
+                }
+                
+                // Restaurar el valor original si existe
+                if (originalValue && originalValue.trim() !== '') {
+                    // Verificar si el valor original está en las opciones disponibles
+                    const availableOptions = Array.from(subtypeSelect.options).map(opt => opt.value);
+                    if (availableOptions.includes(originalValue)) {
+                        subtypeSelect.value = originalValue;
+                    } else {
+                        // Si no está disponible, agregarlo como opción
+                        const currentOption = document.createElement('option');
+                        currentOption.value = originalValue;
+                        currentOption.textContent = originalValue;
+                        currentOption.selected = true;
+                        subtypeSelect.appendChild(currentOption);
+                        subtypeSelect.value = originalValue;
+                    }
+                }
+            }
+        });
+    }
+
+    // Inicializar subtipos al cargar la página
+    initializeIncidentSubtypes();
+
+    // Manejar subtipo de novedad
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('incident-type')) {
+            const subtypeSelect = e.target.closest('.dynamic-block').querySelector('.incident-subtype');
+            if (e.target.value) {
+                subtypeSelect.disabled = false;
+                
+                // Cargar subtipos específicos según el tipo seleccionado
+                if (e.target.value === 'CANCELACION_MATRICULA_ACADEMICO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_CONTRATO_APRENDIZAJE">INCUMPLIMIENTO CONTRATO DE APRENDIZAJE</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'CANCELACION_MATRICULA_DISCIPLINARIO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_CUMPLIO_PLAN_MEJORAMIENTO">NO CUMPLIÓ PLAN DE MEJORAMIENTO</option>
+                        <option value="SANCION_IMPUESTA_MEDIANTE_DEBIDO_PROCESO">SANCIÓN IMPUESTA MEDIANTE DEBIDO PROCESO</option>
+                    `;
+                } else if (e.target.value === 'CONDICIONAMIENTO_MATRICULA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CONCERTACION_PLAN_DE_MEJORAMIENTO">CONCERTACIÓN PLAN DE MEJORAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'DESERCION_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="INCUMPLIMIENTO_INASISTENCIA_3_DIAS">INCUMPLIMIENTO - INASISTENCIA 3 DIAS CONSECUTIVOS O MÁS SIN JUSTIFICACIÓN</option>
+                        <option value="NO_PRESENTA_EVIDENCIA_ETAPA_PRODUCTIVA">NO PRESENTA EVIDENCIA REALIZACIÓN ETAPA PRODUCTIVA</option>
+                        <option value="NO_SE_REINTEGRA_APLAZAMIENTO">NO SE REINTEGRA A PARTIR DE LA FECHA LÍMITE AUTORIZADO APLAZAMIENTO</option>
+                    `;
+                } else if (e.target.value === 'NO_GENERACION_CERTIFICADO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="FORMACION_NO_REALIZADA">FORMACIÓN NO REALIZADA</option>
+                        <option value="PROGRAMA_DE_FORMACION_REALIZADO_NO_CORRESPONDE">PROGRAMA DE FORMACIÓN REALIZADO NO CORRESPONDE</option>
+                    `;
+                } else if (e.target.value === 'RETIRO_POR_FRAUDE') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="SUPLANTACION_DATOS_BASICOS_PARA_CERTIFICARSE">SUPLANTACIÓN DATOS BÁSICOS PARA CERTIFICARSE</option>
+                    `;
+                } else if (e.target.value === 'RETIRO_PROCESO_FORMACION') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="NO_INICIO_PROCESO_FORMACION">NO INICIÓ PROCESO DE FORMACIÓN</option>
+                        <option value="POR_FALLECIMIENTO">POR FALLECIMIENTO</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_CENTRO') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="CAMBIO_DE_DOMICILIO">CAMBIO DE DOMICILIO</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_JORNADA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_LABORALES">MOTIVOS LABORALES</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else if (e.target.value === 'TRASLADO_PROGRAMA') {
+                    subtypeSelect.innerHTML = `
+                        <option value="">Seleccionar Subtipo de Novedad</option>
+                        <option value="MOTIVOS_PERSONALES">MOTIVOS PERSONALES</option>
+                    `;
+                } else {
+                    // Para otros tipos de novedad, mostrar opción genérica
+                    subtypeSelect.innerHTML = '<option value="">Seleccione...</option>';
+                }
+            } else {
+                subtypeSelect.disabled = true;
+                subtypeSelect.innerHTML = '<option value="">Seleccione...</option>';
+            }
+        }
+    });
 
     // Eliminar aprendiz
     document.addEventListener('click', function(e) {

@@ -61,6 +61,30 @@ class GeneralCommitteeController extends Controller
         $data = $request->all();
         $data['committee_mode'] = 'General';
 
+        // Obtener datos del primer minute para llenar campos adicionales
+        $firstMinute = Minute::where('act_number', $request->act_number)->first();
+        if ($firstMinute) {
+            $data['trainee_name'] = $firstMinute->trainee_name;
+            $data['minutes_date'] = $firstMinute->minutes_date;
+            $data['id_document'] = $firstMinute->id_document;
+            $data['document_type'] = $firstMinute->document_type;
+            $data['program_name'] = $firstMinute->program_name;
+            $data['program_type'] = $firstMinute->program_type;
+            $data['trainee_status'] = $firstMinute->trainee_status;
+            $data['training_center'] = $firstMinute->training_center;
+            $data['batch_number'] = $firstMinute->batch_number;
+            $data['email'] = $firstMinute->email;
+            $data['trainee_phone'] = $firstMinute->trainee_phone;
+            $data['company_name'] = $firstMinute->company_name;
+            $data['company_address'] = $firstMinute->company_address;
+            $data['hr_contact'] = $firstMinute->hr_contact;
+            // $data['company_contact'] = $firstMinute->company_contact; // Campo no existe en general_committees
+            $data['incident_type'] = $firstMinute->incident_type;
+            $data['incident_subtype'] = $firstMinute->incident_subtype;
+            $data['incident_description'] = $firstMinute->incident_description;
+            $data['hr_responsible'] = $firstMinute->hr_manager_name;
+        }
+
         // Si hay descargos individuales, los convertimos a JSON
         if ($request->has('individual_statements')) {
             $data['individual_statements'] = json_encode($request->individual_statements);
@@ -74,14 +98,16 @@ class GeneralCommitteeController extends Controller
     public function show(GeneralCommittee $generalCommittee)
     {
         $generalCommittee->load('minutes');
-        return view('admin.committee.show_general', compact('generalCommittee'));
+        $minutes = Minute::where('act_number', $generalCommittee->act_number)->get();
+        return view('admin.committee.show_general', compact('generalCommittee', 'minutes'));
     }
 
     public function edit(GeneralCommittee $generalCommittee)
     {
-        $minutes = Minute::with('reportingPerson')->orderBy('minutes_date', 'desc')->get();
         $generalCommittee->load('minutes');
-        return view('admin.committee.edit_general', compact('generalCommittee', 'minutes'));
+        $minutesForAct = Minute::where('act_number', $generalCommittee->act_number)->get();
+        $minutes = Minute::with('reportingPerson')->orderBy('minutes_date', 'desc')->get();
+        return view('admin.committee.edit_general', compact('generalCommittee', 'minutes', 'minutesForAct'));
     }
 
     public function update(Request $request, GeneralCommittee $generalCommittee)
@@ -94,6 +120,32 @@ class GeneralCommitteeController extends Controller
         ]);
 
         $data = $request->all();
+
+        // Obtener datos del minute para llenar campos adicionales si no están en el formulario
+        if ($request->has('minutes_id') && $request->minutes_id) {
+            $minute = Minute::find($request->minutes_id);
+            if ($minute) {
+                // Solo llenar campos que no vienen del formulario
+                if (empty($data['document_type'])) {
+                    $data['document_type'] = $minute->document_type;
+                }
+                if (empty($data['trainee_phone'])) {
+                    $data['trainee_phone'] = $minute->trainee_phone;
+                }
+                if (empty($data['program_type'])) {
+                    $data['program_type'] = $minute->program_type;
+                }
+                if (empty($data['trainee_status'])) {
+                    $data['trainee_status'] = $minute->trainee_status;
+                }
+                if (empty($data['training_center'])) {
+                    $data['training_center'] = $minute->training_center;
+                }
+                if (empty($data['incident_subtype'])) {
+                    $data['incident_subtype'] = $minute->incident_subtype;
+                }
+            }
+        }
 
         // Normalizar descargos: si el general llega vacío, guardamos null.
         $generalText = trim((string) $request->input('general_statements', ''));

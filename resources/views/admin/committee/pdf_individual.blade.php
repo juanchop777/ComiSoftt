@@ -49,6 +49,10 @@
             break-inside: avoid;
         }
         
+        .section:last-child {
+            margin-bottom: 5px;
+        }
+        
         .section-title {
             background-color: #dbeafe;
             color: #1e40af;
@@ -71,6 +75,16 @@
         .section-title.yellow {
             background-color: #fef3c7;
             color: #92400e;
+        }
+        
+        .section-title.red {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .section-title.purple {
+            background-color: #e9d5ff;
+            color: #7c3aed;
         }
         
         .section-content {
@@ -186,12 +200,16 @@
         }
         
         .footer {
-            margin-top: 40px;
+            margin-top: 10px;
             text-align: center;
             font-size: 10px;
             color: #666;
             border-top: 1px solid #e5e7eb;
             padding-top: 10px;
+            page-break-before: avoid;
+            page-break-inside: avoid;
+            break-before: avoid;
+            break-inside: avoid;
         }
         
         @page {
@@ -206,35 +224,29 @@
             <h2>Acta #{{ $individualCommittee->act_number }}</h2>
         </div>
 
-        <!-- Información Básica -->
+        <!-- Información de la Sesión -->
         <div class="section">
-            <div class="section-title blue">INFORMACIÓN BÁSICA</div>
+            <div class="section-title blue">INFORMACIÓN DE LA SESIÓN</div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
                         <td>Fecha de Sesión</td>
-                        <td>{{ $individualCommittee->session_date }} {{ $individualCommittee->session_time }}</td>
+                        <td>{{ $individualCommittee->session_date }}</td>
                     </tr>
                     <tr>
-                        <td>Número de Acta</td>
-                        <td>#{{ $individualCommittee->act_number }}</td>
-                    </tr>
-                    <tr>
-                        <td>Fecha del Acta</td>
-                        <td>{{ $individualCommittee->minutes_date }}</td>
+                        <td>Hora de Sesión</td>
+                        <td>{{ $individualCommittee->session_time }}</td>
                     </tr>
                     <tr>
                         <td>Modalidad de Asistencia</td>
                         <td><span class="badge badge-blue">{{ $individualCommittee->attendance_mode }}</span></td>
                     </tr>
+                    @if($individualCommittee->attendance_mode == 'Virtual' && $individualCommittee->access_link)
                     <tr>
-                        <td>Tipo de Falta</td>
-                        <td>{{ $individualCommittee->offense_class }}</td>
+                        <td>Enlace de Acceso</td>
+                        <td>{{ $individualCommittee->access_link }}</td>
                     </tr>
-                    <tr>
-                        <td>Descripción de la Falta</td>
-                        <td>{{ $individualCommittee->offense_classification }}</td>
-                    </tr>
+                    @endif
                 </table>
             </div>
         </div>
@@ -249,50 +261,49 @@
                         <td>{{ $individualCommittee->trainee_name }}</td>
                     </tr>
                     <tr>
-                        <td>Documento de Identidad</td>
+                        <td>Tipo de Documento</td>
+                        <td>{{ $individualCommittee->document_type ?: 'No especificado' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Número de Documento</td>
                         <td>{{ $individualCommittee->id_document }}</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono del Aprendiz</td>
+                        <td>{{ $individualCommittee->trainee_phone ?: 'No especificado' }}</td>
                     </tr>
                     <tr>
                         <td>Email</td>
                         <td>{{ $individualCommittee->email }}</td>
                     </tr>
                     <tr>
-                        <td>Programa</td>
+                        <td>Programa de Formación</td>
                         <td>{{ $individualCommittee->program_name }}</td>
                     </tr>
                     <tr>
                         <td>Número de Ficha</td>
                         <td>{{ $individualCommittee->batch_number }}</td>
                     </tr>
-                </table>
-            </div>
-        </div>
-
-        <!-- Información de la Novedad -->
-        <div class="section">
-            <div class="section-title yellow">INFORMACIÓN DE LA NOVEDAD</div>
-            <div class="section-content">
-                <table class="info-table">
                     <tr>
-                        <td>Tipo de Novedad</td>
-                        <td>
-                            <span class="badge badge-orange">
-                                @if($individualCommittee->incident_type == 'Academic')
-                                    Académica
-                                @elseif($individualCommittee->incident_type == 'Disciplinary')
-                                    Disciplinaria
-                                @elseif($individualCommittee->incident_type == 'Other')
-                                    Otra
-                                @else
-                                    {{ $individualCommittee->incident_type }}
-                                @endif
-                            </span>
-                        </td>
+                        <td>Tipo de Programa</td>
+                        <td>{{ $individualCommittee->program_type ?: 'No especificado' }}</td>
                     </tr>
                     <tr>
-                        <td>Descripción de la Novedad</td>
+                        <td>Estado del Aprendiz</td>
+                        <td>{{ $individualCommittee->trainee_status ?: 'No especificado' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Centro de Formación</td>
+                        <td>{{ $individualCommittee->training_center ?: 'No especificado' }}</td>
+                    </tr>
+                    <tr>
+                        <td>¿Tiene Contrato?</td>
                         <td>
-                            <div class="text-content">{{ $individualCommittee->incident_description }}</div>
+                            @if($individualCommittee->minutes && $individualCommittee->minutes->has_contract)
+                                <span class="badge badge-green">Sí</span>
+                            @else
+                                <span class="badge badge-red">No</span>
+                            @endif
                         </td>
                     </tr>
                 </table>
@@ -301,7 +312,7 @@
 
         <!-- Información de la Empresa (si tiene contrato) -->
         @if($individualCommittee->minutes && $individualCommittee->minutes->has_contract)
-        <div class="section" style="page-break-before: always;">
+        <div class="section">
             <div class="section-title green">INFORMACIÓN DE LA EMPRESA</div>
             <div class="section-content">
                 <div class="company-section">
@@ -329,49 +340,130 @@
         </div>
         @endif
 
-        <!-- Descargos del Aprendiz -->
+        <!-- Información de la Novedad -->
         <div class="section">
-            <div class="section-title green">DESCARGOS DEL APRENDIZ</div>
+            <div class="section-title yellow">INFORMACIÓN DE LA NOVEDAD</div>
             <div class="section-content">
-                <div class="text-content">{{ $individualCommittee->statement }}</div>
+                <table class="info-table">
+                    <tr>
+                        <td>Tipo de Novedad</td>
+                        <td>
+                            <span class="badge badge-orange">
+                                @php
+                                    $incidentTypes = [
+                                        'CANCELACION_MATRICULA_ACADEMICO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+                                        'CANCELACION_MATRICULA_DISCIPLINARIO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+                                        'CONDICIONAMIENTO_MATRICULA' => 'CONDICIONAMIENTO DE MATRÍCULA',
+                                        'DESERCION_PROCESO_FORMACION' => 'DESERCIÓN PROCESO DE FORMACIÓN',
+                                        'NO_GENERACION_CERTIFICADO' => 'NO GENERACIÓN-CERTIFICADO',
+                                        'RETIRO_POR_FRAUDE' => 'RETIRO POR FRAUDE',
+                                        'RETIRO_PROCESO_FORMACION' => 'RETIRO PROCESO DE FORMACIÓN',
+                                        'TRASLADO_CENTRO' => 'TRASLADO DE CENTRO',
+                                        'TRASLADO_JORNADA' => 'TRASLADO DE JORNADA',
+                                        'TRASLADO_PROGRAMA' => 'TRASLADO DE PROGRAMA'
+                                    ];
+                                @endphp
+                                {{ $incidentTypes[$individualCommittee->incident_type] ?? $individualCommittee->incident_type }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Subtipo de Novedad</td>
+                        <td>
+                            <span class="badge badge-blue">
+                                {{ $individualCommittee->incident_subtype ? str_replace('_', ' ', $individualCommittee->incident_subtype) : 'No especificado' }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Descripción de la Novedad</td>
+                        <td>
+                            <div class="text-content">{{ $individualCommittee->incident_description }}</div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
 
-        <!-- Decisión del Comité -->
+        <!-- Información de la Falta -->
         <div class="section">
-            <div class="section-title yellow">DECISIÓN DEL COMITÉ</div>
+            <div class="section-title red">INFORMACIÓN DE LA FALTA</div>
+            <div class="section-content">
+                <table class="info-table">
+                    <tr>
+                        <td>Tipo de Falta</td>
+                        <td>
+                            <span class="badge 
+                                @if($individualCommittee->offense_class == 'Leve') badge-green
+                                @elseif($individualCommittee->offense_class == 'Grave') badge-orange
+                                @elseif($individualCommittee->offense_class == 'Gravísimo') badge-red
+                                @else badge-blue @endif">
+                                {{ $individualCommittee->offense_class ?: 'No especificado' }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Descripción de la Falta</td>
+                        <td>
+                            <div class="text-content">{{ $individualCommittee->offense_classification ?: 'No especificado' }}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Descargos del Aprendiz -->
+        <div class="section">
+            <div class="section-title purple">DESCARGOS DEL APRENDIZ</div>
+            <div class="section-content">
+                <div class="text-content">{{ $individualCommittee->statement ?: 'No se registraron descargos' }}</div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="section">
+            <div class="section-title blue">INFORMACIÓN ADICIONAL</div>
+            <div class="section-content">
+                <table class="info-table">
+                    <tr>
+                        <td>Calificación Faltante</td>
+                        <td>
+                            <div class="text-content">{{ $individualCommittee->missing_rating ?: 'No especificado' }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Recomendaciones</td>
+                        <td>
+                            <div class="text-content">{{ $individualCommittee->recommendations ?: 'No especificado' }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Observaciones</td>
+                        <td>
+                            <div class="text-content">{{ $individualCommittee->observations ?: 'No especificado' }}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Decisión y Compromisos -->
+        <div class="section">
+            <div class="section-title yellow">DECISIÓN Y COMPROMISOS</div>
             <div class="section-content">
                 <div class="decision-section">
                     <h4>Resolución del Comité</h4>
                     <table class="info-table">
                         <tr>
-                            <td>Decisión</td>
-                            <td>
-                                <div class="text-content">{{ $individualCommittee->decision }}</div>
-                            </td>
-                        </tr>
-                        <tr>
                             <td>Compromisos</td>
                             <td>
-                                <div class="text-content">{{ $individualCommittee->commitments }}</div>
+                                <div class="text-content">{{ $individualCommittee->commitments ?: 'No especificado' }}</div>
                             </td>
                         </tr>
                         <tr>
-                            <td>Calificación Faltante</td>
+                            <td>Decisión</td>
                             <td>
-                                <div class="text-content">{{ $individualCommittee->missing_rating }}</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Recomendaciones</td>
-                            <td>
-                                <div class="text-content">{{ $individualCommittee->recommendations }}</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Observaciones</td>
-                            <td>
-                                <div class="text-content">{{ $individualCommittee->observations }}</div>
+                                <div class="text-content">{{ $individualCommittee->decision ?: 'No especificado' }}</div>
                             </td>
                         </tr>
                     </table>

@@ -239,8 +239,8 @@
 
 {{-- Modal para mostrar detalles --}}
 <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden" id="detailsModal">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white">
-        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+    <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-lg rounded-md bg-white max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200 flex-shrink-0">
             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <i class="fas fa-file-alt text-blue-600 mr-2"></i>
                 Detalles del Acta
@@ -249,10 +249,10 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
         </div>
-        <div class="mt-4" id="modalBody">
+        <div class="mt-4 overflow-y-auto flex-1" id="modalBody" style="max-height: calc(90vh - 140px);">
             <!-- El contenido se cargará dinámicamente -->
         </div>
-        <div class="flex justify-between pt-4 border-t border-gray-200">
+        <div class="flex justify-between pt-4 border-t border-gray-200 flex-shrink-0">
             <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" onclick="generateActaPDF()">
                 <i class="fas fa-file-pdf mr-2"></i> Exportar PDF
             </button>
@@ -278,6 +278,17 @@
         if (!incidentType) return null;
         
         const types = {
+            'CANCELACION_MATRICULA_ACADEMICO': 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+            'CANCELACION_MATRICULA_DISCIPLINARIO': 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+            'CONDICIONAMIENTO_MATRICULA': 'CONDICIONAMIENTO DE MATRÍCULA',
+            'DESERCION_PROCESO_FORMACION': 'DESERCIÓN PROCESO DE FORMACIÓN',
+            'NO_GENERACION_CERTIFICADO': 'NO GENERACIÓN-CERTIFICADO',
+            'RETIRO_POR_FRAUDE': 'RETIRO POR FRAUDE',
+            'RETIRO_PROCESO_FORMACION': 'RETIRO PROCESO DE FORMACIÓN',
+            'TRASLADO_CENTRO': 'TRASLADO DE CENTRO',
+            'TRASLADO_JORNADA': 'TRASLADO DE JORNADA',
+            'TRASLADO_PROGRAMA': 'TRASLADO DE PROGRAMA',
+            // Mantener compatibilidad con tipos antiguos
             'Academic': 'Académica',
             'Disciplinary': 'Disciplinaria',
             'Dropout': 'Deserción'
@@ -308,8 +319,23 @@
             ? formatDateDMY(actaGroup[0].minutes_date)
             : 'No especificada';
         
-        // Mostrar el número de acta y la fecha
-        let html = `<h4>Acta #${actNumber || 'Sin número'} - Fecha: ${actaDate}</h4>`;
+        // Mostrar el número de acta, fecha y centro de formación
+        let trainingCenter = actaGroup.length > 0 && actaGroup[0].training_center 
+            ? actaGroup[0].training_center 
+            : 'No especificado';
+        
+        let html = `
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">SERVICIO NACIONAL DE APRENDIZAJE</h1>
+                <h2 class="text-xl font-semibold text-gray-700 mb-2">CENTRO DE FORMACIÓN AGROINDUSTRIAL</h2>
+                <h3 class="text-lg text-gray-600 mb-4">CONSOLIDADO DE NOVEDADES ACADÉMICAS Y DISCIPLINARIAS</h3>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 inline-block">
+                    <h4 class="text-xl font-bold text-blue-800">Acta #${actNumber || 'Sin número'}</h4>
+                    <p class="text-blue-600">Fecha: ${actaDate}</p>
+                    <p class="text-blue-600">Centro de Formación: ${trainingCenter}</p>
+                </div>
+            </div>
+        `;
         
         // Obtener la información de la persona que reporta
         let reportingPerson = null;
@@ -320,23 +346,33 @@
         // Mostrar información de la persona que reporta
         if (reportingPerson) {
             html += `
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                    <div class="flex items-center mb-3">
-                        <i class="fas fa-user text-blue-600 mr-2"></i>
-                        <h5 class="text-lg font-semibold text-blue-800">Persona que Reporta</h5>
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+                    <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+                        <h3 class="text-lg font-semibold flex items-center">
+                            <i class="fas fa-user mr-2"></i>
+                            Persona que Reporta
+                        </h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600"><strong>Nombre:</strong></p>
-                            <p class="text-gray-900">${reportingPerson.full_name || 'No especificado'}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600"><strong>Email:</strong></p>
-                            <p class="text-gray-900">${reportingPerson.email || 'No especificado'}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600"><strong>Teléfono:</strong></p>
-                            <p class="text-gray-900">${reportingPerson.phone || 'No especificado'}</p>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${reportingPerson.full_name || 'No especificado'}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${reportingPerson.email || 'No especificado'}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${reportingPerson.phone || 'No especificado'}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -346,85 +382,152 @@
         // Mostrar información de cada aprendiz
         actaGroup.forEach((trainee, index) => {
             html += `
-                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                    <div class="flex items-center mb-3">
-                        <i class="fas fa-user-graduate text-green-600 mr-2"></i>
-                        <h6 class="text-lg font-semibold text-green-800">Aprendiz #${index + 1}</h6>
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+                    <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                        <h3 class="text-lg font-semibold flex items-center">
+                            <i class="fas fa-user-graduate mr-2"></i>
+                            Información del Aprendiz #${index + 1}
+                        </h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <p class="text-sm text-gray-600"><strong>Nombre:</strong></p>
-                                <p class="text-gray-900">${trainee.trainee_name || 'No especificado'}</p>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Aprendiz</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.trainee_name || 'No especificado'}
+                                </div>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600"><strong>Documento:</strong></p>
-                                <p class="text-gray-900">${trainee.id_document || 'No especificado'}</p>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono del Aprendiz</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.trainee_phone || 'No especificado'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.document_type || 'No especificado'}
+                                </div>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600"><strong>Programa:</strong></p>
-                                <p class="text-gray-900">${trainee.program_name || 'No especificado'}</p>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Número de Documento</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.id_document || 'No especificado'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Programa de Formación</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.program_name || 'No especificado'}
+                                </div>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600"><strong>Ficha:</strong></p>
-                                <p class="text-gray-900">${trainee.batch_number || 'No especificado'}</p>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Número de Ficha</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.batch_number || 'No especificado'}
+                                </div>
                             </div>
-                            ${trainee.email ? `
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Programa</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.program_type || 'No especificado'}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Estado del Aprendiz</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                    ${trainee.trainee_status || 'No especificado'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Correo del Aprendiz</label>
+                            <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                ${trainee.email || 'No especificado'}
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">¿Tiene Contrato?</label>
+                            <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                ${trainee.has_contract == 1 ? 'Sí' : 'No'}
+                            </div>
+                        </div>
+
+                        ${trainee.has_contract == 1 ? `
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+                                <div class="bg-gray-600 text-white px-4 py-3 rounded-lg mb-4">
+                                    <h4 class="text-md font-semibold flex items-center">
+                                        <i class="fas fa-building mr-2"></i>
+                                        Información de la Empresa
+                                    </h4>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la Empresa</label>
+                                        <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                            ${trainee.company_name || 'No especificado'}
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                                        <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                            ${trainee.company_address || 'No especificado'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Responsable RH</label>
+                                        <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                            ${trainee.hr_manager_name || 'No especificado'}
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Contacto</label>
+                                        <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                            ${trainee.company_contact || 'No especificado'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+                            <div class="bg-gray-600 text-white px-4 py-3 rounded-lg mb-4">
+                                <h4 class="text-md font-semibold flex items-center">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    Novedad
+                                </h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                                 <div>
-                                    <p class="text-sm text-gray-600"><strong>Email:</strong></p>
-                                    <p class="text-gray-900">${trainee.email}</p>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
+                                    <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                        ${getIncidentTypeInSpanish(trainee.incident_type) || 'No especificado'}
+                                    </div>
                                 </div>
-                            ` : ''}
-                        </div>
-                        <div class="space-y-2">
-                            <div>
-                                <p class="text-sm text-gray-600"><strong>Tipo de Novedad:</strong></p>
-                                <span class="badge badge-warning">
-                                    ${getIncidentTypeInSpanish(trainee.incident_type) || 'No especificado'}
-                                </span>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtipo de Novedad</label>
+                                    <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md">
+                                        ${(trainee.incident_subtype || 'No especificado').replace(/_/g, ' ')}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-sm text-gray-600"><strong>Descripción:</strong></p>
-                                <p class="text-gray-700 text-sm">${trainee.incident_description || 'No especificado'}</p>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                                <div class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md min-h-[80px]">
+                                    ${trainee.incident_description || 'No especificado'}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    ${trainee.has_contract == 1 ? `
-                        <div class="mt-4 pt-4 border-t border-green-200">
-                            <h6 class="text-sm font-semibold text-gray-800 mb-3">Información de la Empresa</h6>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    ${trainee.company_name ? `
-                                        <div>
-                                            <p class="text-sm text-gray-600"><strong>Empresa:</strong></p>
-                                            <p class="text-gray-900">${trainee.company_name}</p>
-                                        </div>
-                                    ` : ''}
-                                    ${trainee.company_address ? `
-                                        <div>
-                                            <p class="text-sm text-gray-600"><strong>Dirección:</strong></p>
-                                            <p class="text-gray-900">${trainee.company_address}</p>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                                <div class="space-y-2">
-                                    ${trainee.hr_manager_name ? `
-                                        <div>
-                                            <p class="text-sm text-gray-600"><strong>Responsable RH:</strong></p>
-                                            <p class="text-gray-900">${trainee.hr_manager_name}</p>
-                                        </div>
-                                    ` : ''}
-                                    ${trainee.company_contact ? `
-                                        <div>
-                                            <p class="text-sm text-gray-600"><strong>Contacto:</strong></p>
-                                            <p class="text-gray-900">${trainee.company_contact}</p>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
             `;
         });

@@ -124,11 +124,11 @@
       <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex items-center mb-6">
           <div class="flex-shrink-0">
-            <i class="fas fa-layer-group text-blue-600 text-xl"></i>
+            <i class="fas fa-users text-green-600 text-xl"></i>
           </div>
-          <h3 class="ml-3 text-xl font-semibold text-gray-900">Configuración del Comité</h3>
+          <h3 class="ml-3 text-xl font-semibold text-gray-900">Modalidad de Asistencia</h3>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
             <select name="attendance_mode" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
@@ -149,30 +149,46 @@
           <h3 class="ml-3 text-xl font-semibold text-gray-900">Información de la Novedad</h3>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Falta</label>
-            <select name="offense_class" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-              <option value="Leve">Seleccione...</option>
-              <option value="Leve">Leve</option>
-              <option value="Grave">Grave</option>
-              <option value="Gravísimo">Gravísimo</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
-            <input type="text" name="incident_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+
+        <!-- Información de Novedades por Aprendiz -->
+        <div id="incidents_by_apprentice" class="mt-6">
+          <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+            Novedades por Aprendiz
+          </h4>
+          <div id="incidents_content">
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-info-circle text-2xl mb-2"></i>
+              <p>Selecciona una acta para cargar las novedades</p>
+            </div>
           </div>
         </div>
-
-        <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Falta</label>
-          <textarea name="offense_classification" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"></textarea>
-        </div>
-
-        <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Novedad</label>
-          <textarea name="incident_description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"></textarea>
+        
+        <!-- Información de la Falta -->
+        <div class="mt-8">
+          <div class="border-t border-gray-200 pt-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+              Información de la Falta
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Falta</label>
+                <select name="offense_class" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors">
+                  <option value="">Seleccione...</option>
+                  <option value="Leve">Leve</option>
+                  <option value="Grave">Grave</option>
+                  <option value="Gravísimo">Gravísimo</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Falta</label>
+                <textarea name="offense_classification" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none" placeholder="Describa la falta cometida..."></textarea>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -215,27 +231,6 @@
         </div>
       </div>
 
-      <!-- Decisión y Compromisos -->
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-        <div class="flex items-center mb-6">
-          <div class="flex-shrink-0">
-            <i class="fas fa-gavel text-orange-600 text-xl"></i>
-          </div>
-          <h3 class="ml-3 text-xl font-semibold text-gray-900">Decisión y Compromisos</h3>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Decisión</label>
-            <textarea name="decision" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí la decisión del comité..."></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Compromisos</label>
-            <textarea name="commitments" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí los compromisos acordados..."></textarea>
-          </div>
-        </div>
-      </div>
-
       <!-- Información Adicional -->
       <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex items-center mb-6">
@@ -257,6 +252,27 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Observaciones</label>
             <textarea name="observations" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba observaciones adicionales..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decisión y Compromisos -->
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+        <div class="flex items-center mb-6">
+          <div class="flex-shrink-0">
+            <i class="fas fa-gavel text-orange-600 text-xl"></i>
+          </div>
+          <h3 class="ml-3 text-xl font-semibold text-gray-900">Decisión y Compromisos</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Compromisos</label>
+            <textarea name="commitments" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí los compromisos acordados..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Decisión</label>
+            <textarea name="decision" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" placeholder="Escriba aquí la decisión del comité..."></textarea>
           </div>
         </div>
       </div>
@@ -291,6 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const showRestBtn = document.getElementById('show_rest_btn');
     const reportingPersonContent = document.getElementById('reporting_person_content');
     const apprenticesContent = document.getElementById('apprentices_content');
+    const incidentsContent = document.getElementById('incidents_content');
 
     // Descargos toggles
     const generalDescargoBtn = document.getElementById('generalDescargoBtn');
@@ -346,12 +363,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function translateIncidentType(value) {
         if (!value) return 'No especificado';
-        const map = {
+        const types = {
+            'CANCELACION_MATRICULA_ACADEMICO': 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+            'CANCELACION_MATRICULA_DISCIPLINARIO': 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+            'CONDICIONAMIENTO_MATRICULA': 'CONDICIONAMIENTO DE MATRÍCULA',
+            'DESERCION_PROCESO_FORMACION': 'DESERCIÓN PROCESO DE FORMACIÓN',
+            'NO_GENERACION_CERTIFICADO': 'NO GENERACIÓN-CERTIFICADO',
+            'RETIRO_POR_FRAUDE': 'RETIRO POR FRAUDE',
+            'RETIRO_PROCESO_FORMACION': 'RETIRO PROCESO DE FORMACIÓN',
+            'TRASLADO_CENTRO': 'TRASLADO DE CENTRO',
+            'TRASLADO_JORNADA': 'TRASLADO DE JORNADA',
+            'TRASLADO_PROGRAMA': 'TRASLADO DE PROGRAMA',
+            // Mantener compatibilidad con tipos antiguos
             'Academic': 'Académica',
             'Disciplinary': 'Disciplinaria',
-            'Other': 'Otra'
+            'Dropout': 'Deserción'
         };
-        return map[value] || value;
+        return types[value] || value;
     }
 
     function loadSelectedActData(actNumber) {
@@ -390,6 +418,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 incidentTypeInput.value = translateIncidentType(firstMinute.incident_type);
             }
 
+            // Autocompletar Subtipo de Novedad con la del primer aprendiz
+            const incidentSubtypeInput = document.querySelector('input[name="incident_subtype"]');
+            if (incidentSubtypeInput && firstMinute.incident_subtype) {
+                incidentSubtypeInput.value = firstMinute.incident_subtype.replace(/_/g, ' ');
+            }
+
             // Autocompletar Descripción de la Novedad con la del primer aprendiz
             const incidentDescriptionInput = document.querySelector('textarea[name="incident_description"]');
             if (incidentDescriptionInput) {
@@ -399,6 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mostrar información
             showReportingPersonInfo(firstMinute);
             showApprenticesInfo(selectedMinutes);
+            showIncidentsByApprentice(selectedMinutes);
             selectedMinutesForAct = selectedMinutes;
         }
     }
@@ -452,8 +487,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="text-gray-900">${minute.trainee_name || 'No especificado'}</p>
                             </div>
                             <div>
-                                <span class="text-gray-600 font-medium">Documento:</span>
+                                <span class="text-gray-600 font-medium">Tipo de Documento:</span>
+                                <p class="text-gray-900">${minute.document_type || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium">Número de Documento:</span>
                                 <p class="text-gray-900">${minute.id_document || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium">Teléfono del Aprendiz:</span>
+                                <p class="text-gray-900">${minute.trainee_phone || 'No especificado'}</p>
                             </div>
                             <div>
                                 <span class="text-gray-600 font-medium">Email:</span>
@@ -468,6 +511,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="text-gray-900">${minute.batch_number || 'No especificado'}</p>
                             </div>
                             <div>
+                                <span class="text-gray-600 font-medium">Tipo de Programa:</span>
+                                <p class="text-gray-900">${minute.program_type || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium">Estado del Aprendiz:</span>
+                                <p class="text-gray-900">${minute.trainee_status || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium">Centro de Formación:</span>
+                                <p class="text-gray-900">${minute.training_center || 'No especificado'}</p>
+                            </div>
+                            <div>
                                 <span class="text-gray-600 font-medium">Contrato:</span>
                                 <p class="text-gray-900">${minute.has_contract ? 'Sí' : 'No'}</p>
                             </div>
@@ -476,6 +531,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="inline-block bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
                                     ${translateIncidentType(minute.incident_type)}
                                 </span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 font-medium">Subtipo de Novedad:</span>
+                                <p class="text-gray-900">${(minute.incident_subtype || 'No especificado').replace(/_/g, ' ')}</p>
                             </div>
                             <div class="md:col-span-2 lg:col-span-3">
                                 <span class="text-gray-600 font-medium">Descripción:</span>
@@ -518,10 +577,57 @@ document.addEventListener('DOMContentLoaded', function() {
         apprenticesContent.innerHTML = apprenticesHtml;
     }
     
+    function showIncidentsByApprentice(minutes) {
+        if (!incidentsContent) return;
+        
+        console.log('Mostrando novedades por aprendiz:', minutes);
+        
+        const incidentsHtml = minutes.map((minute, index) => `
+            <div class="bg-white rounded-lg border border-gray-200 mb-4">
+                <div class="bg-red-600 text-white px-4 py-3 rounded-t-lg">
+                    <h5 class="font-semibold flex items-center">
+                        <i class="fas fa-user mr-2"></i>
+                        ${minute.trainee_name || 'Aprendiz #' + (index + 1)}
+                    </h5>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Novedad</label>
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                <span class="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
+                                    ${translateIncidentType(minute.incident_type)}
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Subtipo de Novedad</label>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <span class="text-blue-800 font-medium">
+                                    ${(minute.incident_subtype || 'No especificado').replace(/_/g, ' ')}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Descripción de la Novedad</label>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p class="text-gray-800">${minute.incident_description || 'No especificado'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        incidentsContent.innerHTML = incidentsHtml;
+    }
+    
     function clearFormData() {
         if (minutesDateInput) minutesDateInput.value = '';
         if (reportingPersonContent) reportingPersonContent.innerHTML = '';
         if (apprenticesContent) apprenticesContent.innerHTML = '';
+        if (incidentsContent) incidentsContent.innerHTML = '<div class="text-center py-8 text-gray-500"><i class="fas fa-info-circle text-2xl mb-2"></i><p>Selecciona una acta para cargar las novedades</p></div>';
     }
 
     // Toggle a descargos generales

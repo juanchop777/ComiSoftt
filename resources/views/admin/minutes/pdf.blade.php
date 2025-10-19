@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acta #{{ $actNumber }}</title>
+    <title>Acta de Novedades - {{ $actNumber }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,12 +36,17 @@
         }
         
         .header h2 {
+            font-size: 18px;
+            margin: 5px 0 0 0;
+        }
+        
+        .header h3 {
             font-size: 16px;
             margin: 5px 0 0 0;
         }
         
         .section {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: hidden;
@@ -68,27 +73,35 @@
             color: #166534;
         }
         
+        .section-title.gray {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
         .section-content {
-            padding: 10px;
+            padding: 15px;
             background-color: #ffffff;
         }
         
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-            table-layout: auto;
+            margin-bottom: 15px;
+            table-layout: fixed;
             page-break-inside: avoid;
             break-inside: avoid;
         }
         
         .info-table td {
-            padding: 8px 12px;
+            padding: 12px 15px;
             border-bottom: 1px solid #e5e7eb;
             vertical-align: top;
             word-wrap: break-word;
             white-space: normal;
             overflow-wrap: break-word;
+            overflow: visible;
+            height: auto;
+            min-height: 35px;
         }
         
         .info-table td:first-child {
@@ -104,114 +117,108 @@
             color: #1f2937;
         }
         
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        
-        .badge-blue {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .badge-green {
-            background-color: #dcfce7;
-            color: #166534;
-        }
-        
-        .badge-red {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .badge-orange {
-            background-color: #fed7aa;
-            color: #ea580c;
-        }
-        
         .text-content {
             background-color: #f9fafb;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border: 1px solid #d1d5db;
             border-radius: 4px;
-            margin-top: 3px;
+            margin-top: 5px;
             word-wrap: break-word;
             white-space: normal;
             overflow-wrap: break-word;
-            min-height: 40px;
+            min-height: 50px;
             page-break-inside: avoid;
             break-inside: avoid;
-        }
-        
-        .apprentice-card {
-            border: 1px solid #e5e7eb;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            overflow: hidden;
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-        
-        .apprentice-header {
-            background-color: #10b981;
-            color: white;
-            padding: 12px 15px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        
-        .apprentice-content {
-            padding: 10px;
-        }
-        
-        .apprentice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-        
-        .apprentice-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 11px;
-            word-wrap: break-word;
-            white-space: normal;
-            overflow-wrap: break-word;
-        }
-        
-        .apprentice-table td:first-child {
-            width: 25%;
-            font-weight: bold;
-            background-color: #f8fafc;
-            color: #374151;
-        }
-        
-        .apprentice-table td:last-child {
-            width: 75%;
-            background-color: #ffffff;
-            color: #1f2937;
         }
         
         .company-section {
             background-color: #f0fdf4;
             border: 2px solid #10b981;
             border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 15px;
+            margin: 15px 0;
             page-break-inside: avoid;
             break-inside: avoid;
         }
         
         .company-section h4 {
             color: #166534;
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             font-size: 14px;
             font-weight: bold;
+        }
+        
+        .subsection {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .subsection-title {
+            color: #374151;
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            font-weight: bold;
+            background-color: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .incident-section {
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .incident-section h4 {
+            color: #374151;
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .incident-details {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 12px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            min-height: 40px;
+            overflow: visible;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+        
+        .incident-details h5 {
+            color: #374151;
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .incident-details p {
+            margin: 0;
+            color: #1f2937;
+            font-size: 11px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+            display: block;
+            width: 100%;
+            hyphens: auto;
         }
         
         .footer {
@@ -225,19 +232,73 @@
         
         @page {
             margin: 1cm;
+            size: A4;
+        }
+        
+        /* Cada aprendiz en una página completa */
+        .apprentice-page {
+            page-break-before: always;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* Ajustar márgenes para mejor distribución */
+        .apprentice-page .section-content {
+            padding: 20px;
+        }
+        
+        /* Espaciado entre subsecciones */
+        .subsection + .subsection {
+            margin-top: 25px;
+        }
+        
+        /* Asegurar que toda la sección Novedad quede junta */
+        .novedad-complete {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+        
+        .novedad-content {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        /* Evitar que el título se separe del contenido */
+        .novedad-complete .subsection-title {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+        
+        /* Asegurar que los detalles de novedad queden juntos */
+        .novedad-content .incident-details {
+            page-break-before: avoid !important;
+            break-before: avoid !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        /* Forzar que toda la sección novedad esté en una sola página */
+        .novedad-complete {
+            display: block !important;
+            position: relative !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>ACTA DE NOVEDADES</h1>
-            <h2>Acta #{{ $actNumber }}</h2>
+            <h1>SERVICIO NACIONAL DE APRENDIZAJE</h1>
+            <h2>CENTRO DE FORMACIÓN AGROINDUSTRIAL</h2>
+            <h3>CONSOLIDADO DE NOVEDADES ACADÉMICAS Y DISCIPLINARIAS</h3>
         </div>
 
-        <!-- Información Básica -->
+        <!-- Información del Acta -->
         <div class="section">
-            <div class="section-title blue">INFORMACIÓN BÁSICA</div>
+            <div class="section-title blue">INFORMACIÓN DEL ACTA</div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
@@ -246,11 +307,11 @@
                     </tr>
                     <tr>
                         <td>Fecha del Acta</td>
-                        <td>{{ \Carbon\Carbon::parse($minutesDate)->format('d/m/Y') }}</td>
+                        <td>{{ $minutes->first()->minutes_date ? \Carbon\Carbon::parse($minutes->first()->minutes_date)->format('d/m/Y') : 'No especificada' }}</td>
                     </tr>
                     <tr>
-                        <td>Cantidad de Aprendices</td>
-                        <td>{{ $minutes->count() }}</td>
+                        <td>Centro de Formación</td>
+                        <td>{{ $minutes->first()->training_center ?? 'No especificado' }}</td>
                     </tr>
                 </table>
             </div>
@@ -259,7 +320,7 @@
         <!-- Información de la Persona que Reporta -->
         @if($reportingPerson)
         <div class="section">
-            <div class="section-title green">INFORMACIÓN DE LA PERSONA QUE REPORTA</div>
+            <div class="section-title blue">PERSONA QUE REPORTA</div>
             <div class="section-content">
                 <table class="info-table">
                     <tr>
@@ -267,12 +328,12 @@
                         <td>{{ $reportingPerson->full_name }}</td>
                     </tr>
                     <tr>
-                        <td>Email</td>
+                        <td>Correo Electrónico</td>
                         <td>{{ $reportingPerson->email }}</td>
                     </tr>
                     <tr>
                         <td>Teléfono</td>
-                        <td>{{ $reportingPerson->phone ?: 'No especificado' }}</td>
+                        <td>{{ $reportingPerson->phone ?? 'No especificado' }}</td>
                     </tr>
                 </table>
             </div>
@@ -280,94 +341,135 @@
         @endif
 
         <!-- Información de los Aprendices -->
-        <div class="section">
-            <div class="section-title green">INFORMACIÓN DE LOS APRENDICES</div>
+        @foreach($minutes as $index => $minute)
+        <div class="section apprentice-page" style="page-break-before: always; page-break-inside: avoid; break-inside: avoid;">
+            <div class="section-title green">INFORMACIÓN DEL APRENDIZ #{{ $index + 1 }}</div>
             <div class="section-content">
-                @foreach($minutes as $index => $minute)
-                    <div class="apprentice-card" @if($minute->has_contract) style="page-break-before: always;" @endif>
-                        <div class="apprentice-header">
-                            Aprendiz #{{ $index + 1 }} - {{ $minute->trainee_name }}
-                        </div>
-                        <div class="apprentice-content">
-                            <table class="apprentice-table">
-                                <tr>
-                                    <td>Documento</td>
-                                    <td>{{ $minute->id_document ?: 'No especificado' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Email</td>
-                                    <td>{{ $minute->email ?: 'No especificado' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Programa</td>
-                                    <td>{{ $minute->program_name ?: 'No especificado' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Ficha</td>
-                                    <td>{{ $minute->batch_number ?: 'No especificado' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Contrato</td>
-                                    <td>
-                                        <span class="badge {{ $minute->has_contract ? 'badge-green' : 'badge-red' }}">
-                                            {{ $minute->has_contract ? 'Sí' : 'No' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Tipo Novedad</td>
-                                    <td>
-                                        <span class="badge badge-orange">
-                                            @php
-                                                $incidentTypeMap = [
-                                                    'Academic' => 'Académica',
-                                                    'Disciplinary' => 'Disciplinaria', 
-                                                    'Dropout' => 'Deserción'
-                                                ];
-                                                $translatedType = $incidentTypeMap[$minute->incident_type] ?? $minute->incident_type;
-                                            @endphp
-                                            {{ $translatedType ?: 'No especificado' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
-                            
-                            @if($minute->incident_description)
-                            <div style="margin: 10px 0;">
-                                <strong>Descripción:</strong>
-                                <div class="text-content">{{ $minute->incident_description }}</div>
-                            </div>
-                            @endif
+                <!-- Información Personal del Aprendiz -->
+                <div class="subsection">
+                    <h4 class="subsection-title">Datos Personales</h4>
+                    <table class="info-table">
+                        <tr>
+                            <td>Nombre del Aprendiz</td>
+                            <td>{{ $minute->trainee_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Teléfono del Aprendiz</td>
+                            <td>{{ $minute->trainee_phone ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo de Documento</td>
+                            <td>{{ $minute->document_type ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Número de Documento</td>
+                            <td>{{ $minute->id_document }}</td>
+                        </tr>
+                        @if($minute->email)
+                        <tr>
+                            <td>Correo del Aprendiz</td>
+                            <td>{{ $minute->email }}</td>
+                        </tr>
+                        @endif
+                    </table>
+                </div>
 
-                            <!-- Información de Empresa (solo si tiene contrato) -->
-                            @if($minute->has_contract)
-                            <div class="company-section">
-                                <h4>Información de la Empresa</h4>
-                                <table class="apprentice-table">
-                                    <tr>
-                                        <td>Empresa</td>
-                                        <td>{{ $minute->company_name ?: 'No especificado' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dirección</td>
-                                        <td>{{ $minute->company_address ?: 'No especificado' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Responsable RH</td>
-                                        <td>{{ $minute->hr_manager_name ?: 'No especificado' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Contacto Empresa</td>
-                                        <td>{{ $minute->company_contact ?: 'No especificado' }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+                <!-- Información Académica -->
+                <div class="subsection">
+                    <h4 class="subsection-title">Información Académica</h4>
+                    <table class="info-table">
+                        <tr>
+                            <td>Programa de Formación</td>
+                            <td>{{ $minute->program_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Número de Ficha</td>
+                            <td>{{ $minute->batch_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo de Programa</td>
+                            <td>{{ $minute->program_type ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Estado del Aprendiz</td>
+                            <td>{{ $minute->trainee_status ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>¿Tiene Contrato?</td>
+                            <td>{{ $minute->has_contract ? 'Sí' : 'No' }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Información de la Empresa (si tiene contrato) -->
+                @if($minute->has_contract)
+                <div class="subsection">
+                    <h4 class="subsection-title">Información de la Empresa</h4>
+                    <table class="info-table">
+                        <tr>
+                            <td>Nombre de la Empresa</td>
+                            <td>{{ $minute->company_name ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Dirección</td>
+                            <td>{{ $minute->company_address ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Responsable RH</td>
+                            <td>{{ $minute->hr_manager_name ?? 'No especificado' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Contacto</td>
+                            <td>{{ $minute->company_contact ?? 'No especificado' }}</td>
+                        </tr>
+                    </table>
+                </div>
+                @endif
+
             </div>
         </div>
+
+        <!-- Información de la Novedad - Fuera de la card del aprendiz -->
+        <div class="section" style="page-break-inside: avoid; break-inside: avoid;">
+            <div class="section-title blue">NOVEDAD</div>
+            <div class="section-content">
+                <table class="info-table">
+                    <tr>
+                        <td>Tipo de Novedad</td>
+                        <td>
+                            @php
+                                $incidentTypes = [
+                                    'CANCELACION_MATRICULA_ACADEMICO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE ACADÉMICO',
+                                    'CANCELACION_MATRICULA_DISCIPLINARIO' => 'CANCELACIÓN MATRÍCULA ÍNDOLE DISCIPLINARIO',
+                                    'CONDICIONAMIENTO_MATRICULA' => 'CONDICIONAMIENTO DE MATRÍCULA',
+                                    'DESERCION_PROCESO_FORMACION' => 'DESERCIÓN PROCESO DE FORMACIÓN',
+                                    'NO_GENERACION_CERTIFICADO' => 'NO GENERACIÓN-CERTIFICADO',
+                                    'RETIRO_POR_FRAUDE' => 'RETIRO POR FRAUDE',
+                                    'RETIRO_PROCESO_FORMACION' => 'RETIRO PROCESO DE FORMACIÓN',
+                                    'TRASLADO_CENTRO' => 'TRASLADO DE CENTRO',
+                                    'TRASLADO_JORNADA' => 'TRASLADO DE JORNADA',
+                                    'TRASLADO_PROGRAMA' => 'TRASLADO DE PROGRAMA',
+                                ];
+                            @endphp
+                            {{ $incidentTypes[$minute->incident_type] ?? $minute->incident_type }}
+                        </td>
+                    </tr>
+                    @if($minute->incident_subtype)
+                    <tr>
+                        <td>Subtipo de Novedad</td>
+                        <td>{{ str_replace('_', ' ', $minute->incident_subtype) }}</td>
+                    </tr>
+                    @endif
+                    <tr>
+                        <td>Descripción</td>
+                        <td>
+                            <div class="text-content">{{ $minute->incident_description }}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        @endforeach
 
         <div class="footer">
             <p>Documento generado el {{ date('d/m/Y H:i:s') }} - Sistema ComiSoft</p>

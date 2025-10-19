@@ -5,11 +5,11 @@
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold text-gray-800">Comités Individuales</h2>
     <div class="flex gap-2">
-      <a href="{{ route('committee.individual.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-        <i class="fas fa-plus mr-2"></i>Nuevo Comité Individual
+      <a href="{{ route('committee.individual.create') }}" class="p-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors" title="Nuevo Comité Individual">
+        <i class="fas fa-plus"></i>
       </a>
-      <a href="{{ route('committee.individual.create') }}?continue=true" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-        <i class="fas fa-arrow-right mr-2"></i>Continuar con Siguiente Aprendiz
+      <a href="{{ route('committee.individual.create') }}?continue=true" class="p-3 bg-green-600 text-white rounded hover:bg-green-700 transition-colors" title="Continuar con Siguiente Aprendiz">
+        <i class="fas fa-arrow-right"></i>
       </a>
     </div>
   </div>
@@ -41,14 +41,14 @@
       
       <div class="flex gap-2">
         <button type="submit" 
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center">
-          <i class="fas fa-search mr-2"></i>Buscar
+                class="p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center" title="Buscar">
+          <i class="fas fa-search"></i>
         </button>
         
         @if(request()->hasAny(['trainee_name', 'act_number']))
         <a href="{{ route('committee.individual.index') }}" 
-           class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center">
-          <i class="fas fa-times mr-2"></i>Limpiar
+           class="p-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center" title="Limpiar">
+          <i class="fas fa-times"></i>
         </a>
         @endif
       </div>

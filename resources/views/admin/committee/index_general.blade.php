@@ -4,8 +4,8 @@
 <div class="container mx-auto px-4 py-6">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold text-gray-800">Comités Generales</h2>
-    <a href="{{ route('committee.general.create') }}" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-      <i class="fas fa-plus mr-2"></i>Nuevo Comité General
+    <a href="{{ route('committee.general.create') }}" class="p-3 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors" title="Nuevo Comité General">
+      <i class="fas fa-plus"></i>
     </a>
   </div>
 
@@ -35,14 +35,14 @@
       
       <div class="flex gap-2">
         <button type="submit" 
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center">
-          <i class="fas fa-search mr-2"></i>Buscar
+                class="p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center" title="Buscar">
+          <i class="fas fa-search"></i>
         </button>
         
         @if(request()->hasAny(['act_number', 'session_date']))
         <a href="{{ route('committee.general.index') }}" 
-           class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center">
-          <i class="fas fa-times mr-2"></i>Limpiar
+           class="p-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center" title="Limpiar">
+          <i class="fas fa-times"></i>
         </a>
         @endif
       </div>
