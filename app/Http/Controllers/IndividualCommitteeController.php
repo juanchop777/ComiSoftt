@@ -288,7 +288,7 @@ class IndividualCommitteeController extends Controller
                 $data['trainee_phone'] = $minute->trainee_phone;
                 $data['company_name'] = $minute->company_name;
                 $data['company_address'] = $minute->company_address;
-                $data['hr_contact'] = $minute->hr_contact;
+                $data['hr_contact'] = $minute->company_contact;
                 $data['company_contact'] = $minute->company_contact;
                 $data['incident_type'] = $minute->incident_type;
                 $data['incident_subtype'] = $minute->incident_subtype;

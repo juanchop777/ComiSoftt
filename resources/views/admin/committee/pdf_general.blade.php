@@ -392,7 +392,7 @@
                                         </tr>
                                         <tr>
                                             <td>Contacto Empresa</td>
-                                            <td>{{ $generalCommittee->hr_contact ?: 'No especificado' }}</td>
+                                            <td>{{ $generalCommittee->company_contact ?: 'No especificado' }}</td>
                                         </tr>
                                     </table>
                                 </div>

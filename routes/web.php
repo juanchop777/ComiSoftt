@@ -30,6 +30,8 @@ Route::get('/minutes/{actNumber}/pdf', [MinuteController::class, 'pdf'])->name('
 
 // FINAL MINUTES - Acta Reporte
 Route::resource('final-minutes', FinalMinuteController::class);
+Route::get('/final-minutes/{finalMinute}/download/{attachmentIndex}', [FinalMinuteController::class, 'downloadAttachment'])->name('final-minutes.download');
+Route::get('/final-minutes/{finalMinute}/download-zip', [FinalMinuteController::class, 'downloadZip'])->name('final-minutes.download-zip');
 
 //COMITE - Rutas separadas por modo
 use App\Http\Controllers\GeneralCommitteeController;

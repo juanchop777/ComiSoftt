@@ -22,7 +22,12 @@ class GeneralCommitteeController extends Controller
             $query->whereDate('session_date', $request->session_date);
         }
 
-        $committees = $query->orderBy('session_date', 'desc')->paginate(10);
+        // Agrupar por act_number para mostrar solo un registro por comité general
+        $committees = $query->selectRaw('MIN(general_committee_id) as general_committee_id, session_date, session_time, act_number, attendance_mode, offense_class')
+            ->groupBy('act_number', 'session_date', 'session_time', 'attendance_mode', 'offense_class')
+            ->orderBy('session_date', 'desc')
+            ->paginate(10);
+            
         return view('admin.committee.index_general', compact('committees'));
     }
 
@@ -61,36 +66,44 @@ class GeneralCommitteeController extends Controller
         $data = $request->all();
         $data['committee_mode'] = 'General';
 
-        // Obtener datos del primer minute para llenar campos adicionales
-        $firstMinute = Minute::where('act_number', $request->act_number)->first();
-        if ($firstMinute) {
-            $data['trainee_name'] = $firstMinute->trainee_name;
-            $data['minutes_date'] = $firstMinute->minutes_date;
-            $data['id_document'] = $firstMinute->id_document;
-            $data['document_type'] = $firstMinute->document_type;
-            $data['program_name'] = $firstMinute->program_name;
-            $data['program_type'] = $firstMinute->program_type;
-            $data['trainee_status'] = $firstMinute->trainee_status;
-            $data['training_center'] = $firstMinute->training_center;
-            $data['batch_number'] = $firstMinute->batch_number;
-            $data['email'] = $firstMinute->email;
-            $data['trainee_phone'] = $firstMinute->trainee_phone;
-            $data['company_name'] = $firstMinute->company_name;
-            $data['company_address'] = $firstMinute->company_address;
-            $data['hr_contact'] = $firstMinute->hr_contact;
-            // $data['company_contact'] = $firstMinute->company_contact; // Campo no existe en general_committees
-            $data['incident_type'] = $firstMinute->incident_type;
-            $data['incident_subtype'] = $firstMinute->incident_subtype;
-            $data['incident_description'] = $firstMinute->incident_description;
-            $data['hr_responsible'] = $firstMinute->hr_manager_name;
+        // Obtener TODOS los minutos para el act_number
+        $allMinutes = Minute::where('act_number', $request->act_number)->get();
+        
+        if ($allMinutes->count() > 0) {
+            // Crear un registro por cada aprendiz
+            foreach ($allMinutes as $minute) {
+                $dataPerTrainee = $data; // Copiar datos base
+                
+                // Llenar campos específicos de cada aprendiz
+                $dataPerTrainee['trainee_name'] = $minute->trainee_name;
+                $dataPerTrainee['minutes_id'] = $minute->minutes_id;
+                $dataPerTrainee['minutes_date'] = $minute->minutes_date;
+                $dataPerTrainee['id_document'] = $minute->id_document;
+                $dataPerTrainee['document_type'] = $minute->document_type;
+                $dataPerTrainee['program_name'] = $minute->program_name;
+                $dataPerTrainee['program_type'] = $minute->program_type;
+                $dataPerTrainee['trainee_status'] = $minute->trainee_status;
+                $dataPerTrainee['training_center'] = $minute->training_center;
+                $dataPerTrainee['batch_number'] = $minute->batch_number;
+                $dataPerTrainee['email'] = $minute->email;
+                $dataPerTrainee['trainee_phone'] = $minute->trainee_phone;
+                $dataPerTrainee['company_name'] = $minute->company_name;
+                $dataPerTrainee['company_address'] = $minute->company_address;
+                $dataPerTrainee['company_contact'] = $minute->company_contact;
+                $dataPerTrainee['incident_type'] = $minute->incident_type;
+                $dataPerTrainee['incident_subtype'] = $minute->incident_subtype;
+                $dataPerTrainee['incident_description'] = $minute->incident_description;
+                $dataPerTrainee['hr_responsible'] = $minute->hr_manager_name;
+                
+                // Si hay descargos individuales, guardar todos los descargos
+                if ($request->has('individual_statements') && !empty($request->individual_statements)) {
+                    $dataPerTrainee['individual_statements'] = json_encode($request->individual_statements);
+                }
+                
+                // Crear el registro para este aprendiz
+                GeneralCommittee::create($dataPerTrainee);
+            }
         }
-
-        // Si hay descargos individuales, los convertimos a JSON
-        if ($request->has('individual_statements')) {
-            $data['individual_statements'] = json_encode($request->individual_statements);
-        }
-
-        GeneralCommittee::create($data);
 
         return redirect()->route('committee.general.index')->with('success', 'Comité general creado correctamente.');
     }
@@ -144,6 +157,9 @@ class GeneralCommitteeController extends Controller
                 if (empty($data['incident_subtype'])) {
                     $data['incident_subtype'] = $minute->incident_subtype;
                 }
+                if (empty($data['company_contact'])) {
+                    $data['company_contact'] = $minute->company_contact;
+                }
             }
         }
 
@@ -174,14 +190,20 @@ class GeneralCommitteeController extends Controller
             $data['general_statements'] = ($generalText === '') ? null : $generalText;
         }
 
-        $generalCommittee->update($data);
+        // Actualizar TODOS los registros del mismo act_number
+        $allCommittees = GeneralCommittee::where('act_number', $generalCommittee->act_number)->get();
+        
+        foreach ($allCommittees as $committee) {
+            $committee->update($data);
+        }
 
         return redirect()->route('committee.general.index')->with('success', 'Comité general actualizado correctamente.');
     }
 
     public function destroy(GeneralCommittee $generalCommittee)
     {
-        $generalCommittee->delete();
+        // Eliminar TODOS los registros del mismo act_number
+        GeneralCommittee::where('act_number', $generalCommittee->act_number)->delete();
         return redirect()->route('committee.general.index')->with('success', 'Comité general eliminado correctamente.');
     }
 

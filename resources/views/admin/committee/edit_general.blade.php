@@ -440,12 +440,19 @@
             </div>
             
             @php
+                // Obtener solo el primer comité general para este act_number (todos tienen los mismos descargos)
+                $firstCommittee = \App\Models\GeneralCommittee::where('act_number', $generalCommittee->act_number)->first();
                 $individualMap = [];
-                if (!empty($generalCommittee->individual_statements)) {
-                    $decoded = json_decode($generalCommittee->individual_statements, true);
-                    if (is_array($decoded)) { $individualMap = $decoded; }
-                }
                 $hasIndividual = false;
+                
+                // Obtener los descargos individuales del primer registro
+                if ($firstCommittee && $firstCommittee->individual_statements) {
+                    $decoded = json_decode($firstCommittee->individual_statements, true);
+                    if (is_array($decoded)) {
+                        $individualMap = $decoded;
+                    }
+                }
+                
                 if (!empty($individualMap)) {
                     foreach ($individualMap as $v) { if (!empty($v)) { $hasIndividual = true; break; } }
                 }

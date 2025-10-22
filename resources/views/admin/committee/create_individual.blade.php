@@ -709,7 +709,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                             <div>
                                 <span class="text-blue-600 font-medium">Contacto de la Empresa:</span>
-                                <p class="text-gray-900">${minute.company_contact || minute.hr_contact || 'No especificado'}</p>
+                                <p class="text-gray-900">${minute.company_contact || 'No especificado'}</p>
                             </div>
                             <div>
                                 <span class="text-blue-600 font-medium">RRHH Responsable:</span>
@@ -875,7 +875,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const committeeFields = [
             'attendance_mode', 'offense_class', 'fault_type', 'incident_type', 
             'offense_classification', 'incident_description', 'company_name', 
-            'company_address', 'hr_contact', 'hr_responsible', 'statement', 
+            'company_address', 'company_contact', 'hr_responsible', 'statement', 
             'decision', 'commitments', 'missing_rating', 'recommendations', 'observations'
         ];
         
@@ -916,8 +916,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const companyContactField = document.querySelector('input[name="company_contact"]');
-        if (companyContactField && (minute.company_contact || minute.hr_contact)) {
-            companyContactField.value = minute.company_contact || minute.hr_contact;
+        if (companyContactField && minute.company_contact) {
+            companyContactField.value = minute.company_contact;
         }
         
         const hrManagerField = document.querySelector('input[name="hr_responsible"]');
@@ -1140,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-blue-700 mb-1">Contacto</label>
-                                            <p class="text-gray-900">${selectedMinute.hr_contact || 'No especificado'}</p>
+                                            <p class="text-gray-900">${selectedMinute.company_contact || 'No especificado'}</p>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-blue-700 mb-1">Responsable RRHH</label>
@@ -1350,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         data.email = minute.email;
                         data.company_name = minute.company_name;
                         data.company_address = minute.company_address;
-                        data.hr_contact = minute.hr_contact;
+                        data.company_contact = minute.company_contact;
                         data.incident_type = minute.incident_type;
                         data.incident_description = minute.incident_description;
                         data.hr_responsible = minute.hr_manager_name;

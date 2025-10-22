@@ -411,49 +411,52 @@ use App\Models\Minute;
         </div>
       @endif
 
-      @if($generalCommittee->individual_statements)
+      @php
+        // Obtener solo el primer comité general para este act_number (todos tienen los mismos descargos)
+        $firstCommittee = \App\Models\GeneralCommittee::where('act_number', $generalCommittee->act_number)->first();
+        $hasIndividualStatements = false;
+        $allIndividualStatements = [];
+        
+        // Obtener los descargos individuales del primer registro
+        if ($firstCommittee && $firstCommittee->individual_statements) {
+          $statements = json_decode($firstCommittee->individual_statements, true);
+          if (is_array($statements)) {
+            $allIndividualStatements = $statements;
+            $hasIndividualStatements = true;
+          }
+        }
+        
+        // Mapa de minutes_id => Minute para resolver nombres
+        $minutesById = Minute::where('act_number', $generalCommittee->act_number)->get()->keyBy('minutes_id');
+      @endphp
+      
+      @if($hasIndividualStatements)
         <div class="bg-gray-50 rounded-lg p-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">
             <i class="fas fa-user-edit mr-1 text-blue-500"></i>
             Descargos Individuales
           </label>
-          @php
-            // Estructura esperada: puede ser un array indexado o un mapa minutes_id => descargo
-            $individualStatements = json_decode($generalCommittee->individual_statements, true);
-            // Mapa de minutes_id => Minute para resolver nombres
-            $minutesById = Minute::where('act_number', $generalCommittee->act_number)->get()->keyBy('minutes_id');
-            $minutesList = $minutesById->values();
-          @endphp
-          @if(is_array($individualStatements))
-            @foreach($individualStatements as $key => $statement)
-              @php
-                $labelName = null;
-                // Si la clave es un minutes_id, úsalo para obtener el nombre
-                if (is_string($key) || is_int($key)) {
-                  $minute = $minutesById[$key] ?? null;
-                  if ($minute) {
-                    $labelName = $minute->trainee_name;
-                  }
+          @foreach($allIndividualStatements as $key => $statement)
+            @php
+              $labelName = null;
+              // Si la clave es un minutes_id, úsalo para obtener el nombre
+              if (is_string($key) || is_int($key)) {
+                $minute = $minutesById[$key] ?? null;
+                if ($minute) {
+                  $labelName = $minute->trainee_name;
                 }
-                // Si sigue sin nombre, intentamos por índice de posición
-                if (!$labelName && is_numeric($key)) {
-                  $minuteByIndex = $minutesList->get((int)$key);
-                  if ($minuteByIndex) {
-                    $labelName = $minuteByIndex->trainee_name;
-                  }
-                }
-                if (!$labelName) {
-                  $labelName = 'Aprendiz ' . (is_numeric($key) ? ((int)$key + 1) : '');
-                }
-              @endphp
-              <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $labelName }}</label>
-                <div class="bg-white rounded-lg p-4 border border-gray-200">
-                  <p class="text-gray-900 whitespace-pre-wrap">{{ $statement }}</p>
-                </div>
+              }
+              if (!$labelName) {
+                $labelName = 'Aprendiz ' . (is_numeric($key) ? ((int)$key + 1) : '');
+              }
+            @endphp
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $labelName }}</label>
+              <div class="bg-white rounded-lg p-4 border border-gray-200">
+                <p class="text-gray-900 whitespace-pre-wrap">{{ $statement }}</p>
               </div>
-            @endforeach
-          @endif
+            </div>
+          @endforeach
         </div>
       @endif
     </div>

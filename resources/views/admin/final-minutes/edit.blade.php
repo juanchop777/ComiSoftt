@@ -1,24 +1,24 @@
 @extends('layouts.admin')
 
-@section('title', 'Crear Acta final')
+@section('title', 'Editar Acta final')
 
 @section('content')
-
 <div class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-200">
-    <form action="{{ route('final-minutes.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+    <form action="{{ route('final-minutes.update', $finalMinute) }}" method="POST" class="space-y-8">
         @csrf
+        @method('PUT')
         
         <!-- Header -->
         <div class="bg-blue-600 text-white p-8 rounded-xl text-center shadow-lg -m-8 mb-8">
-            <i class="fas fa-file-contract text-4xl mb-4 block"></i>
-            <h2 class="text-3xl font-bold">Crear Acta Final</h2>
+            <i class="fas fa-edit text-4xl mb-4 block"></i>
+            <h2 class="text-3xl font-bold">Editar Acta Final #{{ $finalMinute->act_number }}</h2>
         </div>
         
         <!-- ACTA No. -->
         <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
             <div class="text-center mb-4">
                 <label class="text-blue-600 text-3xl font-bold block mb-4">ACTA No.</label>
-                <input type="text" name="act_number" class="text-center text-2xl font-bold text-blue-600 border-2 border-blue-300 rounded-lg px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 w-32" placeholder="00" required>
+                <input type="text" name="act_number" value="{{ old('act_number', $finalMinute->act_number) }}" class="text-center text-2xl font-bold text-blue-600 border-2 border-blue-300 rounded-lg px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 w-32" required>
             </div>
         </div>
 
@@ -26,7 +26,7 @@
         <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
             <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                 <label class="font-bold text-gray-800 min-w-64 mr-5 text-sm uppercase tracking-wide">NOMBRE DEL COMITÉ O DE LA REUNIÓN:</label>
-                <input type="text" name="committee_name" class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" placeholder="Ingrese el nombre del comité o reunión" required>
+                <input type="text" name="committee_name" value="{{ old('committee_name', $finalMinute->committee_name) }}" class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
             </div>
         </div>
 
@@ -38,11 +38,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="font-bold text-gray-800 mb-2 block text-sm uppercase tracking-wide">CIUDAD:</label>
-                            <input type="text" name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" placeholder="Ej: Bogotá" required>
+                            <input type="text" name="city" value="{{ old('city', $finalMinute->city) }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
                         </div>
                         <div>
                             <label class="font-bold text-gray-800 mb-2 block text-sm uppercase tracking-wide">FECHA:</label>
-                            <input type="date" name="date" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
+                            <input type="date" name="date" value="{{ old('date', $finalMinute->date->format('Y-m-d')) }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
                         </div>
                     </div>
                 </div>
@@ -52,11 +52,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="font-bold text-gray-800 mb-2 block text-sm uppercase tracking-wide">HORA INICIO:</label>
-                            <input type="time" name="start_time" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
+                            <input type="time" name="start_time" value="{{ old('start_time', $finalMinute->start_time ? $finalMinute->start_time->format('H:i') : '') }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
                         </div>
                         <div>
                             <label class="font-bold text-gray-800 mb-2 block text-sm uppercase tracking-wide">HORA FIN:</label>
-                            <input type="time" name="end_time" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
+                            <input type="time" name="end_time" value="{{ old('end_time', $finalMinute->end_time ? $finalMinute->end_time->format('H:i') : '') }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" required>
                         </div>
                     </div>
                 </div>
@@ -69,13 +69,13 @@
                 <!-- Columna izquierda: LUGAR Y/O ENLACE -->
                 <div class="flex-1 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
                     <label class="font-bold text-gray-800 mb-3 block text-sm uppercase tracking-wide">LUGAR Y/O ENLACE:</label>
-                    <input type="text" name="place_link" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" placeholder="Lugar físico o enlace virtual">
+                    <input type="text" name="place_link" value="{{ old('place_link', $finalMinute->place_link) }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300">
                 </div>
                 
                 <!-- Columna derecha: DIRECCIÓN -->
                 <div class="flex-1 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
                     <label class="font-bold text-gray-800 mb-3 block text-sm uppercase tracking-wide">DIRECCIÓN / REGIONAL / CENTRO:</label>
-                    <input type="text" name="address_regional_center" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300" placeholder="Dirección del centro regional">
+                    <input type="text" name="address_regional_center" value="{{ old('address_regional_center', $finalMinute->address_regional_center) }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300">
                 </div>
             </div>
         </div>
@@ -86,13 +86,52 @@
                 CONCLUSIONES
                 <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-blue-500 rounded-full"></div>
             </div>
-            <textarea name="conclusions" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 min-h-32 resize-y" placeholder="Escriba las conclusiones de la reunión"></textarea>
+            <textarea name="conclusions" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 min-h-32 resize-y">{{ old('conclusions', $finalMinute->conclusions) }}</textarea>
         </div>
 
-        <!-- ANEXOS -->
+        <!-- ARCHIVOS EXISTENTES -->
+        @if($finalMinute->attachments && count($finalMinute->attachments) > 0)
+        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-500">
+            <div class="text-center font-bold text-gray-800 text-xl mb-6 uppercase tracking-wide relative pb-4">
+                ARCHIVOS ACTUALES ({{ count($finalMinute->attachments) }})
+                <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-green-500 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach($finalMinute->attachments as $index => $attachment)
+                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        @php
+                            $extension = pathinfo($attachment['original_name'], PATHINFO_EXTENSION);
+                            $iconClass = match(strtolower($extension)) {
+                                'pdf' => 'fas fa-file-pdf text-red-500',
+                                'doc', 'docx' => 'fas fa-file-word text-blue-500',
+                                'xls', 'xlsx' => 'fas fa-file-excel text-green-500',
+                                'jpg', 'jpeg', 'png', 'gif' => 'fas fa-file-image text-purple-500',
+                                'txt' => 'fas fa-file-alt text-gray-500',
+                                default => 'fas fa-file text-gray-500'
+                            };
+                        @endphp
+                        <i class="{{ $iconClass }} text-xl"></i>
+                        <div>
+                            <p class="font-medium text-gray-900">{{ $attachment['original_name'] }}</p>
+                            <p class="text-sm text-gray-500">{{ number_format($attachment['size'] / 1024, 1) }} KB</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('final-minutes.download', ['finalMinute' => $finalMinute->id, 'attachmentIndex' => $index]) }}" 
+                       class="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200" 
+                       title="Descargar">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- NUEVOS ANEXOS -->
         <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
             <div class="text-center font-bold text-gray-800 text-xl mb-6 uppercase tracking-wide relative pb-4">
-                ANEXOS
+                AGREGAR NUEVOS ANEXOS
                 <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-blue-500 rounded-full"></div>
             </div>
             <p class="text-center text-blue-600 text-sm italic bg-blue-50 px-4 py-2 rounded-full inline-block mb-4">
@@ -136,9 +175,9 @@
         <div class="text-center pt-8 border-t-2 border-gray-200">
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mr-4">
                 <i class="fas fa-save mr-2"></i>
-                Guardar Acta
+                Actualizar Acta
             </button>
-            <a href="{{ route('final-minutes.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide">
+            <a href="{{ route('final-minutes.show', $finalMinute) }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Cancelar
             </a>
@@ -274,13 +313,13 @@ document.querySelector('form').addEventListener('submit', function(e) {
         }
     });
     
+    // En edición, no es obligatorio tener archivos nuevos
     if (!hasFiles) {
-        e.preventDefault();
-        showMessage('Debe seleccionar al menos un archivo para los anexos', 'warning');
-        return false;
+        // Permitir envío sin archivos nuevos
+        return true;
     }
     
-    // Validar tipos de archivo
+    // Validar tipos de archivo si hay archivos
     let invalidFiles = [];
     fileInputs.forEach(input => {
         if (input.files && input.files.length > 0) {
@@ -301,3 +340,4 @@ document.querySelector('form').addEventListener('submit', function(e) {
 });
 </script>
 @endsection
+
