@@ -97,6 +97,34 @@
             </div>
         </div>
 
+        <!-- Información de la Persona que Reporta -->
+        @if($minute && $minute->reportingPerson)
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+            <div class="bg-purple-100 text-purple-800 px-4 py-3">
+                <h3 class="text-lg font-bold flex items-center">
+                    <i class="fas fa-user-tie mr-2"></i>
+                    Información de la Persona que Reporta
+                </h3>
+            </div>
+            <div class="p-4 bg-gray-50">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-lg p-3 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo</label>
+                        <p class="text-gray-900 font-medium">{{ $minute->reportingPerson->full_name ?: 'No especificado' }}</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                        <p class="text-gray-900 break-all">{{ $minute->reportingPerson->email ?: 'No especificado' }}</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Teléfono</label>
+                        <p class="text-gray-900">{{ $minute->reportingPerson->phone ?: 'No especificado' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Información del Aprendiz -->
         <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
             <div class="bg-green-100 text-green-800 px-4 py-3">

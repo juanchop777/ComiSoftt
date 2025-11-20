@@ -97,6 +97,50 @@ use App\Models\Minute;
       </div>
     </div>
 
+    <!-- Información de la Persona que Reporta -->
+    @if($minutes->count() > 0 && $minutes->first()->reportingPerson)
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl border border-gray-100 p-8 mb-8">
+      <div class="flex items-center mb-8">
+        <div class="flex-shrink-0 bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg">
+          <i class="fas fa-user-tie text-white text-xl"></i>
+        </div>
+        <h3 class="ml-4 text-2xl font-bold text-gray-800">Información de la Persona que Reporta</h3>
+      </div>
+      
+      <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center mb-6">
+          <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-2 rounded-lg shadow-md">
+            <i class="fas fa-user-tie text-white"></i>
+          </div>
+          <h4 class="ml-3 text-lg font-bold text-purple-800">Datos de Contacto</h4>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-purple-100 hover:shadow-md transition-all duration-200">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-semibold text-purple-700">Nombre Completo:</span>
+              <span class="text-sm text-gray-800 font-medium bg-purple-50 px-3 py-1 rounded-full">{{ $minutes->first()->reportingPerson->full_name ?: 'No especificado' }}</span>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-purple-100 hover:shadow-md transition-all duration-200">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-semibold text-purple-700">Email:</span>
+              <span class="text-sm text-gray-800 bg-purple-50 px-3 py-1 rounded-full break-all">{{ $minutes->first()->reportingPerson->email ?: 'No especificado' }}</span>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-purple-100 hover:shadow-md transition-all duration-200">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-semibold text-purple-700">Teléfono:</span>
+              <span class="text-sm text-gray-800 bg-purple-50 px-3 py-1 rounded-full">{{ $minutes->first()->reportingPerson->phone ?: 'No especificado' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endif
+
     <!-- Información de los Aprendices -->
     <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl border border-gray-100 p-8 mb-8">
       <div class="flex items-center mb-8">

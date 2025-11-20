@@ -17,8 +17,16 @@ Route::middleware([
 use App\Http\Controllers\MinuteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FinalMinuteController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Profile - Registrar antes de las rutas de Jetstream para tener prioridad
+Route::middleware(['auth:sanctum', config('jetstream.auth_session')])->group(function () {
+    Route::get('/user/profile', [ProfileController::class, 'show'])->name('user.profile');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 Route::get('/minutes', [MinuteController::class, 'index'])->name('minutes.index');
 Route::get('/minutes/create', [MinuteController::class, 'create'])->name('minutes.create');

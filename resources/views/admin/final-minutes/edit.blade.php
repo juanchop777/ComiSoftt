@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-200">
-    <form action="{{ route('final-minutes.update', $finalMinute) }}" method="POST" class="space-y-8">
+    <form action="{{ route('final-minutes.update', $finalMinute) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
         @method('PUT')
         
@@ -13,6 +13,21 @@
             <i class="fas fa-edit text-4xl mb-4 block"></i>
             <h2 class="text-3xl font-bold">Editar Acta Final #{{ $finalMinute->act_number }}</h2>
         </div>
+        @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-triangle mr-2 mt-1"></i>
+                <div>
+                    <p class="font-semibold">Por favor corrige los siguientes errores:</p>
+                    <ul class="list-disc list-inside text-sm mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @endif
         
         <!-- ACTA No. -->
         <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
@@ -177,7 +192,7 @@
                 <i class="fas fa-save mr-2"></i>
                 Actualizar Acta
             </button>
-            <a href="{{ route('final-minutes.show', $finalMinute) }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide">
+            <a href="{{ route('final-minutes.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Cancelar
             </a>

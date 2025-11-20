@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +18,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (Vite) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- Tailwind CSS Fallback (CDN) -->
+    <!-- Tailwind CSS via CDN (for production) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <style>
+        /* Custom styles if needed */
+    </style>
 </head>
-<body class="bg-gray-50 font-inter">
+<body class="bg-gray-50 font-inter" id="theme-body">
     <!-- Sidebar -->
     <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out" id="sidebar">
         <!-- Logo -->
@@ -160,27 +162,6 @@
                             </li>
                         </ul>
                     </li>
-
-                    <!-- Separador -->
-                <li class="pt-4">
-                    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4">REPORTES</div>
-                </li>
-
-                    <!-- Estadísticas -->
-                <li>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                        <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
-                        <span class="font-medium">Estadísticas</span>
-                        </a>
-                    </li>
-
-                    <!-- Reportes -->
-                <li>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                        <i class="fas fa-file-pdf w-5 h-5 mr-3"></i>
-                        <span class="font-medium">Generar Reportes</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </div>
@@ -202,29 +183,23 @@
 
                 <!-- User menu -->
                 <div class="flex items-center space-x-4">
-                    <!-- Notifications -->
-                    <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <i class="fas fa-bell text-xl"></i>
-                    </button>
-
                     <!-- User dropdown -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center space-x-3 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                                 <i class="fas fa-user text-white text-sm"></i>
                             </div>
-                            <span class="hidden md:block font-medium">Usuario</span>
+                            <div class="hidden md:block text-left">
+                                <div class="font-medium text-sm">{{ Auth::user()->name }}</div>
+                                <div class="text-xs text-gray-500">Administrador</div>
+                            </div>
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
 
                         <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="{{ route('profile.show') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-user w-4 h-4 mr-3"></i>
                                 Mi Perfil
-                            </a>
-                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-cog w-4 h-4 mr-3"></i>
-                                Configuración
                             </a>
                             <hr class="my-1">
                             <form action="{{ route('logout') }}" method="POST" id="logout-form">
@@ -248,6 +223,48 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <script>
+        // Aplicar tema al cargar la página (ejecutar inmediatamente, antes de DOMContentLoaded)
+        (function() {
+            // Función global para aplicar tema
+            window.applyTheme = function(theme) {
+                const html = document.documentElement;
+                const body = document.getElementById('theme-body') || document.body;
+                
+                // Remover todas las clases de tema
+                html.classList.remove('light', 'dark');
+                body.classList.remove('light', 'dark');
+                
+                const originalTheme = theme;
+                
+                // Si es auto, detectar preferencia del sistema
+                if (theme === 'auto') {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    theme = prefersDark ? 'dark' : 'light';
+                }
+                
+                // Aplicar tema
+                html.classList.add(theme);
+                body.classList.add(theme);
+                
+                // Guardar tema original en localStorage
+                localStorage.setItem('theme', originalTheme);
+            }
+            
+            // Aplicar tema inmediatamente al cargar
+            const savedTheme = localStorage.getItem('theme') || '{{ session("theme", "light") }}';
+            window.applyTheme(savedTheme);
+            
+            // Escuchar cambios en preferencia del sistema (solo si está en modo auto)
+            const currentTheme = localStorage.getItem('theme') || '{{ session("theme", "light") }}';
+            if (currentTheme === 'auto') {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    window.applyTheme('auto');
+                });
+            }
+        })();
+    </script>
     
     <script>
         // Toggle sidebar on mobile

@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Modo Oscuro */
+.dark body {
+    background-color: #1f2937;
+    color: #f9fafb;
+}
+
+.dark .bg-white {
+    background-color: #374151;
+}
+
+.dark .text-gray-900 {
+    color: #f9fafb;
+}
+
+.dark .text-gray-700 {
+    color: #d1d5db;
+}
+
+.dark .text-gray-600 {
+    color: #9ca3af;
+}
+
+.dark .border-gray-200 {
+    border-color: #4b5563;
+}
+
+.dark .bg-gray-50 {
+    background-color: #374151;
+}
+
+.dark .bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.dark .bg-blue-100 {
+    background-color: #1e3a8a;
+}
+
+.dark .text-blue-600 {
+    color: #60a5fa;
+}
+
+.dark .bg-green-50 {
+    background-color: #064e3b;
+}
+
+.dark .bg-red-50 {
+    background-color: #7f1d1d;
+}
+
 [x-cloak] {
     display: none;
 }

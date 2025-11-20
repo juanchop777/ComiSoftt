@@ -47,75 +47,26 @@
         <div>
             <h2 class="text-2xl font-bold text-gray-800 flex items-center">
                 <i class="fas fa-file-alt text-blue-600 mr-3"></i>
-                @if(request()->has('incident_type') && request()->has('reporting_person'))
-                    Actas de {{ 
-                        request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
-                        (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
-                        'Casos de Deserción') 
-                    }} reportadas por "{{ request('reporting_person') }}"
-                @elseif(request()->has('incident_type'))
-                    Actas de {{ 
-                        request('incident_type') == 'Academic' ? 'Novedades Académicas' : 
-                        (request('incident_type') == 'Disciplinary' ? 'Novedades Disciplinarias' : 
-                        'Casos de Deserción') 
-                    }}
-                @elseif(request()->has('reporting_person'))
-                    Actas reportadas por "{{ request('reporting_person') }}"
-                @else
-                    Todas las Actas Registradas
-                @endif
+                Todas las Actas Registradas
             </h2>
         </div>
-        <a href="{{ route('minutes.create') }}" class="btn btn-primary">
+        <a href="{{ route('minutes.create') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
             <i class="fas fa-plus mr-2"></i> Crear Nueva Acta
         </a>
-    </div>
-
-    {{-- Filtros --}}
-    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6">
-        <div class="flex flex-col lg:flex-row gap-4">
-            {{-- Filtro por tipo --}}
-            <div class="flex-1">
-                <form method="GET" action="{{ route('minutes.index') }}" class="flex gap-2">
-                    <select name="incident_type" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
-                        <option value="">Filtrar por tipo</option>
-                        <option value="Academic" {{ request('incident_type') == 'Academic' ? 'selected' : '' }}>Académica</option>
-                        <option value="Disciplinary" {{ request('incident_type') == 'Disciplinary' ? 'selected' : '' }}>Disciplinaria</option>
-                        <option value="Dropout" {{ request('incident_type') == 'Dropout' ? 'selected' : '' }}>Deserción</option>
-                    </select>
-                    @if(request()->has('incident_type'))
-                    <a href="{{ route('minutes.index', request()->only('reporting_person')) }}" class="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors" title="Limpiar filtro">
-                        <i class="fas fa-times"></i>
-                    </a>
-                    @endif
-                </form>
-            </div>
-
-            {{-- Filtro por nombre --}}
-            <div class="flex-1">
-                <form method="GET" action="{{ route('minutes.index') }}" class="flex gap-2">
-                    @if(request()->has('incident_type'))
-                    <input type="hidden" name="incident_type" value="{{ request('incident_type') }}">
-                    @endif
-                    <input type="text" name="reporting_person" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Buscar por nombre" value="{{ request('reporting_person') }}">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    @if(request()->has('reporting_person'))
-                    <a href="{{ route('minutes.index', request()->only('incident_type')) }}" class="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors" title="Limpiar búsqueda">
-                        <i class="fas fa-times"></i>
-                    </a>
-                    @endif
-                </form>
-            </div>
-        </div>
     </div>
 
     {{-- Tabla de Actas --}}
     <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
         @if(!empty($minutes) && count($minutes) > 0)
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <!-- DataTables agregará los controles y la tabla aquí -->
+            <div id="minutesTable_wrapper" class="p-6">
+                <!-- Contenedor para controles superiores -->
+                <div style="width: 100%; overflow: hidden; margin-bottom: 1rem;">
+                    <div id="dt-length-container" style="float: left;"></div>
+                    <div id="dt-filter-container" style="float: right;"></div>
+                </div>
+            <table id="minutesTable" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número de Acta</th>
@@ -132,10 +83,6 @@
                             $reportingPerson = $actaGroup['reportingPerson'] ?? null;
                             $incidentTypes = $actaGroup['incident_types'] ?? [];
                         @endphp
-                        @if(!request()->has('reporting_person') || 
-                            (request()->has('reporting_person') && 
-                            $reportingPerson && 
-                            stripos($reportingPerson->full_name, request('reporting_person')) !== false))
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-semibold text-gray-900">#{{ $actNumber }}</div>
@@ -187,10 +134,10 @@
                                 </div>
                             </td>
                         </tr>
-                        @endif
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
         @else
         <div class="text-center py-12">
@@ -198,43 +145,16 @@
                 <i class="fas fa-file-alt text-4xl text-gray-400"></i>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">
-                @if(request()->has('incident_type') && request()->has('reporting_person'))
-                    No hay actas registradas de tipo "{{ 
-                        request('incident_type') == 'Academic' ? 'Académica' : 
-                        (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
-                        'Deserción') 
-                    }}" reportadas por "{{ request('reporting_person') }}"
-                @elseif(request()->has('incident_type'))
-                    No hay actas registradas de tipo "{{ 
-                        request('incident_type') == 'Academic' ? 'Académica' : 
-                        (request('incident_type') == 'Disciplinary' ? 'Disciplinaria' : 
-                        'Deserción') 
-                    }}"
-                @elseif(request()->has('reporting_person'))
-                    No hay actas registradas reportadas por "{{ request('reporting_person') }}"
-                @else
-                    No hay actas registradas aún
-                @endif
+                No hay actas registradas aún
             </h3>
             <p class="text-gray-500 mb-6">Utiliza el botón "Crear Nueva Acta" para crear la primera acta.</p>
-            <a href="{{ route('minutes.create') }}" class="btn btn-primary">
+            <a href="{{ route('minutes.create') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
                 <i class="fas fa-plus mr-2"></i> Crear Nueva Acta
             </a>
         </div>
         @endif
     </div>
 
-    {{-- Paginación --}}
-    @if(!empty($minutes) && count($minutes) > 0)
-    <div class="mt-6 flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-            Mostrando {{ $actNumbers->firstItem() ?? 0 }} a {{ $actNumbers->lastItem() ?? 0 }} de {{ $actNumbers->total() }} actas
-        </div>
-        <div class="flex items-center space-x-2">
-            {{ $actNumbers->appends(request()->query())->links('pagination::tailwind') }}
-        </div>
-    </div>
-    @endif
 </div>
 
 {{-- Modal para mostrar detalles --}}
@@ -268,6 +188,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 <script>
@@ -645,5 +568,228 @@
         }, 1000);
     }
 
+// Inicializar DataTables
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof DataTable === 'undefined') {
+        console.error('DataTable no está cargado. Verifica que el script de DataTables esté incluido.');
+        return;
+    }
+    
+    const tableElement = document.querySelector('#minutesTable');
+    if (!tableElement) {
+        console.error('No se encontró la tabla con id #minutesTable');
+        return;
+    }
+    
+    // Verificar si hay datos en la tabla
+    const tbody = tableElement.querySelector('tbody');
+    const dataRows = tbody ? tbody.querySelectorAll('tr') : [];
+    
+    // Si no hay filas de datos, no inicializar DataTables
+    if (dataRows.length === 0) {
+        console.log('No hay datos en la tabla, DataTables no se inicializará');
+        return;
+    }
+    
+    let table = new DataTable('#minutesTable', {
+        language: {
+            search: 'Buscar:',
+            lengthMenu: 'Mostrar _MENU_ registros',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+            infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+            infoFiltered: '(filtrado de _MAX_ registros totales)',
+            zeroRecords: 'No se encontraron registros',
+            emptyTable: 'No hay datos disponibles',
+            paginate: {
+                first: '«',
+                previous: '<',
+                next: '>',
+                last: '»'
+            }
+        },
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+        order: [[0, 'asc']], // Ordenar por número de acta ascendente
+        processing: false,
+        serverSide: false,
+        dom: 'rtip',
+        initComplete: function() {
+            const lengthContainer = document.createElement('div');
+            lengthContainer.className = 'dataTables_length';
+            lengthContainer.innerHTML = `
+                <label>
+                    Mostrar
+                    <select name="minutesTable_length" aria-controls="minutesTable" class="px-3 py-2 border border-gray-300 rounded-lg ml-2">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="-1">Todos</option>
+                    </select>
+                    registros
+                </label>
+            `;
+            
+            const filterContainer = document.createElement('div');
+            filterContainer.className = 'dataTables_filter';
+            filterContainer.innerHTML = `
+                <label>
+                    Buscar:
+                    <input type="search" class="px-3 py-2 border border-gray-300 rounded-lg ml-2" placeholder="Buscar..." aria-controls="minutesTable" style="width: 250px; outline: none; transition: none;">
+                </label>
+            `;
+            
+            const lengthTarget = document.getElementById('dt-length-container');
+            const filterTarget = document.getElementById('dt-filter-container');
+            
+            if (lengthTarget) lengthTarget.appendChild(lengthContainer);
+            if (filterTarget) filterTarget.appendChild(filterContainer);
+            
+            const lengthSelect = lengthContainer.querySelector('select');
+            const searchInput = filterContainer.querySelector('input');
+            
+            if (lengthSelect) {
+                lengthSelect.addEventListener('change', function() {
+                    table.page.len(parseInt(this.value)).draw();
+                });
+            }
+            
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    table.search(this.value).draw();
+                });
+            }
+        }
+    });
+});
 </script>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+<style>
+/* Estilos para DataTables */
+.dataTables_wrapper {
+    position: relative;
+    clear: both;
+    width: 100%;
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: left !important;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    clear: none !important;
+    width: auto !important;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    float: right !important;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    text-align: right !important;
+    clear: none !important;
+    width: auto !important;
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    margin-left: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    min-width: 60px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    width: 250px;
+    outline: none !important;
+    transition: none;
+    background-color: white;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #d1d5db !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background-color: white !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:hover {
+    border-color: #9ca3af !important;
+    box-shadow: none !important;
+    background-color: white !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+    float: left;
+    padding: 0.75rem 0;
+    margin-top: 1.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    float: right;
+    text-align: right;
+    padding: 0.75rem 0;
+    margin-top: 1.5rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.375rem 0.625rem;
+    margin: 0 0.125rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #374151 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #22c55e;
+    color: white;
+    border-color: #22c55e;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dataTables_wrapper::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+</style>
 @endsection

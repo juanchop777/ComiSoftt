@@ -10,19 +10,7 @@ class IndividualCommitteeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = IndividualCommittee::query();
-
-        // Filtrar por nombre del aprendiz
-        if ($request->filled('trainee_name')) {
-            $query->where('trainee_name', 'like', '%' . $request->trainee_name . '%');
-        }
-
-        // Filtrar por número de acta
-        if ($request->filled('act_number')) {
-            $query->where('act_number', 'like', '%' . $request->act_number . '%');
-        }
-
-        $committees = $query->orderBy('session_date', 'desc')->paginate(10);
+        $committees = IndividualCommittee::orderBy('session_date', 'desc')->get();
         return view('admin.committee.index_individual', compact('committees'));
     }
 
@@ -137,7 +125,10 @@ class IndividualCommitteeController extends Controller
         // Cargar la relación con minutes para verificar si tiene contrato
         $individualCommittee->load('minutes');
         
-        return view('admin.committee.show_individual', compact('individualCommittee'));
+        // Obtener el minute con la relación reportingPerson
+        $minute = Minute::with('reportingPerson')->find($individualCommittee->minutes_id);
+        
+        return view('admin.committee.show_individual', compact('individualCommittee', 'minute'));
     }
 
     public function edit(IndividualCommittee $individualCommittee)
@@ -145,8 +136,11 @@ class IndividualCommitteeController extends Controller
         // Cargar la relación con minutes para verificar si tiene contrato
         $individualCommittee->load('minutes');
         
+        // Obtener el minute con la relación reportingPerson
+        $minute = Minute::with('reportingPerson')->find($individualCommittee->minutes_id);
+        
         $minutes = Minute::with('reportingPerson')->orderBy('minutes_date', 'desc')->get();
-        return view('admin.committee.edit_individual', compact('individualCommittee', 'minutes'));
+        return view('admin.committee.edit_individual', compact('individualCommittee', 'minutes', 'minute'));
     }
 
     public function update(Request $request, IndividualCommittee $individualCommittee)

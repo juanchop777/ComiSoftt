@@ -10,23 +10,11 @@ class GeneralCommitteeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = GeneralCommittee::query();
-
-        // Filtrar por número de acta
-        if ($request->filled('act_number')) {
-            $query->where('act_number', 'like', '%' . $request->act_number . '%');
-        }
-
-        // Filtrar por fecha de sesión
-        if ($request->filled('session_date')) {
-            $query->whereDate('session_date', $request->session_date);
-        }
-
         // Agrupar por act_number para mostrar solo un registro por comité general
-        $committees = $query->selectRaw('MIN(general_committee_id) as general_committee_id, session_date, session_time, act_number, attendance_mode, offense_class')
+        $committees = GeneralCommittee::selectRaw('MIN(general_committee_id) as general_committee_id, session_date, session_time, act_number, attendance_mode, offense_class')
             ->groupBy('act_number', 'session_date', 'session_time', 'attendance_mode', 'offense_class')
             ->orderBy('session_date', 'desc')
-            ->paginate(10);
+            ->get();
             
         return view('admin.committee.index_general', compact('committees'));
     }
@@ -111,14 +99,14 @@ class GeneralCommitteeController extends Controller
     public function show(GeneralCommittee $generalCommittee)
     {
         $generalCommittee->load('minutes');
-        $minutes = Minute::where('act_number', $generalCommittee->act_number)->get();
+        $minutes = Minute::with('reportingPerson')->where('act_number', $generalCommittee->act_number)->get();
         return view('admin.committee.show_general', compact('generalCommittee', 'minutes'));
     }
 
     public function edit(GeneralCommittee $generalCommittee)
     {
         $generalCommittee->load('minutes');
-        $minutesForAct = Minute::where('act_number', $generalCommittee->act_number)->get();
+        $minutesForAct = Minute::with('reportingPerson')->where('act_number', $generalCommittee->act_number)->get();
         $minutes = Minute::with('reportingPerson')->orderBy('minutes_date', 'desc')->get();
         return view('admin.committee.edit_general', compact('generalCommittee', 'minutes', 'minutesForAct'));
     }

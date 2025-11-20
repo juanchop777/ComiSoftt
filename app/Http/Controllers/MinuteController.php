@@ -16,16 +16,24 @@ class MinuteController extends Controller
      */
     public function index(Request $request)
     {
-        $incidentType = $request->get('incident_type'); // Academic, Disciplinary, Dropout
+        $actNumber = $request->get('act_number');
+        $reportingPerson = $request->get('reporting_person');
 
         // Obtener números de acta únicos con filtros
         $query = Minute::select('act_number')
             ->selectRaw('MIN(minutes_date) as min_date')
             ->groupBy('act_number');
 
-        // Filtrar por tipo de novedad
-        if ($incidentType) {
-            $query->where('incident_type', $incidentType);
+        // Filtrar por número de acta
+        if ($actNumber) {
+            $query->where('act_number', 'like', '%' . $actNumber . '%');
+        }
+
+        // Filtrar por persona que reporta
+        if ($reportingPerson) {
+            $query->whereHas('reportingPerson', function($q) use ($reportingPerson) {
+                $q->where('full_name', 'like', '%' . $reportingPerson . '%');
+            });
         }
 
         // Ordenar por fecha y paginar los números de acta únicos

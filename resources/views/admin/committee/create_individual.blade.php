@@ -10,13 +10,13 @@
     </div>
 
     @if(session('success'))
-      <div class="alert alert-accent mb-6">
+      <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
         <div class="flex">
           <div class="flex-shrink-0">
             <i class="fas fa-check-circle text-green-400"></i>
           </div>
           <div class="ml-3">
-            <p class="text-sm font-medium">{{ session('success') }}</p>
+            <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
           </div>
         </div>
       </div>
@@ -156,10 +156,10 @@
           </p>
         </div>
         <div class="mt-4 flex gap-2">
-          <a href="{{ route('minutes.create') }}" class="btn btn-primary">
+          <a href="{{ route('minutes.create') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
             <i class="fas fa-plus mr-2"></i>Crear Nueva Acta
           </a>
-          <a href="{{ route('committee.individual.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
+          <a href="{{ route('committee.individual.index') }}" class="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors">
             <i class="fas fa-list mr-2"></i>Ver Comités Registrados
           </a>
         </div>
@@ -391,7 +391,7 @@
       <!-- Botones de Acción -->
       <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex justify-center gap-4">
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
             <i class="fas fa-save mr-2"></i>Guardar Comité
           </button>
           <a href="{{ route('committee.individual.index') }}" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
@@ -1037,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalHtml = `
                 <div id="apprenticeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <div class="card-header flex items-center justify-between">
+                        <div class="bg-blue-600 text-white px-6 py-4 rounded-t-xl flex items-center justify-between">
                             <h3 class="text-xl font-semibold">Detalles del Aprendiz</h3>
                             <button onclick="closeApprenticeModal()" class="text-white hover:text-gray-200 text-2xl">
                                 <i class="fas fa-times"></i>
@@ -1155,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <button onclick="closeApprenticeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                                     <i class="fas fa-times mr-2"></i>Cerrar
                                 </button>
-                                <button onclick="selectApprenticeFromModal(${minutesId})" class="btn btn-accent">
+                                <button onclick="selectApprenticeFromModal(${minutesId})" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors">
                                     <i class="fas fa-edit mr-2"></i>Crear Comité
                                 </button>
                             </div>
